@@ -65,7 +65,7 @@ describe 'Usuário visita tela inicial' do
     expect(page).to have_content('15h às 2h')
   end
 
-  it '' do
+  it 'e vê uma mensagem indicando a ausência de restaurantes' do
     # Arrange
     # Act
     visit('/')

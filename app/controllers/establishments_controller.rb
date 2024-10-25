@@ -8,8 +8,8 @@ class EstablishmentsController < ApplicationController
   end
 
   def create
-    @establishments = Establishment.new(establishment_params)
-    if @establishments.save()
+    @establishment = Establishment.new(establishment_params)
+    if @establishment.save()
       redirect_to root_path, notice: 'Estabelecimento cadastrado com sucesso.'
     else
       flash.now[:notice] = 'Estabelecimento não cadastrado.'
@@ -28,7 +28,7 @@ class EstablishmentsController < ApplicationController
   def update
     @establishment = Establishment.find(params[:id])
     if @establishment.update(establishment_params)
-    redirect_to establishment_path(@establishment.id), notice: 'Restaurante atualizado com sucesso.'
+    redirect_to establishment_path(@establishment.id), notice: 'Estabelecimento atualizado com sucesso.'
     else
       flash.now[:notice] = 'Não foi possivel atualizar o restaurante.'
       render 'edit'
@@ -38,6 +38,15 @@ class EstablishmentsController < ApplicationController
   def employees
     @establishment = Establishment.find(params[:id])
     @employees = @establishment.users
+  end
+
+  def destroy
+    @establishment = Establishment.find(params[:id])
+    if @establishment.destroy
+      redirect_to root_path, notice: 'Estabelecimento removido com sucesso.'
+    else
+      redirect_to establishment_path(@establishment), alert: 'Não foi possível remover o estabelecimento.'
+    end
   end
   
   private
