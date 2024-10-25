@@ -1,0 +1,28 @@
+<h1>Funcionários de <%= @establishment.name %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Cargo</th>
+      <th>Email</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @employees.each do |employee| %>
+      <tr>
+        <td><%= employee.name %></td>
+        <td><%= employee.position %></td>
+        <td><%= employee.email %></td>
+        <td>
+          <%= link_to 'Ver', employee_path(employee) %>
+          <%= link_to 'Editar', edit_employee_path(employee) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Voltar para Estabelecimento', establishment_path(@establishment) %>
+<%= link_to 'Adicionar Funcionário', new_user_path(@establishment) %>

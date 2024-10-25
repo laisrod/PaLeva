@@ -1,0 +1,17 @@
+<p style="color: green"><%= notice %></p>
+<h2><%= @establishment.name %></h2>
+<p><%= @establishment.description %></p>
+<p><%= @establishment.phone_number %></p>
+<p><%= @establishment.opening_hours %></p>
+
+<div>
+  <%= link_to "Edit this establishment", edit_establishment_path(@establishment) %> |
+  <%= link_to "Back to establishments", establishments_path %>
+
+  <%= button_to "Destroy this establishment", @establishment, method: :delete %>
+</div>
+
+<%= link_to 'Ver Funcionários', employees_establishment_path(@establishment) %>
+<%= link_to 'Adicionar Funcionário', new_user_path(@establishment) %>
+
+

@@ -1,0 +1,12 @@
+<% content_for :title, "Editing establishment" %>
+
+<h1>Edi establishment</h1>
+
+<%= render "form", establishment: @establishment %>
+
+<br>
+
+<div>
+  <%= link_to "Show this establishment", @establishment %> |
+  <%= link_to "Back to establishments", establishments_path %>
+</div>

@@ -1,0 +1,44 @@
+<%= form_with(model: @user, local: true) do |form| %>
+
+    <% if @user.errors.any? %>
+      <div style="color: red">
+        <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+  
+        <ul>
+          <% @user.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    
+    <div class="form-group">
+      <div>
+        <%= form.label :name, 'Nome' %>
+        <%= form.text_field :name %>
+      </div>
+      <div>
+        <%= form.label :email, 'E-mail' %>
+        <%= form.email_field :email %>
+      </div>
+      <div>
+        <%= form.label :password_digest, 'Senha' %>
+        <%= form.password_field :password_digest %>
+      </div>
+      <div>
+        <%= form.label :role, 'Cargo' %>
+        <%= form.text_field :role %>
+      </div>
+      <div>
+        <%= form.label :establishment_id, 'Estabelecimento' %>
+        <%= form.collection_select :establishment_id, @establishments, :id, :name, { prompt: 'Selecione um estabelecimento' }, { class: 'form-control', required: true } %>
+      </div>
+      <div>
+        <%= form.submit "Adicionar Funcionário" %>
+      </div>
+
+      <div>
+      </div>
+
+      </div>
+  <% end %>

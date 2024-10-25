@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+<h2><%= @user.name %></h2>
+<p><%= @user.email %></p>
+<p><%= @user.role %></p>
+<p><%= @user.establishment %></p>
+
+
+<%= link_to 'Ver Funcionários', employees_establishment_path(@establishment) %>
+<%= link_to 'Adicionar Funcionário', new_user_path(@establishment) %>
+
