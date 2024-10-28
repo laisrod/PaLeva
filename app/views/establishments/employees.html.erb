@@ -13,11 +13,9 @@
     <% @employees.each do |employee| %>
       <tr>
         <td><%= employee.name %></td>
-        <td><%= employee.position %></td>
+        <td><%= employee.role %></td>
         <td><%= employee.email %></td>
         <td>
-          <%= link_to 'Ver', employee_path(employee) %>
-          <%= link_to 'Editar', edit_employee_path(employee) %>
         </td>
       </tr>
     <% end %>
