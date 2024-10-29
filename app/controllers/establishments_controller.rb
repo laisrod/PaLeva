@@ -8,7 +8,7 @@ class EstablishmentsController < ApplicationController
   end
 
   def create
-    @establishment = Establishment.new(establishment_params)
+    @establishment = current_user.build_establishment(establishment_params) # Associa o estabelecimento ao usuário atual
     if @establishment.save()
       redirect_to root_path, notice: 'Estabelecimento cadastrado com sucesso.'
     else
@@ -16,6 +16,8 @@ class EstablishmentsController < ApplicationController
       render 'new'
     end
   end
+
+  
 
   def edit
     @establishment = Establishment.find(params[:id])
@@ -41,7 +43,7 @@ class EstablishmentsController < ApplicationController
   end
 
   def destroy
-    @establishment = Establishment.find(params[:id])
+    @establishment = current_user.build_establishment(establishment_params) # Associa o estabelecimento ao usuário atual
     if @establishment.destroy
       redirect_to root_path, notice: 'Estabelecimento removido com sucesso.'
     else
@@ -52,7 +54,7 @@ class EstablishmentsController < ApplicationController
   private
 
   def establishment_params
-    params.require(:establishment).permit(:name, :code, :description,
+    params.require(:establishment).permit(:name, :description,
                                           :full_address, :state, :postal_code, 
                                           :email, :phone_number, :opening_hours, :city)
   end
