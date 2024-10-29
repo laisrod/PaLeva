@@ -5,13 +5,13 @@
 <p><%= @establishment.opening_hours %></p>
 
 <div>
-  <%= link_to "Edit this establishment", edit_establishment_path(@establishment) %> |
-  <%= link_to "Back to establishments", establishments_path %>
+  <%= link_to "Edit this establishment", edit_establishment_path(@establishment) %> <br />
+  <%= link_to "Back to establishments", establishments_path %> <br />
 
   <%= button_to "Remover Estabelecimento", @establishment, method: :delete %>
 </div>
 
-<%= link_to 'Ver Funcionários', employees_establishment_path(@establishment) %>
+<%= link_to 'Ver Funcionários', employees_establishment_path(@establishment) %> <br />
 <%= link_to 'Adicionar Funcionário', new_user_path(@establishment) %>
 
 
