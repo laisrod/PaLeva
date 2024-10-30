@@ -1,0 +1,15 @@
+<h1>Bebidas</h1>
+<%= link_to 'Adicionar Bebida', new_establishment_drink_path(@establishment) %>
+<ul>
+  <% @drinks.each do |drink| %>
+    <li>
+      <%= link_to drink.name, establishment_drink_path(@establishment, drink) %>
+      <%= link_to 'Editar', edit_establishment_drink_path(@establishment, drink) %>
+      <%= link_to 'Remover', establishment_drink_path(@establishment, drink), method: :delete, data: { confirm: 'Tem certeza?' } %>
+    </li>
+  <% end %>
+</ul>
+
+<div>
+ <%= link_to('Voltar', establishments_path) %>
+</div>

@@ -1,0 +1,10 @@
+<h1><%= @drink.name %></h1>
+<p><strong>Descrição:</strong> <%= @drink.description %></p>
+<p><strong>Alcoólica:</strong> <%= @drink.alcoholic ? 'Sim' : 'Não' %></p>
+<p><strong>Calorias:</strong> <%= @drink.calories %></p>
+<% if @drink.photo.present? %>
+  <p><%= image_tag @drink.photo.url if @drink.photo.present? %></p>
+<% end %>
+
+<%= link_to 'Editar', edit_establishment_drink_path(@establishment, @drink) %>
+<%= link_to 'Voltar', establishment_drinks_path(@establishment) %>

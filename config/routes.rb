@@ -1,13 +1,11 @@
 Rails.application.routes.draw do
-  devise_for :users, controllers: { sessions: 'sessions' }
+  devise_for :users
 
   root to: 'establishments#index'
 
   resources :establishments do
-    member do
-      get 'employees'
-      resources :users
-    end
+    resources :dishes
+    resources :drinks
   end
   resources :menus
   resources :orders

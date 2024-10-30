@@ -1,14 +1,15 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
-  has_one :establishment
+         :rememberable, :validatable
+
+  has_one :establishment, dependent: :destroy
 
   validates :name, :email, :last_name, :cpf, presence: true
-  validate :can_only_have_one_establishment
+  validate :cpf_valid
 
   private
 
-  def can_only_have_one_establishment
-    errors.add(:base, "Você já possui um restaurante.") if establishment.present?
+  def cpf_valid
+    errors.add(:cpf, "inválido") unless CPF.valid?(cpf)
   end
 end

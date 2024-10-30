@@ -1,0 +1,37 @@
+<h2>Editar Prato</h2>
+<%= form_with(model: [@establishment, @dish]) do |form| %>
+
+    <% if @dish.errors.any? %>
+      <div style="color: red">
+        <h2><%= pluralize(@dish.errors.count, "error") %> prohibited this dish from being saved:</h2>
+        <ul>
+          <% @dish.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    
+    <div class="form-group">
+      <div>
+        <%= form.label :name, 'Nome' %>
+        <%= form.text_field :name %>
+      </div>
+      <div>
+        <%= form.label :description, 'Descrição' %>
+        <%= form.text_area :description %>
+      </div>
+      <div>
+        <%= form.label :calories, 'Calorias' %>
+        <%= form.number_field :calories %>
+      </div>
+      <div>
+        <%= form.label :photo, 'Foto' %>
+        <%= form.file_field :photo %>
+      </div>
+      <div>
+        <%= form.submit "Enviar" %>
+      </div>
+    </div>
+  <% end %>
+  

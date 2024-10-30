@@ -1,0 +1,12 @@
+<h1>Pratos</h1>
+
+<% if @dish.present? %>
+  <% @dish.each do |e| %>
+    <h2><%= e.name %></h2>
+    <p><%= e.description %></p>
+    <p>Calorias: <%= e.calories %></p>
+  <% end %>
+<% else %>
+  <p>Nenhum prato cadastrado ainda.</p>
+  <%= link_to 'Criar Novo Prato', new_establishment_dish_path, class: 'btn btn-primary' %>
+<% end %>

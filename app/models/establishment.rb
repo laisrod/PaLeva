@@ -1,22 +1,23 @@
 class Establishment < ApplicationRecord
-  has_many :users
-  has_many :employees
-
-  validates :name, presence: { message: I18n.t('activerecord.errors.models.establishment.attributes.name.blank') }
-  validates :description, presence: { message: I18n.t('activerecord.errors.models.establishment.attributes.description.blank') }
-  validates :phone_number, presence: { message: I18n.t('activerecord.errors.models.establishment.attributes.phone_number.blank') }
-  validates :opening_hours, presence: { message: I18n.t('activerecord.errors.models.establishment.attributes.opening_hours.blank') }
-  validates :city, presence: { message: I18n.t('activerecord.errors.models.establishment.attributes.city.blank') }
-  validates :state, presence: { message: I18n.t('activerecord.errors.models.establishment.attributes.state.blank') }
-  validates :postal_code, presence: { message: I18n.t('activerecord.errors.models.establishment.attributes.postal_code.blank') }
-  
-  before_create :generate_code
   belongs_to :user
+
+  validates :name, :social_name, :cnpj,
+            :full_address, :city, :state,
+            :postal_code, :email, :phone_number, presence: true
+  validates :cnpj, :email, uniqueness: true
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validate :cnpj_valid
+
+  before_create :generate_code
 
   private
 
   def generate_code
-    self.code = SecureRandom.hex(6)
+    new_code = SecureRandom.hex(6)
+    Establishment.where(code: new_code).exists? ? generate_code : self.code = new_code
   end
 
+  def cnpj_valid
+    errors.add(:cnpj, "inválido") unless CNPJ.valid?(cnpj)
+  end
 end

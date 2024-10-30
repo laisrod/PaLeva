@@ -2,7 +2,7 @@
 
   <% if establishment.errors.any? %>
     <div style="color: red">
-      <h2><%= pluralize(establishment.errors.count, "error") %> prohibited this establishment from being saved:</h2>
+      <h2><%= pluralize(establishment.errors.count, "error") %> impediram o cadastro:</h2>
 
       <ul>
         <% establishment.errors.each do |error| %>
@@ -14,12 +14,16 @@
   
   <div class="form-group">
     <div>
-      <%= form.label :name, 'Nome' %>
+      <%= form.label :name, 'Nome Fantasia' %>
       <%= form.text_field :name %>
     </div>
     <div>
-      <%= form.label :description, 'Descrição' %>
-      <%= form.text_area :description %>
+      <%= form.label :social_name, 'Razão Social' %>
+      <%= form.text_field :social_name %>
+    </div>
+    <div>
+      <%= form.label :cnpj, 'CNPJ' %>
+      <%= form.text_field :cnpj %>
     </div>
     <div>
       <%= form.label :full_address, 'Endereço' %>
@@ -44,10 +48,6 @@
     <div>
       <%= form.label :phone_number, 'Telefone' %>
       <%= form.telephone_field :phone_number %>
-    </div>
-    <div>
-      <%= form.label :opening_hours, 'Horário de Funcionamento' %>
-      <%= form.time_field :opening_hours %>
     </div>
     <div>
       <%= form.submit "Enviar" %>

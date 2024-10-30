@@ -1,17 +1,6 @@
 <h1>PaLevá</h1>
-<% if @establishments.empty? %>
-  <p>Não existem restaurantes cadastrados</p>
-<% else %>
-  <% @establishments.each do |establishment| %>
-    <h2><%= link_to establishment.name, establishment_path(establishment) %></h2>
-    <p><%= establishment.description %></p>
-    <p><%= establishment.phone_number %></p>
-    <p><%= establishment.opening_hours %></p>
-    <%= link_to('Editar Estabelecimento', edit_establishment_path(establishment)) %>
-  <% end %>
-<% end %>
-
-<div>
- <%= link_to('Cadastrar Estabelecimento', new_establishment_path) %>
-</div>
+  
+<h2><%= @establishment.name %></h2>
+<p><%= @establishment.phone_number %></p>
+<%= link_to('Editar Estabelecimento', edit_establishment_path(@establishment)) %>
 

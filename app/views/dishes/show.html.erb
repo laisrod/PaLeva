@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+<h2><%= @dish.name %></h2>
+<p> Descrição: <%= @dish.description %></p>
+<p>Calorias: <%= @dish.calories %></p>
+<p><%= @dish.photo %></p>
+
+<div>
+  <%= link_to "Edit this dish", edit_establishment_dish_path(@establishment, @dish) %> <br />
+</div>
+

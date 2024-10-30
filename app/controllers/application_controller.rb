@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_active_storage_url_options
+
 
   def after_sign_up_path_for(resource)
     new_establishment_path # Redireciona para a página de cadastro do restaurante
@@ -14,6 +16,19 @@ class ApplicationController < ActionController::Base
       super # Redireciona para a página padrão após login
     end
   end
+
+  private
+
+  def check_establishment!
+    if current_user && current_user.establishment.nil?
+      redirect_to new_establishment_path
+    end
+  end
+
+  def set_active_storage_url_options
+    ActiveStorage::Current.url_options = { host: request.base_url }
+  end
+
   protected
 
   def configure_permitted_parameters

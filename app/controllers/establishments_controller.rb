@@ -1,15 +1,20 @@
 class EstablishmentsController < ApplicationController
+  before_action :set_establishment, only: [:edit, :update, :destroy]
+  before_action :check_establishment!, only: [:index, :edit, :update, :destroy]
+
+  def index
+    @establishment = current_user.establishment
+  end
+
   def new
     @establishment = Establishment.new
   end
 
-  def index
-    @establishments = Establishment.all
-  end
-
   def create
-    @establishment = current_user.build_establishment(establishment_params) # Associa o estabelecimento ao usuário atual
-    if @establishment.save()
+    @establishment = Establishment.new(establishment_params)
+    @establishment.user = current_user
+
+    if @establishment.save
       redirect_to root_path, notice: 'Estabelecimento cadastrado com sucesso.'
     else
       flash.now[:notice] = 'Estabelecimento não cadastrado.'
@@ -17,33 +22,18 @@ class EstablishmentsController < ApplicationController
     end
   end
 
-  
-
-  def edit
-    @establishment = Establishment.find(params[:id])
-  end
-
-  def show
-    @establishment = Establishment.find(params[:id])
-  end
+  def edit; end
 
   def update
-    @establishment = Establishment.find(params[:id])
     if @establishment.update(establishment_params)
-    redirect_to establishment_path(@establishment.id), notice: 'Estabelecimento atualizado com sucesso.'
+      redirect_to establishment_path(@establishment.id), notice: 'Estabelecimento atualizado com sucesso.'
     else
       flash.now[:notice] = 'Não foi possivel atualizar o restaurante.'
       render 'edit'
     end
   end
-  
-  def employees
-    @establishment = Establishment.find(params[:id])
-    @employees = @establishment.users
-  end
 
   def destroy
-    @establishment = current_user.build_establishment(establishment_params) # Associa o estabelecimento ao usuário atual
     if @establishment.destroy
       redirect_to root_path, notice: 'Estabelecimento removido com sucesso.'
     else
@@ -54,8 +44,12 @@ class EstablishmentsController < ApplicationController
   private
 
   def establishment_params
-    params.require(:establishment).permit(:name, :description,
+    params.require(:establishment).permit(:name, :social_name, :cnpj,
                                           :full_address, :state, :postal_code, 
-                                          :email, :phone_number, :opening_hours, :city)
+                                          :email, :phone_number, :city)
+  end
+
+  def set_establishment
+    @establishment = current_user.establishment
   end
 end
