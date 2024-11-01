@@ -53,14 +53,17 @@ class EstablishmentsController < ApplicationController
     query = params[:query].to_s.strip
     
     @results = if @establishment
+      # Search in dishes
       dish_results = @establishment.dishes
                                  .where('LOWER(name) LIKE :query OR LOWER(description) LIKE :query', 
                                        query: "%#{query.downcase}%")
       
+      # Search in drinks
       drink_results = @establishment.drinks
                                   .where('LOWER(name) LIKE :query OR LOWER(description) LIKE :query', 
                                         query: "%#{query.downcase}%")
       
+      # Combine and sort results
       (dish_results + drink_results).sort_by(&:name)
     else
       []

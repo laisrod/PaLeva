@@ -2,20 +2,27 @@
   
 <h2><%= @establishment.name %></h2>
 <p><%= @establishment.phone_number %></p>
-<%= link_to('Editar Estabelecimento', edit_establishment_path(@establishment)) %>
+<div> 
+  <p><%= link_to('Editar Estabelecimento', edit_establishment_path(@establishment)) %></p>  
+  <p><%= link_to('Remover Estabelecimento', establishment_path(@establishment), method: :delete) %></p>
+  <p><%= link_to('Ver Estabelecimento', establishment_path(@establishment)) %></p>
+</div>
 
-<%= link_to('Remover Estabelecimento', establishment_path(@establishment), method: :delete) %>
-<%= link_to('Ver Estabelecimento', establishment_path(@establishment)) %>
+<div style="display: flex; gap: 50px;">
+  <div class="menu-section">
+    <h4>Bebidas</h4>
+    <p><%= link_to('Nova Bebida', new_establishment_drink_path(@establishment)) %></p>
+    <p><%= link_to('Ver Bebidas', establishment_drinks_path(@establishment)) %></p>
+  </div>
 
-<p>Bebidas</p>
-<%= link_to('Nova Bebida', new_establishment_drink_path(@establishment)) %>
-<%= link_to('Ver Bebidas', establishment_drinks_path(@establishment)) %>
+  <div class="menu-section">
+    <h4>Pratos</h4>
+    <p><%= link_to('Novo Prato', new_establishment_dish_path(@establishment)) %></p>  
+    <p><%= link_to('Ver Pratos', establishment_dishes_path(@establishment)) %></p>
+  </div>
+</div>
 
-<p>Pratos</p>
-<%= link_to('Novo Prato', new_establishment_dish_path(@establishment)) %>
-<%= link_to('Ver Pratos', establishment_dishes_path(@establishment)) %>
-
-<p>Horário de Funcionamento</p>
+<h5>Horário de Funcionamento</h5>
 <ul>
   <% @establishment.working_hours.each do |working_hour| %>
     <li><%= working_hour.week_day %> - <%= working_hour.open ? "#{working_hour.opening_hour} às #{working_hour.closing_hour}" : 'Fechado' %> <%= link_to('Editar', edit_establishment_working_hour_path(@establishment, working_hour)) %></li>
