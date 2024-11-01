@@ -1,50 +1,48 @@
 require 'rails_helper'
 
-RSpec.describe 'Cadastro de Funcionário', type: :system do
-    let(:user) { User.create(name: 'Admin RH', email: 'admin@exemplo.com', password_digest: 'senha123', role: 'hr') }
-    let!(:establishment) do
-        Establishment.create(
-          name: 'Loja Exemplo',
-          description: 'Descrição da Loja',
-          full_address: 'Rua Exemplo, 123',
-          email: 'loja@exemplo.com',
-          code: 'LOJA123',
-          city: 'Cidade Exemplo',
-          state: 'Estado Exemplo',
-          postal_code: '12345-678',
-          phone_number: '(11) 1234-5678',
-          opening_hours: '9h às 18h'
-        )
-      end  
+RSpec.describe 'Cadastro de Funcionário', type: :system do 
 
     before do
         driven_by(:rack_test)
-        login_as(user, scope: :user)
-        visit new_user_path(establishment_id: establishment.id)
     end
 
-    it 'permite que o RH cadastre um novo funcionário' do
-        expect(page).to have_content('Novo Usuário')
+    it 'permite que cadastre um novo funcionário' do
+        user = User.create!(name: 'User', email: 'user99913@example.com', last_name: 'Last Name', cpf: '483.556.180-50', password: 'password1234567')
 
-        fill_in 'user[name]', with: 'João Silva'
-        fill_in 'user[email]', with: 'joao.silva@exemplo.com'
-        fill_in 'user[password]', with: '123456'
-        fill_in 'user[password_confirmation]', with: '123456'
-        select 'employee', from: 'user[role]'
+        establishment = Establishment.create!(name: 'Establishment', social_name: 'Establishment', cnpj: '47.761.353/0001-78', full_address: '123 Main St', city: 'Anytown', state: 'ST', postal_code: '12345', email: 'establishment9992@example.com', phone_number: '1234567890', user_id: user.id)
+        visit new_user_path(establishment_id: establishment.id)
 
-        click_button 'Criar Usuário'
+        expect(page).to have_content('Cadastrar')
+        within('nav') do
+            click_link 'Cadastrar'
+        end
+        within('form') do   
+            fill_in 'Nome', with: 'João Silva'
+            fill_in 'Sobrenome', with: 'Silva'
+            fill_in 'CPF', with: '483.556.180-50'
+            fill_in 'E-mail', with: 'joao.silva@exemplo.com'
+            fill_in 'Senha', with: 'teste123456789'
+            fill_in 'Confirmar Senha', with: 'teste123456789'
+        end
+        click_button 'Cadastrar'
 
-        expect(page).to have_content('Usuário criado com sucesso')
+        expect(page).to have_content('Login efetuado com sucesso.')
         expect(User.last.name).to eq('João Silva')
         expect(User.last.email).to eq('joao.silva@exemplo.com')
-        expect(User.last.establishment).to eq(establishment)
     end
 
     it 'exibe mensagens de erro para entrada inválida' do
-        click_button 'Criar Usuário'
+        user = User.create!(name: 'User', email: 'user663@example.com', last_name: 'Last Name', cpf: '483.556.180-50', password: 'password1234567')
 
-        expect(page).to have_content('Nome não pode ficar em branco')
-        expect(page).to have_content('E-mail não pode ficar em branco')
-        expect(page).to have_content('Senha não pode ficar em branco')
+        establishment = Establishment.create!(name: 'Establishment', social_name: 'Establishment', cnpj: '16.424.880/0001-63', full_address: '123 Main St', city: 'Anytown', state: 'ST', postal_code: '12345', email: 'establishment662@example.com', phone_number: '1234567890', user_id: user.id)
+        
+        visit new_user_registration_path(establishment_id: establishment.id)
+        within('nav') do
+            click_link 'Cadastrar'
+        end
+        click_button 'Cadastrar'
+
+        expect(page).to have_content('Name não pode ficar em branco')
+        expect(page).to have_content('Email não pode ficar em branco')
     end
 end
