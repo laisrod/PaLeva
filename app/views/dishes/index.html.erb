@@ -1,12 +1,16 @@
 <h1>Pratos</h1>
-
-<% if @dish.present? %>
-  <% @dish.each do |e| %>
-    <h2><%= e.name %></h2>
-    <p><%= e.description %></p>
-    <p>Calorias: <%= e.calories %></p>
+<ul>
+  <% @dishes.each do |dish| %>
+    <li>
+      <%= link_to dish.name, establishment_dish_path(@establishment, dish) %>
+      <%= link_to 'Editar', edit_establishment_dish_path(@establishment, dish) %>
+      <%= link_to 'Remover', establishment_dish_path(@establishment, dish), method: :delete, data: { confirm: 'Tem certeza?' } %>
+    </li>
   <% end %>
-<% else %>
-  <p>Nenhum prato cadastrado ainda.</p>
+</ul>
+<p>
   <%= link_to 'Criar Novo Prato', new_establishment_dish_path, class: 'btn btn-primary' %>
-<% end %>
+</p>
+<p>
+  <%= link_to('Voltar', establishments_path) %>
+</p>

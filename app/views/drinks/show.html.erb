@@ -3,7 +3,7 @@
 <p><strong>Alcoólica:</strong> <%= @drink.alcoholic ? 'Sim' : 'Não' %></p>
 <p><strong>Calorias:</strong> <%= @drink.calories %></p>
 <% if @drink.photo.present? %>
-  <p><%= image_tag @drink.photo.url if @drink.photo.present? %></p>
+  <p><%= image_tag @drink.photo.url%></p>
 <% end %>
 
 <%= link_to 'Editar', edit_establishment_drink_path(@establishment, @drink) %>

@@ -4,10 +4,11 @@ class DishesController < ApplicationController
   
     def index
       @dishes = @establishment.dishes
+      Rails.logger.debug "Pratos encontrados: #{@dishes.inspect}"
+
     end
   
     def show
-      @dish = Dish.find(params[:id])
     end
   
     def new
