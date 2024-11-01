@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   root to: 'establishments#index'
 
   resources :establishments do
+    get 'search', on: :collection
     resources :dishes
     resources :drinks
     resources :working_hours, only: %i[edit update]

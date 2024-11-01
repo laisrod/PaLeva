@@ -1,5 +1,5 @@
 class EstablishmentsController < ApplicationController
-  before_action :set_establishment, only: [:edit, :update, :destroy]
+  before_action :set_establishment, only: [:edit, :update, :destroy, :search]
   before_action :check_establishment!, only: [:index, :edit, :update, :destroy]
 
   def index
@@ -45,6 +45,25 @@ class EstablishmentsController < ApplicationController
       redirect_to root_path, notice: 'Estabelecimento removido com sucesso.'
     else
       redirect_to establishment_path(@establishment), alert: 'Não foi possível remover o estabelecimento.'
+    end
+  end
+
+  def search
+    @establishment = current_user.establishment
+    query = params[:query].to_s.strip
+    
+    @results = if @establishment
+      dish_results = @establishment.dishes
+                                 .where('LOWER(name) LIKE :query OR LOWER(description) LIKE :query', 
+                                       query: "%#{query.downcase}%")
+      
+      drink_results = @establishment.drinks
+                                  .where('LOWER(name) LIKE :query OR LOWER(description) LIKE :query', 
+                                        query: "%#{query.downcase}%")
+      
+      (dish_results + drink_results).sort_by(&:name)
+    else
+      []
     end
   end
   

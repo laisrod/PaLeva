@@ -1,0 +1,19 @@
+<h2>Resultados da Busca</h2>
+<% if params[:query].present? %>
+
+    <% if @results.any? %>
+    <div class="search-results">
+        <% @results.each do |item| %>
+        <div class="result-item">
+            <h3><%= link_to item.name, item.is_a?(Dish) ? establishment_dish_path(item.establishment, item) : establishment_drink_path(item.establishment, item) %></h3>
+            <p><%= item.description %></p>
+            <p><%= link_to 'Editar', item.is_a?(Dish) ? edit_establishment_dish_path(item.establishment, item) : edit_establishment_drink_path(item.establishment, item) %></p>
+            <div class="actions">
+            </div>
+        </div>
+        <% end %>
+    </div>
+    <% else %>
+    <p>Nenhum resultado encontrado.</p>
+    <% end %>
+<% end %>
