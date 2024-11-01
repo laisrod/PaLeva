@@ -14,6 +14,20 @@ pt-BR:
         restrict_dependent_destroy:
           has_one: Não é possível excluir o registro pois existe um %{record} dependente
           has_many: Não é possível excluir o registro pois existem %{record} dependentes
+      models:
+        user:
+          attributes:
+            password:
+              too_short: "Senha é muito curta (mínimo: %{count} caracteres)"
+            email:
+              blank: "E-mail não pode ficar em branco"
+            name:
+              blank: "Nome não pode ficar em branco"
+            last_name:
+              blank: "Sobrenome não pode ficar em branco"
+            cpf:
+              blank: "CPF não pode ficar em branco"
+              invalid: "CPF inválido"
   date:
     abbr_day_names:
     - dom
