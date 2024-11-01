@@ -6,6 +6,13 @@ class EstablishmentsController < ApplicationController
     @establishment = current_user.establishment
   end
 
+  def show
+    @establishment = Establishment.find(params[:id])
+    if @establishment.user != current_user
+      redirect_to root_path, alert: 'Você não tem permissão para ver este estabelecimento.'
+    end
+  end  
+
   def new
     @establishment = Establishment.new
   end
@@ -44,9 +51,7 @@ class EstablishmentsController < ApplicationController
   private
 
   def establishment_params
-    params.require(:establishment).permit(:name, :social_name, :cnpj,
-                                          :full_address, :state, :postal_code, 
-                                          :email, :phone_number, :city)
+    params.require(:establishment).permit(:name, :social_name, :cnpj, :full_address, :city, :state, :postal_code, :email, :phone_number, :state )
   end
 
   def set_establishment

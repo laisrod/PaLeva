@@ -1,0 +1,45 @@
+<% content_for :title, "Editar Horário de Funcionamento" %>
+
+<h1>Editar Horário de Funcionamento</h1>
+
+<%= form_with model: [@establishment, @working_hour] do |form| %>
+  <% if @working_hour.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(@working_hour.errors.count, "error") %> impediram a edição:</h2>
+
+      <ul>
+        <% @working_hour.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <div class="form-group">
+    <div>
+      <%= form.label :week_day, 'Dia da Semana' %>
+      <%= form.text_field :week_day, readonly: true %>
+    </div>
+    <div>
+      <%= form.label :opening_hour, 'Horário de Abertura' %>
+      <%= form.time_field :opening_hour %>
+    </div>
+    <div>
+      <%= form.label :closing_hour, 'Horário de Fechamento' %>
+      <%= form.time_field :closing_hour %>
+    </div>
+    <div>
+      <%= form.label :open, 'Aberto' %>
+      <%= form.check_box :open %>
+    </div>
+    <div>
+      <%= form.submit "Enviar" %>
+    </div>
+  </div>
+<% end %>
+
+<br>
+
+<div>
+  <%= link_to "Voltar", root_path %>
+</div>

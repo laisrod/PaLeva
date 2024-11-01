@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :establishments do
     resources :dishes
     resources :drinks
+    resources :working_hours, only: %i[edit update]
   end
   resources :menus
   resources :orders

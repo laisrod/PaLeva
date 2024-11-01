@@ -1,0 +1,12 @@
+<h2><%= @establishment.name %></h2>
+<p>Nome Fantasia: <%= @establishment.social_name %></p>
+<p>CNPJ: <%= @establishment.cnpj %></p>
+<p>Cidade: <%= @establishment.city %></p>
+<p>Endereço: <%= @establishment.full_address %></p>
+<p>Estado: <%= @establishment.state %></p>
+<p>CEP: <%= @establishment.postal_code %></p>
+<p>Email: <%= @establishment.email %></p>
+<p>Telefone: <%= @establishment.phone_number %></p>
+<p><%= link_to('Editar Estabelecimento', edit_establishment_path(@establishment)) %></p>
+<p><%= link_to('Remover Estabelecimento', establishment_path(@establishment), method: :delete, data: { confirm: 'Tem certeza que deseja remover este estabelecimento?' }) %></p>
+<p><%= link_to('Voltar', establishments_path) %></p>

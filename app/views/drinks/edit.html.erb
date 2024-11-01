@@ -13,26 +13,26 @@
   <% end %>
 
   <div>
-    <%= form.label :name %>
+    <%= form.label :name, "Nome" %>
     <%= form.text_field :name %>
   </div>
   <div>
-    <%= form.label :description %>
+    <%= form.label :description, "Descrição" %>
     <%= form.text_area :description %>
   </div>
   <div>
-    <%= form.label :alcoholic %>
+    <%= form.label :alcoholic, "Alcoólica?" %>
     <%= form.check_box :alcoholic %>
   </div>
   <div>
-    <%= form.label :calories %>
+    <%= form.label :calories, "Calorias" %>
     <%= form.number_field :calories %>
   </div>
   <div>
-    <%= form.label :photo %>
+    <%= form.label :photo, "Foto" %>
     <%= form.file_field :photo %>
   </div>
   <div>
-    <%= form.submit %>
+    <%= form.submit "Atualizar Bebida" %>
   </div>
 <% end %>

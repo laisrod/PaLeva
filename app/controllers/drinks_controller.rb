@@ -28,7 +28,7 @@ class DrinksController < ApplicationController
   
     def update
       if @drink.update(drink_params)
-        redirect_to establishment_drink_path(@establishment, @drink), notice: 'Drink was successfully updated.'
+        redirect_to establishment_drink_path(@establishment, @drink), notice: 'Bebida atualizada com sucesso.'
       else
         render :edit
       end
@@ -36,7 +36,7 @@ class DrinksController < ApplicationController
   
     def destroy
         @drink.destroy
-        redirect_to establishment_drinks_path(@establishment), notice: 'Drink was successfully destroyed.'
+        redirect_to establishment_drinks_path(@establishment), notice: 'Bebida excluída com sucesso.'
       end
       
   
@@ -49,7 +49,7 @@ class DrinksController < ApplicationController
     def set_drink
       @drink = @establishment.drinks.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      redirect_to root_path, alert: 'Drink not found for this establishment.'
+      redirect_to root_path, alert: 'Bebida não encontrada para este estabelecimento.'
     end
   
     def drink_params
