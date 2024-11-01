@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Usuário visita tela inicial' do
-  include Devise::Test::IntegrationHelpers
 
   it 'e vê o nome da app' do
     # Arrange

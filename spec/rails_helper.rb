@@ -2,7 +2,7 @@
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
-# Prevent database truncation if the environment is production
+# Prevent database truncation if the environment is running in production mode
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 # Uncomment the line below in case you have `--require rails_helper` in the `.rspec` file
 # that will avoid rails generators crashing because migrations haven't been run yet
@@ -33,6 +33,7 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 RSpec.configure do |config|
+  config.include Devise::Test::IntegrationHelpers, type: :system
   config.before(type: :system) do
     driven_by(:rack_test)
   end
