@@ -1,0 +1,31 @@
+<div class="container mt-4">
+  <h2>Nova Porção</h2>
+
+  <%= form_with(model: [@portionable, @portion], local: true) do |f| %>
+    <% if @portion.errors.any? %>
+      <div class="alert alert-danger">
+        <h4><%= pluralize(@portion.errors.count, "erro") %> impediram que esta porção fosse salva:</h4>
+        <ul>
+          <% @portion.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group mb-3">
+      <%= f.label :description, "Descrição" %>
+      <%= f.text_field :description, class: "form-control" %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= f.label :price, "Preço" %>
+      <%= f.number_field :price, step: "0.01", class: "form-control" %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit "Criar Porção", class: "btn btn-primary" %>
+      <%= link_to "Voltar", @portionable, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div> 

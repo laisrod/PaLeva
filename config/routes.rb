@@ -15,6 +15,7 @@ Rails.application.routes.draw do
         patch :toggle_status
       end
     end
+    resources :portions, only: %i[new create edit update destroy]
     resources :working_hours, only: %i[edit update]
   end
   resources :menus
