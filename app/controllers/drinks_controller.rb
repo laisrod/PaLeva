@@ -1,6 +1,6 @@
 class DrinksController < ApplicationController
     before_action :set_establishment
-    before_action :set_drink, only: [:show, :edit, :update, :destroy]
+    before_action :set_drink, only: [:show, :edit, :update, :destroy, :toggle_status]
   
     def index
       @drinks = @establishment.drinks
@@ -35,11 +35,14 @@ class DrinksController < ApplicationController
     end
   
     def destroy
-        @drink.destroy
-        redirect_to establishment_drinks_path(@establishment), notice: 'Bebida excluída com sucesso.'
-      end
-      
-  
+      @drink.destroy
+      redirect_to establishment_drinks_path(@establishment), notice: 'Bebida excluída com sucesso.'
+    end
+    
+    def toggle_status
+      @drink.update(status: !@drink.status)
+      redirect_to establishment_drink_path(@establishment, @drink), notice: 'Status atualizado com sucesso!'
+    end
     private
   
     def set_establishment
@@ -53,7 +56,7 @@ class DrinksController < ApplicationController
     end
   
     def drink_params
-      params.require(:drink).permit(:name, :description, :alcoholic, :calories, :photo)
+      params.require(:drink).permit(:name, :description, :alcoholic, :calories, :photo, :status)
     end
   end
   

@@ -2,10 +2,18 @@
 <p><strong>Descrição:</strong> <%= @drink.description %></p>
 <p><strong>Alcoólica:</strong> <%= @drink.alcoholic ? 'Sim' : 'Não' %></p>
 <p><strong>Calorias:</strong> <%= @drink.calories %></p>
+<p><strong>Status:</strong> <%= @drink.status ? 'Ativo' : 'Inativo' %></p>
+<%= button_to @drink.status ? 'Inativar' : 'Ativar', toggle_status_establishment_drink_path(@establishment, @drink), method: :patch %>
+
 <% if @drink.photo.present? %>
   <p><%= image_tag @drink.photo.url%></p>
 <% end %>
-
-<%= link_to 'Editar', edit_establishment_drink_path(@establishment, @drink) %>
-<%= link_to 'Voltar', establishment_drinks_path(@establishment) %>
-<%= button_to 'Remover Bebida', establishment_drink_path(@establishment, @drink), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover esta bebida?' } %>
+<div>
+  <%= link_to 'Editar', edit_establishment_drink_path(@establishment, @drink) %>
+</div>
+<div>
+  <%= link_to 'Voltar', establishment_drinks_path(@establishment) %>
+</div>
+<div>
+  <%= button_to 'Remover Bebida', establishment_drink_path(@establishment, @drink), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover essa bebida?' } %>
+</div>

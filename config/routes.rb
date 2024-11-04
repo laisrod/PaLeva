@@ -5,8 +5,16 @@ Rails.application.routes.draw do
 
   resources :establishments do
     get 'search', on: :collection
-    resources :dishes
-    resources :drinks
+    resources :dishes do
+      member do
+        patch :toggle_status
+      end
+    end
+    resources :drinks do
+      member do
+        patch :toggle_status
+      end
+    end
     resources :working_hours, only: %i[edit update]
   end
   resources :menus

@@ -1,13 +1,19 @@
 <h1>Pratos</h1>
-<ul>
-  <% @dishes.each do |dish| %>
-    <li>
-      <%= link_to dish.name, establishment_dish_path(@establishment, dish) %>
-      <%= link_to 'Editar', edit_establishment_dish_path(@establishment, dish) %>
-      <%= link_to 'Remover', establishment_dish_path(@establishment, dish), method: :delete, data: { confirm: 'Tem certeza?' } %>
-    </li>
-  <% end %>
-</ul>
+
+<% if @dishes.any? %>
+  <ul>
+    <% @dishes.each do |dish| %>
+      <li>
+        <%= link_to dish.name, establishment_dish_path(@establishment, dish) %>
+        <%= link_to 'Editar', edit_establishment_dish_path(@establishment, dish) %>
+        <%= button_to 'Remover Prato', establishment_dish_path(@establishment, dish), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover este prato?' } %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Nenhum prato cadastrado</p>
+<% end %>
+
 <p>
   <%= link_to 'Criar Novo Prato', new_establishment_dish_path, class: 'btn btn-primary' %>
 </p>

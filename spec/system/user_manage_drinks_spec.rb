@@ -165,9 +165,7 @@ describe 'Gerenciamento de Bebidas' do
     # Act
     sign_in user
     visit establishment_drink_path(establishment, bebida)
-    within '.button_to' do
-      click_on 'Remover Bebida'
-    end
+    click_on 'Remover Bebida', match: :first
 
     # Assert
     expect(page).to have_content('Bebida excluída com sucesso')

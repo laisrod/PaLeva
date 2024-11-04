@@ -1,14 +1,19 @@
 <h2><%= @dish.name %></h2>
 <p> Descrição: <%= @dish.description %></p>
 <p>Calorias: <%= @dish.calories %></p>
+<p>Status: <%= @dish.status ? 'Ativo' : 'Inativo' %></p>
+
+<%= button_to @dish.status ? 'Inativar' : 'Ativar', toggle_status_establishment_dish_path(@establishment, @dish), method: :patch %>
 <% if @dish.photo.present? %>
   <p><%= image_tag @dish.photo%></p>
 <% end %>
+
 <div>
   <%= link_to "Editar este prato", edit_establishment_dish_path(@establishment, @dish) %> <br />
 </div>
-
-<%= button_to 'Remover Prato', establishment_dish_path(@establishment, @dish), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover este prato?' } %>
+<div>
+  <%= button_to 'Remover Prato', establishment_dish_path(@establishment, @dish), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover este prato?' } %>
+</div>
 <div>
   <%= link_to 'Voltar', establishment_dishes_path(@establishment) %>
 </div>

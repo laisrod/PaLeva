@@ -1,6 +1,6 @@
 class DishesController < ApplicationController
     before_action :set_establishment
-    before_action :set_dish, only: [:show, :edit, :update, :destroy]
+    before_action :set_dish, only: [:show, :edit, :update, :destroy, :toggle_status]
   
     def index
       @dishes = @establishment.dishes
@@ -37,7 +37,12 @@ class DishesController < ApplicationController
   
     def destroy
       @dish.destroy
-      redirect_to dishes_url, notice: 'O prato foi apagado com sucesso.'
+      redirect_to establishment_path(@establishment), notice: 'O prato foi apagado com sucesso.'
+    end
+  
+    def toggle_status
+      @dish.update(status: !@dish.status)
+      redirect_to establishment_dish_path(@establishment, @dish), notice: 'Status atualizado com sucesso!'
     end
   
     private
@@ -53,7 +58,8 @@ class DishesController < ApplicationController
     end
   
     def dish_params
-      params.require(:dish).permit(:name, :description, :calories, :photo)
+      params.require(:dish).permit(:name, :description, :calories, :photo, :status)
     end
+
   end
   
