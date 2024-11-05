@@ -35,7 +35,7 @@
           <td>
             <%= link_to 'Editar', edit_establishment_dish_portion_path(@establishment, @dish, portion) %> |
             <%= button_to 'Remover', establishment_dish_portion_path(@establishment, @dish, portion), 
-                method: :delete, 
+                method: :delete,
                 data: { turbo_confirm: 'Tem certeza que deseja remover esta porção?' } %>
           </td>
         </tr>

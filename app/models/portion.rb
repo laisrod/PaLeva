@@ -2,7 +2,7 @@ class Portion < ApplicationRecord
   belongs_to :drink, optional: true
   belongs_to :dish, optional: true
   has_many :price_histories, dependent: :destroy
-  
+  validates :price, :description, presence: true
   scope :current, -> { order(created_at: :desc).first }
   scope :historical, -> { order(price: :desc, created_at: :desc) }
   after_create :create_price_history

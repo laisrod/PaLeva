@@ -5,8 +5,8 @@ class DishesController < ApplicationController
     def index
       @dishes = @establishment.dishes
       Rails.logger.debug "Pratos encontrados: #{@dishes.inspect}"
-
     end
+    
   
     def show
       @portionable = @dish.portions

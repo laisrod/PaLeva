@@ -8,6 +8,7 @@ pt-BR:
         city: "Cidade"
         state: "Estado"
         postal_code: "CEP"
+        dishes: "Pratos"
     errors:
       messages:
         record_invalid: 'A validação falhou: %{errors}'
@@ -28,6 +29,7 @@ pt-BR:
             cpf:
               blank: "CPF não pode ficar em branco"
               invalid: "CPF inválido"
+
   date:
     abbr_day_names:
     - dom
@@ -173,6 +175,9 @@ pt-BR:
       create: Criar %{model}
       submit: Salvar %{model}
       update: Atualizar %{model}
+      dish:
+        create: "Criar Prato"
+        update: "Atualizar Prato"
   number:
     currency:
       format:

@@ -22,4 +22,5 @@ Rails.application.routes.draw do
   resources :menus
   resources :orders
   resources :users
+  resources :portions
 end
