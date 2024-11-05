@@ -8,6 +8,7 @@
         <%= link_to 'Editar', edit_establishment_dish_path(@establishment, dish) %>
         <%= button_to 'Remover Prato', establishment_dish_path(@establishment, dish), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover este prato?' } %>
       </li>
+      <p> <%= link_to 'Adicionar porção', new_establishment_dish_portion_path(@establishment, dish) %> </p>
     <% end %>
   </ul>
 <% else %>

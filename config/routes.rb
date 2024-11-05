@@ -6,16 +6,17 @@ Rails.application.routes.draw do
   resources :establishments do
     get 'search', on: :collection
     resources :dishes do
+      resources :portions
       member do
         patch :toggle_status
       end
     end
     resources :drinks do
+      resources :portions
       member do
         patch :toggle_status
       end
     end
-    resources :portions, only: %i[new create edit update destroy]
     resources :working_hours, only: %i[edit update]
   end
   resources :menus

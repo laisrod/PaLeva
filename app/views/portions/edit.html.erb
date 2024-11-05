@@ -1,7 +1,7 @@
 <div class="container mt-4">
-  <h2>Nova Porção</h2>
+  <h2>Editar Porção</h2>
 
-  <%= form_with(url: @dish ? establishment_dish_portions_path(@establishment, @dish) : establishment_drink_portions_path(@establishment, @drink), model: @portion, local: true) do |f| %>
+  <%= form_with(url: @dish ? establishment_dish_portion_path(@establishment, @dish, @portion) : establishment_drink_portion_path(@establishment, @drink, @portion), model: @portion, method: :patch, local: true) do |f| %>
 
     <% if @portion.errors.any? %>
       <div class="alert alert-danger">
@@ -25,7 +25,8 @@
     </div>
 
     <div class="actions">
-      <%= f.submit "Criar Porção", class: "btn btn-primary" %>
+      <%= f.submit "Atualizar Porção", class: "btn btn-primary" %>
+      <%= link_to 'Voltar', :back, class: 'btn btn-secondary' %>
     </div>
   <% end %>
-</div> 
+</div>

@@ -3,8 +3,8 @@ class CreatePortions < ActiveRecord::Migration[7.2]
     create_table :portions do |t|
       t.string :description
       t.decimal :price
-      t.references :drink, null: false, foreign_key: true
-      t.references :dish, null: false, foreign_key: true
+      t.references :drink, foreign_key: true
+      t.references :dish, foreign_key: true
 
       t.timestamps
     end

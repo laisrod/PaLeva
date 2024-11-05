@@ -5,9 +5,7 @@
 <p><strong>Status:</strong> <%= @drink.status ? 'Ativo' : 'Inativo' %></p>
 <%= button_to @drink.status ? 'Inativar' : 'Ativar', toggle_status_establishment_drink_path(@establishment, @drink), method: :patch %>
 
-<% if @drink.photo.present? %>
-  <p><%= image_tag @drink.photo.url%></p>
-<% end %>
+
 <div>
   <%= link_to 'Editar', edit_establishment_drink_path(@establishment, @drink) %>
 </div>
@@ -17,3 +15,54 @@
 <div>
   <%= button_to 'Remover Bebida', establishment_drink_path(@establishment, @drink), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover essa bebida?' } %>
 </div>
+<br>
+<div class="menu-section">
+
+<h2>Porções Disponíveis</h2>
+
+<% if @drink.portions.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Descrição</th>
+       <th>Preço</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @drink.portions.each do |portion| %>
+        <tr>
+          <td><%= portion.description %></td>
+          <td>R$ <%= number_with_precision(portion.price, precision: 2) %></td>
+          <td>
+            <%= link_to 'Editar', edit_establishment_drink_portion_path(@establishment, @drink, portion) %> |
+            <%= button_to 'Remover', establishment_drink_portion_path(@establishment, @drink, portion), 
+                method: :delete, 
+                data: { turbo_confirm: 'Tem certeza que deseja remover esta porção?' } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>Nenhuma porção cadastrada.</p>
+<% end %>
+
+    <%= link_to 'Adicionar Porção', new_establishment_drink_portion_path(@establishment, @drink) %>
+</div>
+
+<% if @drink.photo.present? %>
+  <p><%= image_tag @drink.photo.url%></p>
+<% end %>
+
+<h3>Preço Atual</h3>
+<%= render @portionable.portions.current %>
+
+
+<h3>Histórico de Preços</h3>
+<% @price_histories.order(created_at: :desc).each do |history| %>
+  <p>
+    <%= history.portion.description %> <%= number_to_currency(history.price) %>
+    (<%= l history.created_at, format: :short %>)
+    <%= "(Inativa)" if history.portion.deleted_at.present? %>
+  </p>
+<% end %>

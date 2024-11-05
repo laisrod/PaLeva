@@ -9,6 +9,8 @@ class DishesController < ApplicationController
     end
   
     def show
+      @portionable = @dish.portions
+      @price_histories = PriceHistory.where(portion: @dish.portions)
     end
   
     def new

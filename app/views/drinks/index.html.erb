@@ -8,7 +8,7 @@
         <%= link_to drink.name, establishment_drink_path(@establishment, drink) %>
         <%= link_to 'Editar', edit_establishment_drink_path(@establishment, drink) %>
         <%= button_to 'Remover Bebida', establishment_drink_path(@establishment, drink), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover essa bebida?' } %>
-        <%= link_to 'Adicionar Porção', new_establishment_portion_path(@establishment, drink.id) %>
+        <%= link_to 'Adicionar Porção', new_establishment_drink_portion_path(@establishment, drink) %>
       </li>
     <% end %>
   </ul>

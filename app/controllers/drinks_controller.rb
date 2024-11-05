@@ -5,8 +5,10 @@ class DrinksController < ApplicationController
     def index
       @drinks = @establishment.drinks
     end
-  
+
     def show
+      @portionable = @drink.portions
+      @price_histories = PriceHistory.where(portion: @drink.portions)
     end
   
     def new
