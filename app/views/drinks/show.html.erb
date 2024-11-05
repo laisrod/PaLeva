@@ -54,10 +54,6 @@
   <p><%= image_tag @drink.photo.url%></p>
 <% end %>
 
-<h3>Preço Atual</h3>
-<%= render @portionable.portions.current %>
-
-
 <h3>Histórico de Preços</h3>
 <% @price_histories.order(created_at: :desc).each do |history| %>
   <p>
