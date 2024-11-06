@@ -26,11 +26,7 @@
   <p>Nenhum prato cadastrado</p>
 <% end %>
 <div class="buttons" style="padding: 30px;">
-  <p><%=link_to 'Criar Característica', tags_new_path,  class: 'btn btn-primary' %></p>
-  <p>
-    <%= link_to 'Criar Novo Prato', new_establishment_dish_path, class: 'btn btn-primary' %>
-  </p>
-  <p>
-    <%= link_to('Voltar', establishments_path, class: 'btn btn-primary' ) %>
-  </p>
+  <p><%=link_to 'Criar Característica', new_establishment_tag_path(@establishment),  class: 'btn btn-primary' %></p>
+  <p><%= link_to 'Criar Novo Prato', new_establishment_dish_path, class: 'btn btn-primary' %></p>
+  <p><%= link_to('Voltar', establishments_path, class: 'btn btn-primary' ) %></p>
 </div>

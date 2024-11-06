@@ -1,5 +1,5 @@
 <h1>Criar Característica</h1>
 
-<%= render 'form', tag: @tag %>
+<%= render 'form', tag: @tag, establishment: @establishment %>
 
-<p><%= link_to 'Voltar', tags_path %></p>
+<p><%= link_to 'Voltar', establishment_tags_path(@establishment) %></p>

@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  get "tags/index"
-  get "tags/new"
-  get "tags/create"
   devise_for :users
 
   root to: 'establishments#index'
@@ -10,6 +7,7 @@ Rails.application.routes.draw do
     get 'search', on: :collection
     resources :dishes do
       resources :portions
+
       member do
         patch :toggle_status
       end
@@ -21,10 +19,11 @@ Rails.application.routes.draw do
       end
     end
     resources :working_hours, only: %i[edit update]
+    resources :tags
+
   end
   resources :menus
   resources :orders
   resources :users
   resources :portions
-  resources :tags
 end

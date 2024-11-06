@@ -27,7 +27,7 @@ RSpec.describe "Tags", type: :request do
         sign_in user
 
         # Act
-        get tags_path, params: { establishment_id: establishment.id }
+        get establishment_tags_path(establishment), params: { establishment_id: establishment.id }
 
         # Assert
         expect(response).to have_http_status(:success)

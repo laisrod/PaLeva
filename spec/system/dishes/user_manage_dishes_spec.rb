@@ -36,7 +36,7 @@ describe 'Gerenciamento de Pratos' do
     expect(page).to have_content('O prato foi criado com sucesso')
     expect(page).to have_content('Feijoada')
     expect(page).to have_content('Calorias:')
-    expect(Dish.last.calories).to eq(800)  # Verifica se foi salvo no banco
+    expect(Dish.last.calories).to eq(800)
     expect(page).to have_content('800')
   end
   it 'lista apenas pratos do próprio estabelecimento' do
