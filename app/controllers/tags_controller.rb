@@ -37,6 +37,7 @@ class TagsController < ApplicationController
 
   def show
     @tag = Tag.find(params[:id])
+    @establishment = Establishment.find(params[:establishment_id])
   end
 
   def destroy

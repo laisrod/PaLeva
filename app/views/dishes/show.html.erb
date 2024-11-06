@@ -1,62 +1,100 @@
-<h2><%= @dish.name %></h2>
-<p> Descrição: <%= @dish.description %></p>
-<p>Calorias: <%= @dish.calories %></p>
-<p>Status: <%= @dish.status ? 'Ativo' : 'Inativo' %></p>
-<p>Características: <%= @dish.tags.pluck(:name).join(', ') %></p>
-<%= button_to @dish.status ? 'Inativar' : 'Ativar', toggle_status_establishment_dish_path(@establishment, @dish), method: :patch %>
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-body">
+      <h2 class="card-title"><%= @dish.name %></h2>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <% if @dish.photo.present? %>
+            <%= image_tag @dish.photo, class: "img-fluid rounded mb-3" %>
+          <% end %>
+          
+          <p class="card-text"><strong>Descrição:</strong> <%= @dish.description %></p>
+          <p class="card-text"><strong>Calorias:</strong> <%= @dish.calories %></p>
+          <p class="card-text"><strong>Status:</strong> <%= @dish.status ? 'Ativo' : 'Inativo' %></p>
+          <p class="card-text"><strong>Características:</strong> <%= @dish.tags.pluck(:name).join(', ') %></p>
 
+          <div class="mb-3">
+            <%= button_to @dish.status ? 'Inativar' : 'Ativar', 
+                toggle_status_establishment_dish_path(@establishment, @dish), 
+                method: :patch,
+                class: "btn btn-outline-primary me-2" %>
+          </div>
 
-<div>
-  <%= link_to "Editar este prato", edit_establishment_dish_path(@establishment, @dish) %> <br />
-</div>
-<div>
-  <%= button_to 'Remover Prato', establishment_dish_path(@establishment, @dish), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover este prato?' } %>
-</div>
-<div>
-  <%= link_to 'Voltar', establishment_dishes_path(@establishment) %>
-</div>
-
-
-<h2>Porções Disponíveis</h2>
-
-<% if @dish.portions.any? %>
-  <table>
-    <thead>
-      <tr>
-        <th>Descrição</th>
-       <th>Preço</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @dish.portions.each do |portion| %>
-        <tr>
-          <td><%= portion.description %></td>
-          <td>R$ <%= number_with_precision(portion.price, precision: 2) %></td>
-          <td>
-            <%= link_to 'Editar', edit_establishment_dish_portion_path(@establishment, @dish, portion) %> |
-            <%= button_to 'Remover', establishment_dish_portion_path(@establishment, @dish, portion), 
+          <div class="btn-group mb-3">
+            <%= link_to "Editar este prato", 
+                edit_establishment_dish_path(@establishment, @dish),
+                class: "btn btn-outline-secondary" %>
+            <%= button_to 'Remover Prato', 
+                establishment_dish_path(@establishment, @dish),
                 method: :delete,
-                data: { turbo_confirm: 'Tem certeza que deseja remover esta porção?' } %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p>Nenhuma porção cadastrada.</p>
-<% end %>
+                class: "btn btn-outline-danger",
+                data: { turbo_confirm: 'Tem certeza que deseja remover este prato?' } %>
+            <%= link_to 'Voltar',
+                establishment_dishes_path(@establishment),
+                class: "btn btn-outline-secondary" %>
+          </div>
+        </div>
 
-    <%= link_to 'Adicionar Porção', new_establishment_dish_portion_path(@establishment, @dish) %>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Porções Disponíveis</h3>
+              
+              <% if @dish.portions.any? %>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Descrição</th>
+                        <th>Preço</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% @dish.portions.each do |portion| %>
+                        <tr>
+                          <td><%= portion.description %></td>
+                          <td>R$ <%= number_with_precision(portion.price, precision: 2) %></td>
+                          <td>
+                            <%= link_to 'Editar', 
+                                edit_establishment_dish_portion_path(@establishment, @dish, portion),
+                                class: "btn btn-sm btn-outline-secondary" %>
+                            <%= button_to 'Remover',
+                                establishment_dish_portion_path(@establishment, @dish, portion),
+                                method: :delete,
+                                class: "btn btn-sm btn-outline-danger",
+                                data: { turbo_confirm: 'Tem certeza que deseja remover esta porção?' } %>
+                          </td>
+                        </tr>
+                      <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              <% else %>
+                <p class="card-text">Nenhuma porção cadastrada.</p>
+              <% end %>
+
+              <%= link_to 'Adicionar Porção',
+                  new_establishment_dish_portion_path(@establishment, @dish),
+                  class: "btn btn-primary mt-2" %>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <div class="card-body">
+              <h3 class="card-title">Histórico de Preços</h3>
+              <% @price_histories.order(created_at: :desc).each do |history| %>
+                <p class="card-text">
+                  <%= history.portion.description %> <%= number_to_currency(history.price) %>
+                  (<%= l history.created_at, format: :short %>)
+                  <%= "(Inativa)" if history.portion.deleted_at.present? %>
+                </p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<% if @dish.photo.present? %>
-  <p><%= image_tag @dish.photo%></p>
-<% end %>
-
-<h3>Histórico de Preços</h3>
-<% @price_histories.order(created_at: :desc).each do |history| %>
-  <p>
-    <%= history.portion.description %> <%= number_to_currency(history.price) %>
-    (<%= l history.created_at, format: :short %>)
-    <%= "(Inativa)" if history.portion.deleted_at.present? %>
-  </p>
-<% end %>

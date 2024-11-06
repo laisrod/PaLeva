@@ -1,21 +1,50 @@
-<h1>Bebidas</h1>
-<%= link_to 'Adicionar Bebida', new_establishment_drink_path(@establishment) %>
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-body bg-light">
+      <h1 class="card-title text-primary">Bebidas</h1>
 
-<% if @drinks.any? %>
-  <ul>
-    <% @drinks.each do |drink| %>
-      <li>
-        <%= link_to drink.name, establishment_drink_path(@establishment, drink) %>
-        <%= link_to 'Editar', edit_establishment_drink_path(@establishment, drink) %>
-        <%= button_to 'Remover Bebida', establishment_drink_path(@establishment, drink), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover essa bebida?' } %>
-        <%= link_to 'Adicionar Porção', new_establishment_drink_portion_path(@establishment, drink) %>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>Nenhuma bebida disponível</p>
-<% end %>
+      <% if @drinks.any? %>
+        <div class="row g-4">
+          <% @drinks.each do |drink| %>
+            <div class="col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-body bg-light">
+                  <h3 class="card-title">
+                    <%= link_to drink.name, establishment_drink_path(@establishment, drink), 
+                        class: 'text-decoration-none text-primary' %>
+                  </h3>
+                  
+                  <div class="d-flex gap-2 mb-2">
+                    <%= link_to 'Editar', 
+                        edit_establishment_drink_path(@establishment, drink), 
+                        class: 'btn btn-outline-primary' %>
+                    <%= button_to 'Remover Bebida', 
+                        establishment_drink_path(@establishment, drink), 
+                        method: :delete, 
+                        data: { turbo_confirm: 'Tem certeza que deseja remover esta bebida?' }, 
+                        class: 'btn btn-outline-danger' %>
+                  </div>
+                  
+                  <%= link_to 'Adicionar Porção', 
+                      new_establishment_drink_portion_path(@establishment, drink),
+                      class: 'btn btn-outline-secondary' %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="alert alert-info">Nenhuma bebida disponível</div>
+      <% end %>
 
-<div>
- <%= link_to('Voltar', establishments_path) %>
+      <div class="mt-4 d-flex gap-3">
+        <%= link_to 'Adicionar Bebida', 
+            new_establishment_drink_path(@establishment), 
+            class: 'btn btn-outline-primary' %>
+        <%= link_to 'Voltar', 
+            establishments_path, 
+            class: 'btn btn-outline-secondary' %>
+      </div>
+    </div>
+  </div>
 </div>

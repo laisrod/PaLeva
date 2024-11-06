@@ -44,7 +44,7 @@ RSpec.describe 'Usuário gerencia características dos pratos' do
     
     
     check 'Vegano'
-    click_on 'Enviar'
+    click_on 'Salvar'
 
     # Assert
     expect(page).to have_content 'O prato foi atualizado com sucesso.'

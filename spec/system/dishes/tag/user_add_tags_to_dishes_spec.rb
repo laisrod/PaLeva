@@ -35,10 +35,10 @@ describe 'Usuário adiciona características aos pratos' do
     visit root_path
     click_on 'Ver Pratos'
     click_on 'Feijoada'
-    click_on 'Editar'
+    click_on 'Editar este prato'
     check 'Vegano'
     check 'Sem Glúten'
-    click_on 'Enviar'
+    click_on 'Salvar'
 
     # Assert
     expect(page).to have_content 'O prato foi atualizado com sucesso.'

@@ -1,41 +1,62 @@
-<h2>Editar Prato</h2>
-<%= form_with(model: [@establishment, @dish]) do |form| %>
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-body bg-light">
+      <h2 class="card-title text-primary">Editar Prato</h2>
 
-    <% if @dish.errors.any? %>
-      <div style="color: red">
-        <h2><%= pluralize(@dish.errors.count, "error") %> prohibited this dish from being saved:</h2>
-        <ul>
-          <% @dish.errors.each do |error| %>
-            <li><%= error.full_message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-    
-    <div class="form-group">
-      <div>
-        <%= form.label :name, 'Nome' %>
-        <%= form.text_field :name %>
-      </div>
-      <div>
-        <%= form.label :description, 'Descrição' %>
-        <%= form.text_area :description %>
-      </div>
-      <div>
-        <%= form.label :calories, 'Calorias' %>
-        <%= form.number_field :calories %>
-      </div>
-      <div>
-        <%= form.label :photo, 'Foto' %>
-        <%= form.file_field :photo %>
-      </div>
-      <div>
-        <%= form.label :tags, 'Características' %>
-        <%= form.collection_check_boxes :tag_ids, Tag.all, :id, :name %>
-      </div>
-      <div>
-        <%= form.submit "Enviar" %>
-      </div>
+      <%= form_with(model: [@establishment, @dish]) do |form| %>
+        <% if @dish.errors.any? %>
+          <div class="alert alert-danger">
+            <h2><%= pluralize(@dish.errors.count, "error") %> prohibited this dish from being saved:</h2>
+            <ul>
+              <% @dish.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <div class="mb-3">
+              <%= form.label :name, 'Nome', class: 'form-label' %>
+              <%= form.text_field :name, class: 'form-control' %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :description, 'Descrição', class: 'form-label' %>
+              <%= form.text_area :description, class: 'form-control' %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :calories, 'Calorias', class: 'form-label' %>
+              <%= form.number_field :calories, class: 'form-control' %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :photo, 'Foto', class: 'form-label' %>
+              <%= form.file_field :photo, class: 'form-control' %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :tags, 'Características', class: 'form-label' %>
+              <div class="d-flex flex-wrap gap-2">
+                <%= form.collection_check_boxes :tag_ids, Tag.all, :id, :name do |b| %>
+                  <div class="form-check">
+                    <%= b.check_box(class: 'form-check-input') %>
+                    <%= b.label(class: 'form-check-label') %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <%= form.submit "Salvar", class: 'btn btn-primary' %>
+              <%= link_to 'Voltar', establishment_dishes_path(@establishment), class: 'btn btn-secondary' %>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
-  <% end %>
+  </div>
+</div>
   

@@ -4,6 +4,7 @@ class EstablishmentsController < ApplicationController
 
   def index
     @establishment = current_user.establishment
+    @working_hours = @establishment.working_hours
   end
 
   def show

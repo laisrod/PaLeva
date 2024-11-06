@@ -1,0 +1,33 @@
+<div class="container mt-4">
+  <h1>Cardápio</h1>
+
+  <div class="mb-3">
+    <%= link_to 'Voltar', root_path, class: 'btn btn-outline-secondary me-2' %>
+    <%= link_to 'Novo Item', new_establishment_menu_path(@establishment), class: 'btn btn-primary' %>
+  </div>
+
+  <div class="row">
+    <% @menus.each do |menu| %>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          
+          <div class="card-body">
+            <h5 class="card-title"><%= menu.name %></h5>
+            <p class="card-text"><%= menu.description %></p>
+
+            
+            <div class="btn-group">
+              <%= link_to 'Ver', establishment_menu_path(@establishment, menu), class: 'btn btn-outline-primary' %>
+              <%= link_to 'Editar', edit_establishment_menu_path(@establishment, menu), class: 'btn btn-outline-secondary' %>
+              <%= link_to 'Excluir', 
+                          establishment_menu_path(@establishment, menu), 
+                          method: :delete, 
+                          data: { confirm: 'Tem certeza?' }, 
+                          class: 'btn btn-outline-danger' %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

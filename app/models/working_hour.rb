@@ -1,4 +1,4 @@
 class WorkingHour < ApplicationRecord
   belongs_to :establishment
-  validates :week_day, :opening_hour, :closing_hour, presence: true
+  validates :week_day, :opening_hour, :closing_hour, presence: true, on: :update
 end

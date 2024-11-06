@@ -1,0 +1,63 @@
+<div class="container">
+  <div class="header text-center mb-4">
+    <h1 class="text-primary">PaLevá</h1>
+    <h2 class="text-secondary">Cardápio <%= @menu.name %></h2>
+  </div>
+
+  <div class="content">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body bg-light">
+        <h3 class="card-title text-primary">Informações do Cardápio</h3>
+        <p class="text-secondary"><%= @menu.description %></p>
+        
+        <div class="actions">
+          <%= link_to 'Editar', edit_establishment_menu_path(@establishment, @menu), class: 'btn btn-outline-primary' %>
+          <%= button_to 'Excluir', establishment_menu_path(@establishment, @menu), 
+              method: :delete, 
+              class: 'btn btn-outline-danger',
+              data: { turbo_confirm: 'Tem certeza?' } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body bg-light">
+        <h3 class="card-title text-primary">Pratos</h3>
+        <% if @menu.dishes.any? %>
+          <ul class="list-unstyled">
+            <% @menu.dishes.each do |dish| %>
+              <li class="mb-2">
+                <span class="text-secondary"><%= dish.name %></span>
+                <small class="text-muted">- <%= dish.description %></small>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="text-muted">Nenhum prato adicionado a este cardápio.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body bg-light">
+        <h3 class="card-title text-primary">Bebidas</h3>
+        <% if @menu.drinks.any? %>
+          <ul class="list-unstyled">
+            <% @menu.drinks.each do |drink| %>
+              <li class="mb-2">
+                <span class="text-secondary"><%= drink.name %></span>
+                <small class="text-muted">- <%= drink.description %></small>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="text-muted">Nenhuma bebida adicionada a este cardápio.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <%= link_to 'Voltar', establishment_menus_path(@establishment), class: 'btn btn-outline-secondary' %>
+    </div>
+  </div>
+</div>

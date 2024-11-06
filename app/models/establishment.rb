@@ -3,6 +3,7 @@ class Establishment < ApplicationRecord
   has_many :drinks, dependent: :destroy
   has_many :dishes, dependent: :destroy
   has_many :working_hours, dependent: :destroy
+  has_many :menus, dependent: :destroy
 
   validates :name, :social_name, :cnpj,
             :full_address, :city, :state,
@@ -12,7 +13,7 @@ class Establishment < ApplicationRecord
   validate :cnpj_valid
 
   before_create :generate_code
-  after_create :create_working_hours
+  after_save :create_working_hours
 
   private
 
@@ -26,8 +27,10 @@ class Establishment < ApplicationRecord
   end
 
   def create_working_hours
-    %w[Domingo Segunda Terça Quarta Quinta Sexta Sábado].each do |day|
-      WorkingHour.create(week_day: day, establishment: self)
+    if working_hours.empty?
+      %w[Domingo Segunda Terça Quarta Quinta Sexta Sábado].each do |day|
+        WorkingHour.create(week_day: day, establishment: self)
+      end
     end
   end
 end

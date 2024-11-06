@@ -1,12 +1,30 @@
-<h2><%= @establishment.name %></h2>
-<p>Nome Fantasia: <%= @establishment.social_name %></p>
-<p>CNPJ: <%= @establishment.cnpj %></p>
-<p>Cidade: <%= @establishment.city %></p>
-<p>Endereço: <%= @establishment.full_address %></p>
-<p>Estado: <%= @establishment.state %></p>
-<p>CEP: <%= @establishment.postal_code %></p>
-<p>Email: <%= @establishment.email %></p>
-<p>Telefone: <%= @establishment.phone_number %></p>
-<p><%= link_to('Editar Estabelecimento', edit_establishment_path(@establishment)) %></p>
-<p><%= link_to('Remover Estabelecimento', establishment_path(@establishment), method: :delete, data: { confirm: 'Tem certeza que deseja remover este estabelecimento?' }) %></p>
-<p><%= link_to('Voltar', establishments_path) %></p>
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-body bg-light">
+      <h2 class="card-title text-primary"><%= @establishment.name %></h2>
+
+      <div class="card shadow-sm mb-3">
+        <div class="card-body">
+          <p><strong>Nome Fantasia:</strong> <%= @establishment.social_name %></p>
+          <p><strong>CNPJ:</strong> <%= @establishment.cnpj %></p>
+          <p><strong>Cidade:</strong> <%= @establishment.city %></p>
+          <p><strong>Endereço:</strong> <%= @establishment.full_address %></p>
+          <p><strong>Estado:</strong> <%= @establishment.state %></p>
+          <p><strong>CEP:</strong> <%= @establishment.postal_code %></p>
+          <p><strong>Email:</strong> <%= @establishment.email %></p>
+          <p><strong>Telefone:</strong> <%= @establishment.phone_number %></p>
+
+          <div class="d-flex gap-3">
+            <%= link_to 'Editar', edit_establishment_path(@establishment), class: 'btn btn-outline-primary' %>
+            <%= link_to 'Voltar', establishments_path, class: 'btn btn-outline-secondary' %>
+            <%= button_to 'Remover', 
+                establishment_path(@establishment), 
+                method: :delete, 
+                data: { confirm: 'Tem certeza que deseja remover este estabelecimento?' },
+                class: 'btn btn-outline-danger' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

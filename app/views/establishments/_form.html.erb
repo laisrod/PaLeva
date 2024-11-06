@@ -49,8 +49,8 @@
       <%= form.label :phone_number, 'Telefone' %>
       <%= form.telephone_field :phone_number %>
     </div>
-    <div>
-      <%= form.submit "Enviar" %>
+    <div class="d-flex gap-3">
+      <%= form.submit "Salvar Restaurante", class: "btn btn-primary" %>
     </div>
   </div>
 <% end %>
