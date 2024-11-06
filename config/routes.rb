@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get "tags/index"
+  get "tags/new"
+  get "tags/create"
   devise_for :users
 
   root to: 'establishments#index'
@@ -23,4 +26,5 @@ Rails.application.routes.draw do
   resources :orders
   resources :users
   resources :portions
+  resources :tags
 end

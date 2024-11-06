@@ -29,7 +29,11 @@ pt-BR:
             cpf:
               blank: "CPF não pode ficar em branco"
               invalid: "CPF inválido"
-
+    models:
+      tag: Característica
+    attributes:
+      tag:
+        name: Nome
   date:
     abbr_day_names:
     - dom

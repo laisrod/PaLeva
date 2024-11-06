@@ -3,7 +3,11 @@ class DishesController < ApplicationController
     before_action :set_dish, only: [:show, :edit, :update, :destroy, :toggle_status]
   
     def index
-      @dishes = @establishment.dishes
+      @dishes = if params[:tag_id]
+                  @establishment.dishes.joins(:tags).where(tags: { id: params[:tag_id] })
+                else
+                  @establishment.dishes
+                end
       Rails.logger.debug "Pratos encontrados: #{@dishes.inspect}"
     end
     
@@ -60,7 +64,8 @@ class DishesController < ApplicationController
     end
   
     def dish_params
-      params.require(:dish).permit(:name, :description, :calories, :photo, :status)
+      params.require(:dish).permit(:name, :description, :calories, tag_ids: [], 
+                                 tags_attributes: [:name])
     end
 
   end

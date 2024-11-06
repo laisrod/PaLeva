@@ -1,23 +1,36 @@
 <h1>Pratos</h1>
 
+<div class="filters">
+  <%= form_tag establishment_dishes_path(@establishment), method: :get do %>
+    <% Tag.all.each do |tag| %>
+      <%= check_box_tag "tag_ids[]", tag.id %>
+      <%= label_tag "tag_ids_#{tag.id}", tag.name %>
+    <% end %>
+    <%= submit_tag "Filtrar" %>
+  <% end %>
+</div>
+
 <% if @dishes.any? %>
   <ul>
     <% @dishes.each do |dish| %>
-      <li>
-        <%= link_to dish.name, establishment_dish_path(@establishment, dish) %>
-        <%= link_to 'Editar', edit_establishment_dish_path(@establishment, dish) %>
-        <%= button_to 'Remover Prato', establishment_dish_path(@establishment, dish), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover este prato?' } %>
-      </li>
+      <div class="dish">
+        <h3><%= link_to dish.name, establishment_dish_path(@establishment, dish), class: 'text-start' %></h3>
+        <p >Características: <%= dish.tags.pluck(:name).join(", ") %></p>
+        <%= link_to 'Editar', edit_establishment_dish_path(@establishment, dish), class: 'btn btn-primary' %>
+        <%= button_to 'Remover Prato', establishment_dish_path(@establishment, dish), method: :delete, data: { turbo_confirm: 'Tem certeza que deseja remover este prato?' }, class: 'btn btn-danger' %>
+      </div>
       <p> <%= link_to 'Adicionar porção', new_establishment_dish_portion_path(@establishment, dish) %> </p>
     <% end %>
   </ul>
 <% else %>
   <p>Nenhum prato cadastrado</p>
 <% end %>
-
-<p>
-  <%= link_to 'Criar Novo Prato', new_establishment_dish_path, class: 'btn btn-primary' %>
-</p>
-<p>
-  <%= link_to('Voltar', establishments_path) %>
-</p>
+<div class="buttons" style="padding: 30px;">
+  <p><%=link_to 'Criar Característica', tags_new_path,  class: 'btn btn-primary' %></p>
+  <p>
+    <%= link_to 'Criar Novo Prato', new_establishment_dish_path, class: 'btn btn-primary' %>
+  </p>
+  <p>
+    <%= link_to('Voltar', establishments_path, class: 'btn btn-primary' ) %>
+  </p>
+</div>

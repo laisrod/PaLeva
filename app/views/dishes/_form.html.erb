@@ -1,0 +1,16 @@
+ <%= form_with(model: [@establishment, @dish], local: true) do |f| %>
+
+  <div class="field">
+    <%= f.label :tag_ids, "Características" %>
+    <%= f.collection_check_boxes :tag_ids, Tag.all, :id, :name %>
+  </div>
+
+  <div class="field">
+    <%= f.fields_for :tags, Tag.new do |tag_form| %>
+      <%= tag_form.label :name, "Nova Característica" %>
+      <%= tag_form.text_field :name %>
+    <% end %>
+  </div>
+
+  <%= f.submit "Enviar" %>
+<% end %>

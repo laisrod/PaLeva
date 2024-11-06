@@ -1,0 +1,16 @@
+<h1>Características</h1>
+<p><%= link_to 'Criar Característica', new_tag_path %></p>
+<ul>
+  <% @tags.each do |tag| %>
+    <h4><%=link_to tag.name, tag_path(tag) %></h4>
+    <p><%= link_to 'Editar', edit_tag_path(tag), class: "btn btn-primary" %></p>
+    <p><%= button_to 'Excluir', tag_path(tag), 
+        method: :delete,
+        class: "btn btn-danger",
+        form: { data: { turbo_confirm: 'Tem certeza?' } } %>
+    </p>
+  <% end %>
+</ul>
+
+<%= link_to 'Voltar para Pratos', establishment_dishes_path(@establishment), class: "btn btn-secondary" %>
+

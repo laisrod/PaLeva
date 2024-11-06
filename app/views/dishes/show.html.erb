@@ -2,7 +2,7 @@
 <p> Descrição: <%= @dish.description %></p>
 <p>Calorias: <%= @dish.calories %></p>
 <p>Status: <%= @dish.status ? 'Ativo' : 'Inativo' %></p>
-
+<p>Características: <%= @dish.tags.pluck(:name).join(', ') %></p>
 <%= button_to @dish.status ? 'Inativar' : 'Ativar', toggle_status_establishment_dish_path(@establishment, @dish), method: :patch %>
 
 

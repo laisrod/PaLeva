@@ -52,31 +52,38 @@ describe 'Registro de Estabelecimento pelo Usuário' do
   it 'e vê mensagens de erro quando dados são inválidos' do
     # Arrange
     user = User.create!(
-      name: 'User',
       email: 'user122223@example.com',
-      last_name: 'Last Name',
-      cpf: '483.556.180-50',
-      password: 'password1234567'
+      password: '123456789012',
+      name: 'João',
+      last_name: 'Silva',
+      cpf: '757.423.510-46'
     )
 
     # Act
-    sign_in user
+    login_as(user)
     visit new_establishment_path
-    fill_in 'Nome', with: ''
+    fill_in 'Nome Fantasia', with: ''
+    fill_in 'Razão Social', with: ''
+    fill_in 'CNPJ', with: ''
     fill_in 'Endereço', with: ''
-    fill_in 'E-mail', with: 'invalid-email'
-    fill_in 'Código', with: ''
     fill_in 'Cidade', with: ''
     fill_in 'Estado', with: ''
     fill_in 'Código Postal', with: ''
+    fill_in 'E-mail', with: ''
     fill_in 'Telefone', with: ''
-    click_button 'Enviar'
+    click_on 'Enviar'
 
     # Assert
-    expect(page).to have_content('Nome não pode ficar em branco')
-    expect(page).to have_content('Número de telefone não pode ficar em branco')
-    expect(page).to have_content('Cidade não pode ficar em branco')
-    expect(page).to have_content('Estado não pode ficar em branco')
-    expect(page).to have_content('CEP não pode ficar em branco')
+    expect(page).to have_content('Estabelecimento não cadastrado.')
+    expect(page).to have_content('Name não pode ficar em branco')
+    expect(page).to have_content('Social name não pode ficar em branco')
+    expect(page).to have_content('Cnpj não pode ficar em branco')
+    expect(page).to have_content('Full address não pode ficar em branco')
+    expect(page).to have_content('City não pode ficar em branco')
+    expect(page).to have_content('State não pode ficar em branco')
+    expect(page).to have_content('Postal code não pode ficar em branco')
+    expect(page).to have_content('Phone number não pode ficar em branco')
+    expect(page).to have_content('Email não é válido')
+    expect(page).to have_content('Cnpj inválido')
   end
 end

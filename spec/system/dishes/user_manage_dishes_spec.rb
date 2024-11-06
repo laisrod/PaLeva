@@ -1,16 +1,14 @@
 require 'rails_helper'
-
 describe 'Gerenciamento de Pratos' do
   it 'cadastra prato com sucesso' do
     # Arrange
     user = User.create!(
       name: 'User',
-      email: "user#{Time.now.to_i}@example.com",
+      email: "user1@example.com",
       password: 'password1230',
       last_name: 'Last Name',
       cpf: '483.556.180-50'
     )
-
     establishment = Establishment.create!(
       name: 'Meu Restaurante',
       social_name: 'Restaurante LTDA',
@@ -19,41 +17,37 @@ describe 'Gerenciamento de Pratos' do
       city: 'São Paulo',
       state: 'SP',
       postal_code: '12345-678',
-      email: "contato#{Time.now.to_i}@restaurante.com",
+      email: "user1@example.com",
       phone_number: '11999999999',
       user: user
     )
-
     # Act
     sign_in user
     visit establishment_dishes_path(establishment)
     click_on 'Criar Novo Prato'
+    
     fill_in 'Nome', with: 'Feijoada'
     fill_in 'Descrição', with: 'Prato típico brasileiro'
     fill_in 'Calorias', with: '800'
-    
-    # Adicione estas linhas para debug
-    save_and_open_page   # Isso vai abrir a página no seu navegador
-    puts page.html       # Isso vai mostrar o HTML no terminal
-    
     click_button 'Enviar'
+
 
     # Assert
     expect(page).to have_content('O prato foi criado com sucesso')
     expect(page).to have_content('Feijoada')
-    expect(page).to have_content('Calorias: 800')
+    expect(page).to have_content('Calorias:')
+    expect(Dish.last.calories).to eq(800)  # Verifica se foi salvo no banco
+    expect(page).to have_content('800')
   end
-
   it 'lista apenas pratos do próprio estabelecimento' do
     # Arrange
     user = User.create!(
       name: 'User',
-      email: "user#{Time.now.to_i}@example.com",
+      email: "user1@example.com",
       password: 'password123055555',
       last_name: 'Last Name',
       cpf: '483.556.180-50'
     )
-
     establishment = Establishment.create!(
       name: 'Meu Restaurante',
       social_name: 'Restaurante LTDA',
@@ -62,18 +56,16 @@ describe 'Gerenciamento de Pratos' do
       city: 'São Paulo',
       state: 'SP',
       postal_code: '12345-678',
-      email: "contato#{Time.now.to_i}@restaurante.com",
+      email: "user1@example.com",
       phone_number: '11999999999',
       user: user
     )
-
     Dish.create!(
       name: 'Meu Prato',
       description: 'Descrição',
       calories: 500,
       establishment: establishment
     )
-
     outro_establishment = Establishment.create!(
       name: 'Outro Restaurante',
       social_name: 'Outro LTDA',
@@ -92,11 +84,9 @@ describe 'Gerenciamento de Pratos' do
         cpf: '483.556.180-50'
       )
     )
-
     # Act
     sign_in user
     visit establishment_dishes_path(establishment)
-
     # Assert
     expect(page).to have_content('Meu Prato')
     expect(page).not_to have_content('Outro Prato')

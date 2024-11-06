@@ -8,7 +8,7 @@ describe 'Editar Estabelecimento' do
       name: 'User',
       email: 'user13588@example.com',
       last_name: 'Last Name',
-      cpf: '483.556.180-50',
+      cpf: '600.941.170-04',
       password: 'password1234567'
     )
 
@@ -39,7 +39,7 @@ describe 'Editar Estabelecimento' do
       name: 'User',
       email: 'user1358888@example.com',
       last_name: 'Last Name',
-      cpf: '483.556.180-50',
+      cpf: '455.006.230-44',
       password: 'password1234567'
     )
 
@@ -74,38 +74,39 @@ describe 'Editar Estabelecimento' do
   it 'e vê mensagens de erro quando dados são inválidos' do
     # Arrange
     user = User.create!(
-      name: 'User',
+      name: 'Ana',
       email: 'user13741@example.com',
       last_name: 'Last Name',
-      cpf: '483.556.180-50',
+      cpf: '757.423.510-46',
       password: 'password1234567'
     )
-
     establishment = Establishment.create!(
-      name: 'Establishment',
-      social_name: 'Establishment',
-      cnpj: '66.857.685/0001-03',
-      full_address: '123 Main St',
-      city: 'Anytown',
-      state: 'ST',
-      postal_code: '12345',
-      email: 'establishment2741@example.com',
-      phone_number: '1234567890',
-      user_id: user.id
+      name: 'Bar do João',
+      cnpj: '91.883.071/0001-35',
+      social_name: 'Bar do João LTDA',
+      full_address: 'Rua do João, 123',
+      city: 'São Paulo',
+      state: 'SP',
+      postal_code: '12345678',
+      email: 'joao@bar.com',
+      phone_number: '11999999999',
+      user: user
     )
 
     # Act
-    sign_in user
+    login_as(user)
     visit edit_establishment_path(establishment)
-    fill_in 'Nome', with: ''
+    fill_in 'Nome Fantasia', with: ''
     fill_in 'Endereço', with: ''
     fill_in 'E-mail', with: ''
-    click_button 'Enviar'
+    click_on 'Enviar'
 
     # Assert
-    expect(page).to have_content('Nome não pode ficar em branco')
+    expect(page).to have_content('Não foi possivel atualizar o restaurante.')
+    expect(page).to have_content('Name não pode ficar em branco')
     expect(page).to have_content('Full address não pode ficar em branco')
     expect(page).to have_content('Email não pode ficar em branco')
+    expect(page).to have_content('Email não é válido')
   end
 
   it 'e cancela edição voltando para listagem' do
@@ -114,7 +115,7 @@ describe 'Editar Estabelecimento' do
       name: 'User',
       email: 'user13555@example.com',
       last_name: 'Last Name',
-      cpf: '483.556.180-50',
+      cpf: '293.940.010-50',
       password: 'password1234567'
     )
 
