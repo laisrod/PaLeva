@@ -20,15 +20,43 @@
       </div>
     </div>
 
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="card-title text-primary mb-0">Menu</h3>
+      <%= link_to 'Adicionar Item', 
+        new_establishment_menu_menu_item_path(@establishment, @menu), 
+        class: 'btn btn-primary' %>
+    </div>
     <div class="card shadow-sm mb-4">
       <div class="card-body bg-light">
-        <h3 class="card-title text-primary">Pratos</h3>
-        <% if @menu.dishes.any? %>
+        <h3 class="card-title text-primary mb-0">Pratos</h3>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <% if @menu.dishes.any? %>
           <ul class="list-unstyled">
             <% @menu.dishes.each do |dish| %>
-              <li class="mb-2">
-                <span class="text-secondary"><%= dish.name %></span>
-                <small class="text-muted">- <%= dish.description %></small>
+              <li class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong class="text-secondary"><%= dish.name %></strong>
+                    <small class="text-muted d-block">- <%= dish.description %></small>
+                </div>
+                <% dish.portions.each do |portion| %>
+                  <div class="text-muted">
+                    <small>
+                      <%= portion.description %> - 
+                      <%= number_to_currency(portion.price, unit: "R$", separator: ",", delimiter: ".") %>
+                    </small>
+                  </div>
+                <% end %>
+
+                <div class="ms-3 mt-1"> 
+                  <%= link_to 'Editar', 
+                      edit_establishment_menu_menu_item_path(@establishment, @menu, dish), 
+                      class: 'btn btn-sm btn-outline-primary me-2' %>
+                  <%= button_to 'Remover', 
+                      establishment_menu_menu_item_path(@establishment, @menu, dish), 
+                      method: :delete,
+                      class: 'btn btn-sm btn-outline-danger',
+                      data: { confirm: 'Tem certeza?' } %>
+                </div>
               </li>
             <% end %>
           </ul>
@@ -44,9 +72,37 @@
         <% if @menu.drinks.any? %>
           <ul class="list-unstyled">
             <% @menu.drinks.each do |drink| %>
-              <li class="mb-2">
-                <span class="text-secondary"><%= drink.name %></span>
-                <small class="text-muted">- <%= drink.description %></small>
+              <li class="mb-3">
+                <div>
+                  <strong class="text-secondary"><%= drink.name %></strong>
+                  <small class="text-muted d-block">- <%= drink.description %></small>
+                </div>
+                <% if drink.portions.any? %>
+                  <div class="ms-3 mt-1">
+                    <% drink.portions.each do |portion| %>
+                      <div class="text-muted">
+                        <small>
+                          <%= portion.description %> - 
+                          <%= number_to_currency(portion.price, unit: "R$", separator: ",", delimiter: ".") %>
+                        </small>
+                      </div>
+                    <% end %>
+                  </div>
+                <% end %>
+
+
+                <div class="ms-3 mt-1"> 
+                  <%= link_to 'Editar', 
+                      edit_establishment_menu_menu_item_path(@establishment, @menu, drink), 
+                      class: 'btn btn-sm btn-outline-primary me-2' %>
+                  <%= button_to 'Remover', 
+                      establishment_menu_menu_item_path(@establishment, @menu, drink), 
+                      method: :delete,
+                      class: 'btn btn-sm btn-outline-danger',
+                      data: { confirm: 'Tem certeza?' } %>
+                </div>
+
+
               </li>
             <% end %>
           </ul>

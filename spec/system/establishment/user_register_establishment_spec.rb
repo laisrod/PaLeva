@@ -42,7 +42,7 @@ describe 'Registro de Estabelecimento pelo Usuário' do
     fill_in 'establishment[city]', with: 'Sample City'
     fill_in 'establishment[state]', with: 'Sample State'
     fill_in 'establishment[phone_number]', with: '123-456-7890'
-    click_button 'Enviar'
+    click_button 'Salvar'
 
     # Assert
     expect(page).to have_content('Novo estabelecimento')
@@ -71,7 +71,7 @@ describe 'Registro de Estabelecimento pelo Usuário' do
     fill_in 'Código Postal', with: ''
     fill_in 'E-mail', with: ''
     fill_in 'Telefone', with: ''
-    click_on 'Enviar'
+    click_on 'Salvar'
 
     # Assert
     expect(page).to have_content('Estabelecimento não cadastrado.')

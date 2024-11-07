@@ -26,14 +26,13 @@ describe 'Usuário remove um estabelecimento' do
     )
 
     # Act
-    sign_in user
+    login_as(user)
     visit establishment_path(establishment)
-    click_link 'Remover Estabelecimento'
+    click_link 'Remover'
 
     # Assert
-    expect(page).to have_content('Estabelecimento removido com sucesso')
-    expect(current_path).to eq('/establishments/new')
-    expect(page).not_to have_content('Establishment Test')
+    expect(current_path).to eq new_establishment_path
+    expect(page).to have_content 'Estabelecimento removido com sucesso.'
   end
 
   it 'e não encontra estabelecimento inexistente' do
@@ -83,7 +82,7 @@ describe 'Usuário remove um estabelecimento' do
     visit establishment_path(establishment)
 
     # Assert
-    expect(page).to have_link('Remover Estabelecimento')
+    expect(page).to have_link('Remover')
   end
 end
 

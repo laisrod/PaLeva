@@ -62,7 +62,7 @@ describe 'Editar Estabelecimento' do
     fill_in 'Nome Fantasia', with: 'Novo Nome'
     fill_in 'Endereço', with: 'Novo Endereço'
     fill_in 'E-mail', with: 'novo@exemplo.com'
-    click_button 'Enviar'
+    click_button 'Salvar'
 
     # Assert
     expect(page).to have_content('Estabelecimento atualizado com sucesso.')
@@ -99,7 +99,7 @@ describe 'Editar Estabelecimento' do
     fill_in 'Nome Fantasia', with: ''
     fill_in 'Endereço', with: ''
     fill_in 'E-mail', with: ''
-    click_on 'Enviar'
+    click_button 'Salvar'
 
     # Assert
     expect(page).to have_content('Não foi possivel atualizar o restaurante.')

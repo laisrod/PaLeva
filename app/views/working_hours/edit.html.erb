@@ -1,6 +1,6 @@
-<% content_for :title, "Editar Horário de Funcionamento" %>
+<% content_for :title, "Editar Horário de Funcionamento - #{@working_hour.week_day}" %>
 
-<h1>Editar Horário de Funcionamento</h1>
+<h1>Editar Horário de Funcionamento - <%= @working_hour.week_day %></h1>
 
 <%= form_with model: [@establishment, @working_hour] do |form| %>
   <% if @working_hour.errors.any? %>
@@ -16,10 +16,6 @@
   <% end %>
   
   <div class="form-group">
-    <div>
-      <%= form.label :week_day, 'Dia da Semana' %>
-      <%= form.text_field :week_day, readonly: true %>
-    </div>
     <div>
       <%= form.label :opening_hour, 'Horário de Abertura' %>
       <%= form.time_field :opening_hour %>

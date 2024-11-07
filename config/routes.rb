@@ -20,9 +20,11 @@ Rails.application.routes.draw do
     end
     resources :working_hours, only: %i[edit update]
     resources :tags
-    resources :menus
+    resources :menus do
+      resources :menu_items
+    end
+    resources :orders
   end
-  resources :orders
   resources :users
   resources :portions
 end

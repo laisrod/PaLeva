@@ -44,7 +44,7 @@ RSpec.describe 'Criação de Cardápio', type: :system do
     click_button 'Log in'
 
     visit new_establishment_menu_path(establishment)
-    puts page.html
+
     expect(page).to have_content('Novo Cardápio')
     within('.card-body.menu-form') do
       fill_in 'menu_name', with: 'Café da Manhã'

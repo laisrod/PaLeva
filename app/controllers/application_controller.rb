@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_active_storage_url_options
+  before_action :create_current_order
 
 
   def after_sign_up_path_for(resource)
@@ -17,7 +18,18 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def current_order
+    @current_order ||= Order.find_by(establishment: current_user.establishment, status: 'draft')
+  end
+  helper_method :current_order
+
   private
+
+  def create_current_order
+    if current_user && current_user.establishment
+      @current_order ||= Order.create(establishment: current_user.establishment, status: 'draft')
+    end
+  end
 
   def check_establishment!
     if current_user && current_user.establishment.nil?

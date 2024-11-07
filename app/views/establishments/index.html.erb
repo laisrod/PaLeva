@@ -60,5 +60,15 @@
         </ul>
       </div>
     </div>
+
+    <div class="card shadow-sm mt-4">
+      <div class="card-body bg-light">
+        <h3 class="card-title text-primary">Pedidos</h3>
+        <div class="actions">
+          <%= link_to 'Novo Pedido', new_establishment_order_path(@establishment), class: 'btn btn-outline-primary' %>
+          <%= link_to 'Ver Pedidos', establishment_orders_path(@establishment, @order), class: 'btn btn-outline-info' %>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
