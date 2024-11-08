@@ -5,5 +5,4 @@ class Dish < ApplicationRecord
   has_many :portions, dependent: :destroy
   has_many :dish_tags
   has_many :tags, through: :dish_tags, dependent: :destroy
-  has_many :menus
 end

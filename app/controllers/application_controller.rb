@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   private
 
   def create_current_order
-    if current_user && current_user.establishment
+    if current_user && current_user.establishment && !current_order
       @current_order ||= Order.create(establishment: current_user.establishment, status: 'draft')
     end
   end

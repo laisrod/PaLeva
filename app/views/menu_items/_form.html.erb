@@ -9,28 +9,18 @@
       </ul>
     </div>
   <% end %>
-
   <div class="mb-3">
-    <%= f.label :name, "Nome", class: "form-label" %>
-    <%= f.text_field :name, class: "form-control" %>
+    <%= f.label :dish_id, "Prato", class: "form-label" %>
+    <%= f.collection_select :dish_id, @establishment.dishes, :id, :name, 
+        { prompt: "Selecione um prato (opcional)" }, 
+        { class: "form-control" } %>
   </div>
 
   <div class="mb-3">
-    <%= f.label :description, "Descrição", class: "form-label" %>
-    <%= f.text_area :description, class: "form-control" %>
-  </div>
-
-  <div class="mb-3">
-    <%= f.label :price, "Preço", class: "form-label" %>
-    <%= f.number_field :price, class: "form-control", step: "0.01" %>
-  </div>
-
-  <div class="mb-3">
-    <%= f.label :category, "Categoria", class: "form-label" %>
-    <%= f.select :category, 
-        MenuItem.categories.keys.map { |k| [k.titleize, k] }, 
-        { prompt: "Selecione uma categoria" }, 
-        class: "form-select" %>
+    <%= f.label :drink_id, "Bebida", class: "form-label" %>
+    <%= f.collection_select :drink_id, @establishment.drinks, :id, :name,
+        { prompt: "Selecione uma bebida (opcional)" },
+        { class: "form-control" } %>
   </div>
 
   <div class="mb-3">
@@ -38,3 +28,21 @@
     <%= link_to "Cancelar", establishment_menu_path(@establishment, @menu), class: "btn btn-secondary" %>
   </div>
 <% end %> 
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const dishSelect = document.getElementById('menu_item_dish_id');
+    const drinkSelect = document.getElementById('menu_item_drink_id');
+
+    dishSelect.addEventListener('change', function() {
+      console.log('dish_id changed');
+      drinkSelect.value = '';
+      // drinkSelect.dispatchEvent(new Event('change'));
+    });
+
+    drinkSelect.addEventListener('change', function() {
+      dishSelect.value = '';
+      // dishSelect.s(new Event('change'));
+    });
+  });
+</script>

@@ -3,7 +3,7 @@
     <div class="col-md-8">
       <div class="card shadow">
         <div class="card-header bg-primary text-white">
-          <h2 class="mb-0">Novo Cardápio</h2>
+          <h2 class="mb-0">Gerenciar Cardápio</h2>
         </div>
         
         <div class="card-body">
@@ -21,26 +21,19 @@
                 <% end %>
               </div>
             </div>
-          <% elsif @dishes.empty? %>
-            <div class="alert alert-warning">
-              <h5 class="alert-heading">Atenção!</h5>
-              <p>Primeiro cadastre pratos para criar um cardápio!</p>
-              <hr>
-              <%= link_to new_establishment_dish_path(@establishment), class: 'btn btn-primary' do %>
-                <i class="fas fa-utensils"></i> Cadastrar Pratos
-              <% end %>
-            </div>
-          <% elsif @drinks.empty? %>
-            <div class="alert alert-warning">
-              <h5 class="alert-heading">Atenção!</h5>
-              <p>Primeiro cadastre drinks para criar um cardápio!</p>
-              <hr>
-              <%= link_to new_establishment_drink_path(@establishment), class: 'btn btn-primary' do %>
-                <i class="fas fa-cocktail"></i> Cadastrar Drinks
-              <% end %>
-            </div>
           <% else %>
             <%= form_with(model: [@establishment, @menu], local: true, class: 'needs-validation') do |f| %>
+              <% if @menu.errors.any? %>
+                <div style="color: red">
+                  <h2><%= pluralize(@menu.errors.count, "error") %> impediram o cadastro:</h2>
+
+                  <ul>
+                    <% @menu.errors.each do |error| %>
+                      <li><%= error.full_message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              <% end %> 
               <div class="mb-3">
                 <%= f.label :name, 'Nome', class: 'form-label' %>
                 <%= f.text_field :name, class: 'form-control', required: true %>
@@ -51,47 +44,9 @@
                 <%= f.text_area :description, class: 'form-control', rows: 3 %>
               </div>
 
-              <div class="row mb-4">
-                <div class="col-md-6">
-                  <div class="card h-100">
-                    <div class="card-header bg-light">
-                      <h5 class="mb-0">
-                        <i class="fas fa-utensils me-2"></i>Pratos Disponíveis
-                      </h5>
-                    </div>
-                    <div class="card-body">
-                      <%= f.collection_check_boxes :dish_ids, @dishes, :id, :name do |b| %>
-                        <div class="form-check mb-2">
-                          <%= b.check_box class: 'form-check-input' %>
-                          <%= b.label class: 'form-check-label' %>
-                        </div>
-                      <% end %>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="card h-100">
-                    <div class="card-header bg-light">
-                      <h5 class="mb-0">
-                        <i class="fas fa-cocktail me-2"></i>Drinks Disponíveis
-                      </h5>
-                    </div>
-                    <div class="card-body">
-                      <%= f.collection_check_boxes :drink_ids, @drinks, :id, :name do |b| %>
-                        <div class="form-check mb-2">
-                          <%= b.check_box class: 'form-check-input' %>
-                          <%= b.label class: 'form-check-label' %>
-                        </div>
-                      <% end %>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <%= link_to 'Voltar', establishment_menus_path(@establishment), class: 'btn btn-secondary me-md-2' %>
-                <%= f.submit 'Criar Cardápio', class: 'btn btn-primary' %>
+                <%= f.submit 'Salvar', class: 'btn btn-primary' %>
               </div>
             <% end %>
           <% end %>

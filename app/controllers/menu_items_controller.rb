@@ -36,6 +36,9 @@ class MenuItemsController < ApplicationController
     redirect_to establishment_menu_path(@establishment, @menu), notice: 'Item removido com sucesso.'
   end
 
+  def show
+  end
+  
   private
 
   def set_menu
@@ -48,6 +51,6 @@ class MenuItemsController < ApplicationController
   end
 
   def menu_item_params
-    params.require(:menu_item).permit(:name, :description, :price, :category)
+    params.require(:menu_item).permit(:menu_id, :dish_id, :drink_id)
   end
 end 

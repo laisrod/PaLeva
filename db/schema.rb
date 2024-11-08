@@ -66,9 +66,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_07_143957) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "status", default: true, null: false
-    t.integer "menu_id"
     t.index ["establishment_id"], name: "index_dishes_on_establishment_id"
-    t.index ["menu_id"], name: "index_dishes_on_menu_id"
   end
 
   create_table "drinks", force: :cascade do |t|
@@ -81,9 +79,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_07_143957) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "status", default: true, null: false
-    t.integer "menu_id"
     t.index ["establishment_id"], name: "index_drinks_on_establishment_id"
-    t.index ["menu_id"], name: "index_drinks_on_menu_id"
   end
 
   create_table "establishments", force: :cascade do |t|
@@ -124,11 +120,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_07_143957) do
   end
 
   create_table "order_menu_items", force: :cascade do |t|
+    t.integer "quantity", default: 1, null: false
     t.integer "order_id"
     t.integer "menu_item_id"
     t.integer "portion_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["menu_item_id"], name: "index_order_menu_items_on_menu_item_id"
+    t.index ["order_id"], name: "index_order_menu_items_on_order_id"
+    t.index ["portion_id"], name: "index_order_menu_items_on_portion_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -202,13 +202,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_07_143957) do
   add_foreign_key "dish_tags", "dishes"
   add_foreign_key "dish_tags", "tags"
   add_foreign_key "dishes", "establishments"
-  add_foreign_key "dishes", "menus"
   add_foreign_key "drinks", "establishments"
-  add_foreign_key "drinks", "menus"
   add_foreign_key "menu_items", "dishes"
   add_foreign_key "menu_items", "drinks"
   add_foreign_key "menu_items", "menus"
   add_foreign_key "menus", "establishments"
+  add_foreign_key "order_menu_items", "menu_items"
+  add_foreign_key "order_menu_items", "orders"
+  add_foreign_key "order_menu_items", "portions"
   add_foreign_key "orders", "establishments"
   add_foreign_key "portions", "dishes"
   add_foreign_key "portions", "drinks"

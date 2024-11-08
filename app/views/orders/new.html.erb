@@ -11,13 +11,25 @@
           
           <div class="quantity-selector">
             <%= f.fields_for :order_items do |oi| %>
-              <%= f.select_field :menu_item_id, value: menu_item.id %>
+              <%= oi.hidden_field :menu_item_id, value: menu_item.id %>
+              <%= oi.select :quantity, options_for_select(0..10), {}, class: 'form-select' %>
             <% end %>
           </div>
         </div>
       <% end %>
     </div>
-
+    <div>
+       <p> Nome do cliente: </p>
+       <%= f.text_field :customer_name %>
+    </div> 
+    <div>
+      <p> CPF do cliente: </p>
+      <%= f.text_field :customer_cpf %>
+    </div>
+    <div>
+      <p> email do cliente: </p>
+      <%= f.text_field :customer_email %>
+    </div>
     <div class="order-summary">
       <h2>Resumo do Pedido</h2>
       <div id="total-amount"></div>

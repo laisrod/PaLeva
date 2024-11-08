@@ -23,7 +23,13 @@ Rails.application.routes.draw do
     resources :menus do
       resources :menu_items
     end
-    resources :orders
+    resources :orders do
+      member do
+        get :add_item, to: 'orders#add_item'
+        post :save_item, to: 'orders#save_item'
+        delete :remove_item, to: 'orders#remove_item'
+      end
+    end
   end
   resources :users
   resources :portions

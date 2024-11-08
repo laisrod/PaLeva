@@ -15,7 +15,7 @@
           <tbody>
             <% @orders.each do |order| %>
               <tr>
-                <td><%= order.code %></td>
+                <td><%= link_to order.code, establishment_order_path(order.establishment, order) %></td>
               </tr>
             <% end %>
           </tbody>

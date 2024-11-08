@@ -1,0 +1,9 @@
+<h1>Add Item</h1>
+<% portions = @menu_item.drink.nil? ? @menu_item.dish.portions : @menu_item.drink.portions %>
+<%= form_with(model: @order_menu_item, url: save_item_establishment_order_path(@establishment, @order), local: true) do |f| %>
+  <p>Selecione a porção do item <b><%= @menu_item.drink.nil? ? @menu_item.dish.name : @menu_item.drink.name %></b>:</p>
+  <%= f.hidden_field :menu_item_id, value: @menu_item.id %>
+  <%= f.select :portion_id, options_from_collection_for_select(portions, 'id', 'description'), prompt: 'Selecione uma porção' %>
+  <%= f.number_field :quantity, value: 1, min: 1, class: 'form-control' %>
+  <%= f.submit 'Adicionar ao Pedido' %>
+<% end %>

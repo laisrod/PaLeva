@@ -7,15 +7,17 @@ class MenusController < ApplicationController
   end
   
   def new
-    @menu = @establishment.menus.build
+    @menu = Menu.new
+    @menu.establishment = @establishment
     @dishes = @establishment.dishes
     @drinks = @establishment.drinks
   end
 
   def create
     @menu = @establishment.menus.build(menu_params)
-    @dishes = Dish.where(id: menu_params[:dish_ids].reject(&:blank?))
-    @drinks = Drink.where(id: menu_params[:drink_ids].reject(&:blank?))
+    @dishes = @establishment.dishes
+    @drinks = @establishment.drinks
+
     if @menu.save
       redirect_to establishment_menu_path(@establishment, @menu), 
                   notice: 'Cardápio criado com sucesso'
@@ -31,7 +33,6 @@ class MenusController < ApplicationController
 
   def edit
     @menu = Menu.find(params[:id])
-    @establishment = Establishment.find(params[:establishment_id])
     @dishes = @establishment.dishes
     @drinks = @establishment.drinks
   end
@@ -58,6 +59,6 @@ class MenusController < ApplicationController
   end
 
   def menu_params
-    params.require(:menu).permit(:name, :description, dish_ids: [], drink_ids: [])
+    params.require(:menu).permit(:name, :description, menu_items_attributes: [:id, :_destroy, dish_id: [], drink_id: []])
   end
 end 
