@@ -1,16 +1,33 @@
-<h1>Características</h1>
- <p><%=link_to 'Criar Característica', new_establishment_tag_path(@establishment),  class: 'btn btn-primary' %></p>
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h1>Características</h1>
+      <%=link_to 'Criar Característica', new_establishment_tag_path(@establishment), class: 'btn btn-primary' %>
+    </div>
+  </div>
 
-<ul>
-  <% @tags.each do |tag| %>
-    <h4><%=link_to tag.name, establishment_tag_path(@establishment, tag) %></h4>
-    <p><%= link_to 'Editar', edit_establishment_tag_path(@establishment, tag), class: "btn btn-primary" %></p>
-    <p><%= button_to 'Excluir', establishment_tag_path(@establishment, tag), 
-        method: :delete,
-        class: "btn btn-danger",
-        form: { data: { turbo_confirm: 'Tem certeza?' } } %>
-    </p>
-  <% end %>
-</ul>
+  <div class="row">
+    <div class="col">
+      <div class="list-group">
+        <% @tags.each do |tag| %>
+          <div class="list-group-item d-flex justify-content-between align-items-center mb-2">
+            <h4 class="mb-0"><%=link_to tag.name, establishment_tag_path(@establishment, tag), class: "text-decoration-none" %></h4>
+            <div class="btn-group">
+              <%= link_to 'Editar', edit_establishment_tag_path(@establishment, tag), class: "btn btn-sm btn-primary me-2" %>
+              <%= button_to 'Excluir', establishment_tag_path(@establishment, tag), 
+                  method: :delete,
+                  class: "btn btn-sm btn-danger",
+                  form: { data: { turbo_confirm: 'Tem certeza?' } } %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
 
-<%= link_to 'Voltar para Pratos', establishment_dishes_path(@establishment), class: "btn btn-secondary" %>
+  <div class="row mt-4">
+    <div class="col">
+      <%= link_to 'Voltar para Pratos', establishment_dishes_path(@establishment), class: "btn btn-secondary" %>
+    </div>
+  </div>
+</div>

@@ -3,30 +3,6 @@ class OrdersController < ApplicationController
     @orders = Order.all
   end
 
-  def new
-    @establishment = Establishment.find(params[:establishment_id])
-    @order = @establishment.orders.build
-    @menu_items = MenuItem.where(menu_id: params[:menu])
-  end
-
-  def create
-    @order = Order.new(order_params)
-    
-    if @order.save
-      params[:menu_items]&.each do |menu_item_id, quantity|
-        next if quantity.to_i <= 0
-        
-        menu_item = MenuItem.find(menu_item_id)
-        @order.add_item(menu_item, quantity.to_i)
-      end
-      
-      redirect_to @order, notice: 'Pedido criado com sucesso!'
-    else
-      @menu_items = MenuItem.where(establishment_id: params[:establishment_id])
-      render :new
-    end
-  end
-
   def update
     @order = Order.find(params[:id])
     @order.update(order_params)
@@ -56,6 +32,31 @@ class OrdersController < ApplicationController
     @order_menu_item = @order.order_menu_items.find(params[:item_id])
     @order_menu_item.destroy
     redirect_to establishment_order_path(@order.establishment, @order)
+  end
+
+  def change_status
+    @order = Order.find(params[:id])
+    
+    if @order.can_progress?
+      @order.update_attribute(:status, @order.next_status)
+      @order.update_total_price
+      notice = case @order.status
+               when 'pending' then 'Pedido enviado para a cozinha!'
+               when 'preparing' then 'Pedido em preparação!'
+               when 'ready' then 'Pedido pronto!'
+               when 'delivered' then 'Pedido entregue!'
+               end
+      redirect_to establishment_order_path(@order.establishment, @order), notice: notice
+    else
+      redirect_to establishment_order_path(@order.establishment, @order), 
+                  alert: 'Não é possível alterar o status deste pedido.'
+    end
+  end
+
+  def cancel
+    @order = Order.find(params[:id])
+    @order.update_attribute(:status, 'cancelled')
+    redirect_to establishment_order_path(@order.establishment, @order), notice: 'Pedido cancelado com sucesso!'
   end
 
   private

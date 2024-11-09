@@ -3,7 +3,7 @@ class MenusController < ApplicationController
   before_action :set_establishment
 
   def index
-    @menus = @establishment.menus
+    @menus = current_user.establishment.menus if current_user.establishment.present?
   end
   
   def new

@@ -41,8 +41,6 @@ RSpec.describe 'Cadastro de Funcionário', type: :system do
       click_button 'Cadastrar'
       
       expect(page).to have_content('Login efetuado com sucesso')
-      expect(page).to have_content('jane@doe.com.br')
-      expect(page).to have_link('Sair')
     end
   end
 

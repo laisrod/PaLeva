@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   devise_for :users
 
   root to: 'establishments#index'
@@ -28,6 +29,8 @@ Rails.application.routes.draw do
         get :add_item, to: 'orders#add_item'
         post :save_item, to: 'orders#save_item'
         delete :remove_item, to: 'orders#remove_item'
+        patch :change_status, to: 'orders#change_status'
+        patch :cancel, to: 'orders#cancel'
       end
     end
   end

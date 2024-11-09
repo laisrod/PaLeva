@@ -38,28 +38,21 @@ RSpec.describe 'Criação de Cardápio', type: :system do
       establishment: establishment
     )
 
-    visit new_user_session_path
-    fill_in 'user[email]', with: user.email
-    fill_in 'user[password]', with: 'testes123456'
-    click_button 'Log in'
-
-    visit new_establishment_menu_path(establishment)
-
-    expect(page).to have_content('Novo Cardápio')
-    within('.card-body.menu-form') do
-      fill_in 'menu_name', with: 'Café da Manhã'
-      fill_in 'Descrição', with: 'Cardápio especial para começar bem o dia'
-      
-      check "menu_dish_ids_#{pao_queijo.id}"
-      check "menu_drink_ids_#{cafe.id}"
-    end
-
-    click_on 'Criar Cardápio'
-
-    expect(page).to have_content('Cardápio criado com sucesso')
-    expect(page).to have_content('Café da Manhã')
-    expect(page).to have_content('Cardápio especial para começar bem o dia')
+     # Act
+     login_as(user)
+     visit root_path
+     click_on 'Ver Cardápio'
+     click_on 'Novo Cardápio'
+ 
+     fill_in 'Nome', with: 'Cardápio de Verão'
+     fill_in 'Descrição', with: 'Pratos frescos para o verão'
+     click_on 'Salvar'
+     click_on 'Adicionar Item'
+     select 'Pão de Queijo', from: 'menu_item_dish_id'
+     click_on 'Salvar'
+    expect(page).to have_content('Item adicionado com sucesso')
+    expect(page).to have_content('Cardápio de Verão')
+    expect(page).to have_content('Pratos frescos para o verão')
     expect(page).to have_content('Pão de Queijo')
-    expect(page).to have_content('Café')
   end
 end 

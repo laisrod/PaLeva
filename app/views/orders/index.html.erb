@@ -10,12 +10,18 @@
           <thead class="table-light">
             <tr>
               <th>Código</th>
+              <th>Status</th>
+              <th>Data</th>
+              <th>Valor Total</th>
             </tr>
           </thead>
           <tbody>
             <% @orders.each do |order| %>
               <tr>
                 <td><%= link_to order.code, establishment_order_path(order.establishment, order) %></td>
+                <td><%= order.status %></td>
+                <td><%= l(order.created_at, format: :long) %></td>
+                <td><%= number_to_currency(order.total_price) %></td>
               </tr>
             <% end %>
           </tbody>

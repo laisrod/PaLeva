@@ -21,7 +21,7 @@
     <% end %>
 
     <nav class="navbar navbar-light bg-light">
-      <a class="navbar-brand" href="/">Our Logo</a>
+      <a class="navbar-brand" href="/">Home</a>
 
         <div class="search-form">
           <%= form_with url: search_establishments_path, method: :get, local: true do |f| %>
@@ -31,7 +31,7 @@
         </div>
 
       <form class="form-inline">
-        <% if current_user.establishment.present? %>
+        <% if current_user&.establishment.present? && current_order.present? %>
           <button class="btn btn-outline-success" type="button">
             <%= link_to 'Ver Pedido Atual', establishment_order_path(current_user.establishment, current_order) %>
           </button>

@@ -1,41 +1,51 @@
 <% content_for :title, "Editar Horário de Funcionamento - #{@working_hour.week_day}" %>
 
-<h1>Editar Horário de Funcionamento - <%= @working_hour.week_day %></h1>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="h4 mb-0">Editar Horário de Funcionamento - <%= @working_hour.week_day %></h1>
+        </div>
+        
+        <div class="card-body">
+          <%= form_with model: [@establishment, @working_hour] do |form| %>
+            <% if @working_hour.errors.any? %>
+              <div class="alert alert-danger">
+                <h2 class="h6"><%= pluralize(@working_hour.errors.count, "error") %> impediram a edição:</h2>
 
-<%= form_with model: [@establishment, @working_hour] do |form| %>
-  <% if @working_hour.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(@working_hour.errors.count, "error") %> impediram a edição:</h2>
-
-      <ul>
-        <% @working_hour.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-  
-  <div class="form-group">
-    <div>
-      <%= form.label :opening_hour, 'Horário de Abertura' %>
-      <%= form.time_field :opening_hour %>
-    </div>
-    <div>
-      <%= form.label :closing_hour, 'Horário de Fechamento' %>
-      <%= form.time_field :closing_hour %>
-    </div>
-    <div>
-      <%= form.label :open, 'Aberto' %>
-      <%= form.check_box :open %>
-    </div>
-    <div>
-      <%= form.submit "Enviar" %>
+                <ul class="mb-0">
+                  <% @working_hour.errors.each do |error| %>
+                    <li><%= error.full_message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+            
+            <div class="form-group mb-3">
+              <%= form.label :opening_hour, 'Horário de Abertura', class: 'form-label' %>
+              <%= form.time_field :opening_hour, class: 'form-control' %>
+            </div>
+            
+            <div class="form-group mb-3">
+              <%= form.label :closing_hour, 'Horário de Fechamento', class: 'form-label' %>
+              <%= form.time_field :closing_hour, class: 'form-control' %>
+            </div>
+            
+            <div class="form-group mb-3">
+              <div class="form-check">
+                <%= form.check_box :open, class: 'form-check-input' %>
+                <%= form.label :open, 'Aberto', class: 'form-check-label' %>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <%= form.submit "Enviar", class: 'btn btn-primary' %>
+              <%= link_to "Voltar", root_path, class: 'btn btn-secondary' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
   </div>
-<% end %>
-
-<br>
-
-<div>
-  <%= link_to "Voltar", root_path %>
 </div>

@@ -1,9 +1,22 @@
-<h1>Add Item</h1>
-<% portions = @menu_item.drink.nil? ? @menu_item.dish.portions : @menu_item.drink.portions %>
-<%= form_with(model: @order_menu_item, url: save_item_establishment_order_path(@establishment, @order), local: true) do |f| %>
-  <p>Selecione a porção do item <b><%= @menu_item.drink.nil? ? @menu_item.dish.name : @menu_item.drink.name %></b>:</p>
-  <%= f.hidden_field :menu_item_id, value: @menu_item.id %>
-  <%= f.select :portion_id, options_from_collection_for_select(portions, 'id', 'description'), prompt: 'Selecione uma porção' %>
-  <%= f.number_field :quantity, value: 1, min: 1, class: 'form-control' %>
-  <%= f.submit 'Adicionar ao Pedido' %>
-<% end %>
+<div class="container mt-4">
+  <h1 class="mb-4">Adicionar Item</h1>
+  
+  <% portions = @menu_item.drink.nil? ? @menu_item.dish.portions : @menu_item.drink.portions %>
+  <%= form_with(model: @order_menu_item, url: save_item_establishment_order_path(@establishment, @order), local: true, class: 'needs-validation') do |f| %>
+    <div class="form-group mb-3">
+      <p>Selecione a porção do item <b><%= @menu_item.drink.nil? ? @menu_item.dish.name : @menu_item.drink.name %></b>:</p>
+      <%= f.hidden_field :menu_item_id, value: @menu_item.id %>
+      <%= f.select :portion_id, 
+          options_from_collection_for_select(portions, 'id', 'description'), 
+          { prompt: 'Selecione uma porção' }, 
+          { class: 'form-select mb-3' } %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= f.number_field :quantity, value: 1, min: 1, class: 'form-control', placeholder: 'Quantidade' %>
+    </div>
+
+    <%= f.submit 'Adicionar ao Pedido', class: 'btn btn-primary' %>
+    <%= link_to 'Voltar', establishment_order_path(@establishment, @order), class: 'btn btn-secondary' %>
+  <% end %>
+</div>

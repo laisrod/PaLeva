@@ -55,7 +55,15 @@
         <h3 class="card-title text-primary">Horário de Funcionamento</h3>
         <ul class="list-unstyled">
           <% @establishment.working_hours.each do |working_hour| %>
-            <li><%= working_hour.week_day %> - <%= working_hour.open ? "#{working_hour.opening_hour} às #{working_hour.closing_hour}" : 'Fechado' %> <%= link_to('Editar', edit_establishment_working_hour_path(@establishment, working_hour)) %></li>
+            <li class="d-flex justify-content-between align-items-center mb-2">
+              <span>
+                <%= working_hour.week_day %> - 
+                <span class="<%= working_hour.open ? 'text-success' : 'text-danger' %>">
+                  <%= working_hour.open ? "#{working_hour.opening_hour} às #{working_hour.closing_hour}" : 'Fechado' %>
+                </span>
+              </span>
+              <%= link_to 'Editar', edit_establishment_working_hour_path(@establishment, working_hour), class: 'btn btn-sm btn-outline-primary' %>
+            </li>
           <% end %>
         </ul>
       </div>
@@ -65,7 +73,6 @@
       <div class="card-body bg-light">
         <h3 class="card-title text-primary">Pedidos</h3>
         <div class="actions">
-          <%= link_to 'Novo Pedido', new_establishment_order_path(@establishment), class: 'btn btn-outline-primary' %>
           <%= link_to 'Ver Pedidos', establishment_orders_path(@establishment, @order), class: 'btn btn-outline-info' %>
         </div>
       </div>
