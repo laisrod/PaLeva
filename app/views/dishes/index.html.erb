@@ -32,9 +32,9 @@
                         class: 'text-decoration-none text-primary' %>
                   </h3>
                   <p class="card-text text-secondary">Características: <%= dish.tags.pluck(:name).join(", ") %></p>
-                  
-                  <div class="d-flex gap-2 mb-2">
-                    <%= link_to 'Editar', 
+                  <% if current_user.role? %> 
+                    <div class="d-flex gap-2 mb-2">
+                      <%= link_to 'Editar', 
                         edit_establishment_dish_path(@establishment, dish), 
                         class: 'btn btn-outline-primary' %>
                     <%= button_to 'Remover Prato', 
@@ -42,8 +42,8 @@
                         method: :delete, 
                         data: { turbo_confirm: 'Tem certeza que deseja remover este prato?' }, 
                         class: 'btn btn-outline-danger' %>
-                  </div>
-                  
+                    </div>
+                  <% end %>
                   <%= link_to 'Adicionar porção', 
                       new_establishment_dish_portion_path(@establishment, dish),
                       class: 'btn btn-outline-secondary' %>
@@ -57,12 +57,14 @@
       <% end %>
 
       <div class="mt-4 d-flex gap-3">
-        <%= link_to 'Criar Característica', 
-            new_establishment_tag_path(@establishment),  
-            class: 'btn btn-outline-primary' %>
-        <%= link_to 'Criar Novo Prato', 
-            new_establishment_dish_path, 
-            class: 'btn btn-outline-primary' %>
+        <% if current_user.role? %>
+          <%= link_to 'Criar Característica', 
+              new_establishment_tag_path(@establishment),  
+              class: 'btn btn-outline-primary' %>
+          <%= link_to 'Criar Novo Prato', 
+              new_establishment_dish_path, 
+              class: 'btn btn-outline-primary' %>
+        <% end %>
         <%= link_to 'Voltar', 
             establishments_path, 
             class: 'btn btn-outline-secondary' %>

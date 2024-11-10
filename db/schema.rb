@@ -86,6 +86,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_10_134702) do
     t.integer "establishment_id", null: false
     t.string "email"
     t.string "cpf"
+    t.boolean "role", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["establishment_id", "email", "cpf"], name: "idx_on_establishment_id_email_cpf_b1d41def85", unique: true

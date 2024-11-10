@@ -1,56 +1,60 @@
 <div class="container mt-4">
   <div class="card shadow-sm">
     <div class="card-body bg-light">
-      <h1 class="card-title text-primary">Editar Bebida</h1>
+      <% if current_user.role? %>
+        <h1 class="card-title text-primary">Editar Bebida</h1>
 
-      <div class="card shadow-sm mb-3">
-        <div class="card-body">
-          <%= form_with(model: [@establishment, @drink], local: true) do |f| %>
-            <% if @drink.errors.any? %>
-              <div class="alert alert-danger">
-                <h4><%= pluralize(@drink.errors.count, "erro") %> encontrado:</h4>
-                <ul>
-                  <% @drink.errors.full_messages.each do |msg| %>
-                    <li><%= msg %></li>
-                  <% end %>
-                </ul>
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <%= form_with(model: [@establishment, @drink], local: true) do |f| %>
+              <% if @drink.errors.any? %>
+                <div class="alert alert-danger">
+                  <h4><%= pluralize(@drink.errors.count, "erro") %> encontrado:</h4>
+                  <ul>
+                    <% @drink.errors.full_messages.each do |msg| %>
+                      <li><%= msg %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              <% end %>
+
+              <div class="mb-3">
+                <%= f.label :name, "Nome", class: "form-label" %>
+                <%= f.text_field :name, class: "form-control" %>
+              </div>
+
+              <div class="mb-3">
+                <%= f.label :description, "Descrição", class: "form-label" %>
+                <%= f.text_area :description, class: "form-control" %>
+              </div>
+
+              <div class="mb-3">
+                <%= f.label :calories, "Calorias", class: "form-label" %>
+                <%= f.number_field :calories, class: "form-control" %>
+              </div>
+
+              <div class="mb-3">
+                <div class="form-check">
+                  <%= f.check_box :alcoholic, class: "form-check-input" %>
+                  <%= f.label :alcoholic, "Alcoólica?", class: "form-check-label" %>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <%= f.label :photo, "Foto", class: "form-label" %>
+                <%= f.file_field :photo, class: "form-control" %>
+              </div>
+
+              <div class="d-flex gap-3">
+                <%= f.submit "Atualizar Bebida", class: "btn btn-primary" %>
+                <%= link_to "Cancelar", establishment_drink_path(@establishment, @drink), class: "btn btn-outline-secondary" %>
               </div>
             <% end %>
-
-            <div class="mb-3">
-              <%= f.label :name, "Nome", class: "form-label" %>
-              <%= f.text_field :name, class: "form-control" %>
-            </div>
-
-            <div class="mb-3">
-              <%= f.label :description, "Descrição", class: "form-label" %>
-              <%= f.text_area :description, class: "form-control" %>
-            </div>
-
-            <div class="mb-3">
-              <%= f.label :calories, "Calorias", class: "form-label" %>
-              <%= f.number_field :calories, class: "form-control" %>
-            </div>
-
-            <div class="mb-3">
-              <div class="form-check">
-                <%= f.check_box :alcoholic, class: "form-check-input" %>
-                <%= f.label :alcoholic, "Alcoólica?", class: "form-check-label" %>
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <%= f.label :photo, "Foto", class: "form-label" %>
-              <%= f.file_field :photo, class: "form-control" %>
-            </div>
-
-            <div class="d-flex gap-3">
-              <%= f.submit "Atualizar Bebida", class: "btn btn-primary" %>
-              <%= link_to "Cancelar", establishment_drink_path(@establishment, @drink), class: "btn btn-outline-secondary" %>
-            </div>
-          <% end %>
+          </div>
         </div>
-      </div>
+      <% else %>
+        <p>Você não tem permissão para acessar esta página.</p>
+      <% end %>
     </div>
   </div>
 </div>

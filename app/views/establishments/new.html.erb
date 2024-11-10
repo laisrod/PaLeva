@@ -1,8 +1,12 @@
 <% content_for :title, "Novo Restaurante" %>
 
 <h1>Novo Restaurante</h1>
+<% if current_user.role? %>
+  <%= render "form", establishment: @establishment %>
 
-<%= render "form", establishment: @establishment %>
+<% else %>
+  <p>Você não tem permissão para acessar esta página.</p>
+<% end %>
 
 <br>
 

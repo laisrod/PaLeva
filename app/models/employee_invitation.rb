@@ -15,6 +15,7 @@ class EmployeeInvitation < ApplicationRecord
                                 message: "já possui um convite para este estabelecimento" }
     
     before_validation :format_cpf
+    before_validation :set_default_role
     
     before_save :copy_data_to_user, if: -> { user_id_changed_manually? }
     
@@ -29,15 +30,22 @@ class EmployeeInvitation < ApplicationRecord
     end
     
     def copy_data_to_user
-      return unless user.present?
-      
-      user.update(
-        email: email,
-        cpf: cpf
-      )
+      if user.present?
+          user.update(
+              email: email,
+              cpf: cpf,
+              role: role
+          )
+      else
+          return
+      end
     end
     
     def user_id_changed_manually?
       attribute_was("user") != user
-  end
+    end
+    
+    def set_default_role
+      self.role = false if role.nil?
+    end
 end

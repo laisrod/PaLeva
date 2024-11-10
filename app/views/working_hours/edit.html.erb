@@ -5,6 +5,7 @@
     <div class="col-md-6 offset-md-3">
       <div class="card">
         <div class="card-header">
+          <% if current_user.role? %>
           <h1 class="h4 mb-0">Editar Horário de Funcionamento - <%= @working_hour.week_day %></h1>
         </div>
         
@@ -44,7 +45,10 @@
               <%= link_to "Voltar", root_path, class: 'btn btn-secondary' %>
             </div>
           <% end %>
-        </div>
+          </div>
+        <% else %>
+          <p>Você não tem permissão para acessar esta página.</p>
+        <% end %>
       </div>
     </div>
   </div>

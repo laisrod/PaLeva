@@ -4,6 +4,7 @@ class CreateEmployeeInvitation < ActiveRecord::Migration[7.2]
       t.references :establishment, null: false, foreign_key: true
       t.string :email
       t.string :cpf
+      t.boolean :role, default: false
       t.timestamps
     end
 
