@@ -9,7 +9,8 @@ describe 'Editar Estabelecimento' do
       email: 'user13588@example.com',
       last_name: 'Last Name',
       cpf: '600.941.170-04',
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true
     )
 
     establishment = Establishment.create!(
@@ -22,7 +23,7 @@ describe 'Editar Estabelecimento' do
       postal_code: '12345',
       email: 'establishment2588@example.com',
       phone_number: '1234567890',
-      user_id: user.id
+      user: user
     )
 
     # Act 
@@ -40,7 +41,8 @@ describe 'Editar Estabelecimento' do
       email: 'user1358888@example.com',
       last_name: 'Last Name',
       cpf: '455.006.230-44',
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true
     )
 
     establishment = Establishment.create!(
@@ -53,7 +55,7 @@ describe 'Editar Estabelecimento' do
       postal_code: '12345',
       email: 'establishment258888@example.com',
       phone_number: '1234567890',
-      user_id: user.id
+      user: user
     )
 
     # Act
@@ -78,7 +80,8 @@ describe 'Editar Estabelecimento' do
       email: 'user13741@example.com',
       last_name: 'Last Name',
       cpf: '757.423.510-46',
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true
     )
     establishment = Establishment.create!(
       name: 'Bar do João',
@@ -116,7 +119,8 @@ describe 'Editar Estabelecimento' do
       email: 'user13555@example.com',
       last_name: 'Last Name',
       cpf: '293.940.010-50',
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true
     )
 
     establishment = Establishment.create!(
@@ -129,7 +133,7 @@ describe 'Editar Estabelecimento' do
       postal_code: '12345',
       email: 'establishment2555@example.com',
       phone_number: '1234567890',
-      user_id: user.id
+      user: user
     )
 
     # Act

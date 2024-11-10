@@ -7,7 +7,8 @@ RSpec.describe 'Criação de Cardápio', type: :system do
       email: 'user99913@example.com', 
       last_name: 'Last Name', 
       cpf: '483.556.180-50', 
-      password: 'testes123456'
+      password: 'testes123456',
+      role: true  
     )
 
     establishment = Establishment.create!(
@@ -20,7 +21,7 @@ RSpec.describe 'Criação de Cardápio', type: :system do
       postal_code: '12345', 
       email: 'establishment9992@example.com', 
       phone_number: '1234567890', 
-      user_id: user.id
+      user: user
     )    
     pao_queijo = Dish.create!(
       name: 'Pão de Queijo',

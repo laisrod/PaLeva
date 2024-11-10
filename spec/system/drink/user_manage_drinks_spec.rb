@@ -9,7 +9,8 @@ describe 'Gerenciamento de Bebidas' do
       email: "user#{Time.now.to_i}@example.com",
       password: 'password1230',
       last_name: 'Last Name',
-      cpf: '483.556.180-50'
+      cpf: '483.556.180-50',
+      role: true
     )
 
     establishment = Establishment.create!(
@@ -48,7 +49,8 @@ describe 'Gerenciamento de Bebidas' do
       email: "user#{Time.now.to_i}@example.com",
       password: 'password123055555',
       last_name: 'Last Name',
-      cpf: '483.556.180-50'
+      cpf: '483.556.180-50',
+      role: true
     )
 
     establishment = Establishment.create!(
@@ -110,7 +112,7 @@ describe 'Gerenciamento de Bebidas' do
     # Arrange
     user = User.create!(name: 'User', email: "user#{Time.now.to_i}@example.com", 
                        password: 'password1230', last_name: 'Last Name', 
-                       cpf: '483.556.180-50')
+                       cpf: '483.556.180-50', role: true)
 
     establishment = Establishment.create!(name: 'Meu Restaurante', 
                                        social_name: 'Restaurante LTDA',
@@ -146,7 +148,7 @@ describe 'Gerenciamento de Bebidas' do
     # Arrange
     user = User.create!(name: 'User', email: "user#{Time.now.to_i}@example.com", 
     password: 'password1230', last_name: 'Last Name', 
-    cpf: '483.556.180-50')
+    cpf: '483.556.180-50', role: true)
 
     establishment = Establishment.create!(name: 'Meu Restaurante', 
                     social_name: 'Restaurante LTDA',

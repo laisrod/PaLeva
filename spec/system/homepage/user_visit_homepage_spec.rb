@@ -8,7 +8,8 @@ describe 'Usuário visita tela inicial' do
       email: 'user1223@example.com',
       last_name: 'Last Name',
       cpf: '483.556.180-50',
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true  
     )
 
     establishment = Establishment.create!(
@@ -21,7 +22,7 @@ describe 'Usuário visita tela inicial' do
       postal_code: '12345',
       email: 'establishment2558@example.com',
       phone_number: '1234567890',
-      user_id: user.id
+      user: user
     )
 
     # Act
@@ -39,7 +40,8 @@ describe 'Usuário visita tela inicial' do
       email: 'user1223@example.com',
       last_name: 'Last Name',
       cpf: '483.556.180-50',
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true
     )
 
     establishment = Establishment.create!(
@@ -52,7 +54,7 @@ describe 'Usuário visita tela inicial' do
       postal_code: '12345',
       email: 'establishment2558@example.com',
       phone_number: '1234567890',
-      user_id: user.id
+      user: user
     )
 
     # Act
@@ -72,7 +74,8 @@ describe 'Usuário visita tela inicial' do
       email: 'user1223@example.com',
       last_name: 'Last Name',
       cpf: '483.556.180-50',
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true
     )
 
     # Act

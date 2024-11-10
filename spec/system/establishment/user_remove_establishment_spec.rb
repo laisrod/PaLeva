@@ -9,7 +9,8 @@ describe 'Usuário remove um estabelecimento' do
       email: 'user15523@example.com', 
       last_name: 'Last Name', 
       cpf: '483.556.180-50', 
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true
     )
     
     establishment = Establishment.create!(
@@ -22,7 +23,7 @@ describe 'Usuário remove um estabelecimento' do
       postal_code: '12345', 
       email: 'establishment2558@example.com', 
       phone_number: '1234567890', 
-      user_id: user.id
+      user: user
     )
 
     # Act
@@ -42,7 +43,8 @@ describe 'Usuário remove um estabelecimento' do
       email: 'user14563@example.com', 
       last_name: 'Last Name', 
       cpf: '483.556.180-50', 
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true
     )
 
     # Act
@@ -61,8 +63,9 @@ describe 'Usuário remove um estabelecimento' do
       email: 'user13523@example.com', 
       last_name: 'Last Name', 
       cpf: '483.556.180-50', 
-      password: 'password1234567'
-    )
+      password: 'password1234567',
+      role: true
+      )
     
     establishment = Establishment.create!(
       name: 'Establishment', 
@@ -74,7 +77,7 @@ describe 'Usuário remove um estabelecimento' do
       postal_code: '12345', 
       email: 'establishment2523@example.com', 
       phone_number: '1234567890', 
-      user_id: user.id
+      user: user
     )
 
     # Act

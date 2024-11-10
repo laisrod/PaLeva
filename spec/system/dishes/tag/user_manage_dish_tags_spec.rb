@@ -8,7 +8,8 @@ RSpec.describe 'Usuário gerencia características dos pratos' do
       password: '123456789012',
       name: 'João',
       last_name: 'Silva',
-      cpf: '483.556.180-50'
+      cpf: '483.556.180-50',
+      role: true
     )
     establishment = Establishment.create!(
       name: 'Restaurante do João',

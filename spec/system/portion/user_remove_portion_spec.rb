@@ -8,7 +8,8 @@ RSpec.describe 'Remoção de Porção', type: :system do
         email: 'user99913@example.com', 
         last_name: 'Last Name', 
         cpf: '483.556.180-50', 
-        password: 'password1234567'
+        password: 'password1234567',
+        role: true
       )
 
       establishment = Establishment.create!(
@@ -21,7 +22,7 @@ RSpec.describe 'Remoção de Porção', type: :system do
         postal_code: '12345', 
         email: 'establishment9992@example.com', 
         phone_number: '1234567890', 
-        user_id: user.id
+        user: user
       )
       dish = Dish.create!(
         name: 'Dish',
@@ -50,7 +51,8 @@ RSpec.describe 'Remoção de Porção', type: :system do
         email: 'user99913@example.com', 
         last_name: 'Last Name', 
         cpf: '033.021.570-10', 
-        password: '003302157010'
+        password: '003302157010',
+        role: true
       )
 
       establishment = Establishment.create!(
@@ -63,7 +65,7 @@ RSpec.describe 'Remoção de Porção', type: :system do
         postal_code: '12345', 
         email: 'establishment9992@example.com', 
         phone_number: '1234567890', 
-        user_id: user.id
+        user: user
       )
 
       dish = Dish.create!(
@@ -83,7 +85,8 @@ RSpec.describe 'Remoção de Porção', type: :system do
         email: 'outro@example.com', 
         last_name: 'Usuario', 
         cpf: '118.338.120-42', 
-        password: '118338120422'
+        password: '118338120422',
+        role: true
       )
 
       login_as(outro_user)
@@ -98,7 +101,8 @@ RSpec.describe 'Remoção de Porção', type: :system do
         email: 'user99913@example.com', 
         last_name: 'Last Name', 
         cpf: '483.556.180-50', 
-        password: 'password1234567'
+        password: 'password1234567',
+        role: true
       )
 
       establishment = Establishment.create!(
@@ -111,7 +115,7 @@ RSpec.describe 'Remoção de Porção', type: :system do
         postal_code: '12345', 
         email: 'establishment9992@example.com', 
         phone_number: '1234567890', 
-        user_id: user.id
+        user: user
       )
 
       dish = Dish.create!(

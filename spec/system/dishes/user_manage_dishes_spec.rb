@@ -7,7 +7,8 @@ describe 'Gerenciamento de Pratos' do
       email: "user1@example.com",
       password: 'password1230',
       last_name: 'Last Name',
-      cpf: '483.556.180-50'
+      cpf: '483.556.180-50',
+      role: true
     )
     establishment = Establishment.create!(
       name: 'Meu Restaurante',
@@ -46,7 +47,8 @@ describe 'Gerenciamento de Pratos' do
       email: "user1@example.com",
       password: 'password123055555',
       last_name: 'Last Name',
-      cpf: '483.556.180-50'
+      cpf: '483.556.180-50',
+      role: true
     )
     establishment = Establishment.create!(
       name: 'Meu Restaurante',
@@ -81,7 +83,8 @@ describe 'Gerenciamento de Pratos' do
         email: 'outro@example.com',
         password: 'password1230',
         last_name: 'Last Name',
-        cpf: '483.556.180-50'
+        cpf: '483.556.180-50',
+        role: true
       )
     )
     # Act

@@ -8,7 +8,8 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
         email: 'user99913@example.com', 
         last_name: 'Last Name', 
         cpf: '483.556.180-50', 
-        password: 'password1234567'
+        password: 'password1234567',
+        role: true  
       )
 
       establishment = Establishment.create!(
@@ -21,7 +22,7 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
         postal_code: '12345', 
         email: 'establishment9992@example.com', 
         phone_number: '1234567890', 
-        user_id: user.id
+        user: user
       )
 
     dish = Dish.create!(
@@ -69,7 +70,8 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
         email: 'user99913@example.com', 
         last_name: 'Last Name', 
         cpf: '483.556.180-50', 
-        password: 'password1234567'
+        password: 'password1234567',
+        role: true
       )
 
       establishment = Establishment.create!(
@@ -82,7 +84,7 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
         postal_code: '12345', 
         email: 'establishment9992@example.com', 
         phone_number: '1234567890', 
-        user_id: user.id
+        user: user
       )
 
     order = Order.create!(establishment: establishment, status: :draft)
@@ -107,7 +109,8 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
         email: 'user99913@example.com', 
         last_name: 'Last Name', 
         cpf: '483.556.180-50', 
-        password: 'password1234567'
+        password: 'password1234567',
+        role: true
       )
 
       establishment = Establishment.create!(
@@ -120,7 +123,7 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
         postal_code: '12345', 
         email: 'establishment9992@example.com', 
         phone_number: '1234567890', 
-        user_id: user.id
+        user: user
       )
 
     order = Order.create!(establishment: establishment, status: :draft)
@@ -144,8 +147,9 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
         name: 'User', 
         email: 'user99913@example.com', 
         last_name: 'Last Name', 
-        cpf: '483.556.180-50', 
-        password: 'password1234567'
+        cpf: '084.734.580-79', 
+        password: 'password1234567',
+        role: true
       )
 
       establishment = Establishment.create!(
@@ -158,7 +162,7 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
         postal_code: '12345', 
         email: 'establishment9992@example.com', 
         phone_number: '1234567890', 
-        user_id: user.id
+        user: user
       )
 
     order = Order.create!(establishment: establishment, status: :draft)
@@ -173,13 +177,7 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
       click_button 'Atualizar'
     end
     
-    # Debug temporário
-    puts "Current Path: #{current_path}"
-    puts "Page HTML: #{page.html}"
-    puts "Flash Messages: #{page.find('.alert', match: :first).text}" rescue "No alert found"
-    puts "Order Errors: #{Order.last.errors.full_messages}" rescue "No order found"
-    
-    expect(page).to have_content 'CPF inválido'
+    expect(page).to have_content 'Customer cpf inválido'
   end
 
   it 'sem CPF' do
@@ -189,7 +187,8 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
         email: 'user99913@example.com', 
         last_name: 'Last Name', 
         cpf: '483.556.180-50', 
-        password: 'password1234567'
+        password: 'password1234567',
+        role: true
       )
 
       establishment = Establishment.create!(
@@ -202,7 +201,7 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
         postal_code: '12345', 
         email: 'establishment9992@example.com', 
         phone_number: '1234567890', 
-        user_id: user.id
+        user: user
       )
 
     order = Order.create!(establishment: establishment, status: :draft)

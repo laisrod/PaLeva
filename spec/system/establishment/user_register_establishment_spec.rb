@@ -9,7 +9,8 @@ describe 'Registro de Estabelecimento pelo Usuário' do
       email: 'user223@example.com',
       last_name: 'Last Name',
       cpf: '483.556.180-50',
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true
     )
 
     # Act
@@ -27,7 +28,8 @@ describe 'Registro de Estabelecimento pelo Usuário' do
       email: 'user1223@example.com',
       last_name: 'Last Name',
       cpf: '483.556.180-50',
-      password: 'password1234567'
+      password: 'password1234567',
+      role: true
     )
 
     # Act
@@ -56,7 +58,8 @@ describe 'Registro de Estabelecimento pelo Usuário' do
       password: '123456789012',
       name: 'João',
       last_name: 'Silva',
-      cpf: '757.423.510-46'
+      cpf: '757.423.510-46',
+      role: true
     )
 
     # Act

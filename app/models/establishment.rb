@@ -6,7 +6,7 @@ class Establishment < ApplicationRecord
   has_many :menus, dependent: :destroy
   has_many :orders, dependent: :destroy
   has_many :employee_invitations, dependent: :destroy
-  has_many :users, dependent: :destroy
+  has_many :users
 
   validates :name, :social_name, :cnpj,
             :full_address, :city, :state,
