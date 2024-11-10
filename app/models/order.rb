@@ -6,17 +6,17 @@ class Order < ApplicationRecord
   before_save :reset_timestamps
   before_save :update_total_price
 
-  validates :customer_cpf, :customer_email, presence: true, on: :update
-  # validates :customer_cpf, format: { with: /\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/, message: 'inválido' }, if: :customer_cpf?
+  validate :validate_contact_info, on: :update
 
-  
+  before_validation :should_validate_cpf?, if: -> { customer_cpf.present? }
+
   enum status: {
-    draft: 'draft',
-    pending: 'pending',
-    preparing: 'preparing',
-    ready: 'ready',
-    delivered: 'delivered',
-    cancelled: 'cancelled'
+    draft: "draft",
+    pending: "pending",
+    preparing: "preparing",
+    ready: "ready",
+    delivered: "delivered",
+    cancelled: "cancelled"
   }
   
   def next_status(cancel = false)
@@ -49,6 +49,16 @@ class Order < ApplicationRecord
   def generate_code
     new_code = SecureRandom.hex(8)
     Order.where(code: new_code).exists? ? generate_code : self.code = new_code
+  end
+
+  def validate_contact_info
+    if customer_email.blank? && customer_phone.blank?
+      errors.add(:base, 'É necessário informar um telefone ou email')
+    end
+  end
+
+  def should_validate_cpf?
+    errors.add(:customer_cpf, "inválido") unless CPF.valid?(customer_cpf)
   end
 
 end

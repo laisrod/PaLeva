@@ -1,0 +1,47 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Convites de Funcionários</h2>
+    <%= link_to 'Novo Convite', 
+                new_establishment_employee_invitation_path(@establishment), 
+                class: 'btn btn-primary' %>
+  </div>
+
+  <% if @employee_invitations.any? %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>CPF</th>
+          <th>Status</th>
+          <th>Data</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @employee_invitations.each do |invitation| %>
+          <tr>
+            <td><%= invitation.email %></td>
+            <td><%= invitation.cpf %></td>
+            <td>
+              <% if invitation.used? %>
+                <span class="badge bg-success">Conta Criada</span>
+              <% else %>
+                <span class="badge bg-warning">Pendente</span>
+              <% end %>
+            </td>
+            <td><%= l invitation.created_at, format: :short %></td>
+            <td>
+              <%= button_to 'Remover', 
+                  establishment_employee_invitation_path(@establishment, invitation), 
+                  method: :delete, 
+                  class: 'btn btn-danger btn-sm',
+                  data: { turbo_confirm: 'Tem certeza?' } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-muted">Nenhum convite cadastrado.</p>
+  <% end %>
+</div>

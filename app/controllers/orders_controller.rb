@@ -5,8 +5,12 @@ class OrdersController < ApplicationController
 
   def update
     @order = Order.find(params[:id])
-    @order.update(order_params)
-    redirect_to establishment_order_path(@order.establishment, @order)
+    if @order.update(order_params)
+      redirect_to establishment_order_path(@order.establishment, @order), notice: 'Pedido atualizado com sucesso'
+    else
+      flash.now[:alert] = @order.errors.full_messages.join(', ')
+      render :show, status: :unprocessable_entity
+    end
   end
 
   def show
@@ -62,14 +66,15 @@ class OrdersController < ApplicationController
   private
 
   def order_params
-    params.require(:order).permit(:establishment_id, order_items_attributes: [:menu_item_id, :quantity])
+    params.require(:order).permit(
+      :customer_name,
+      :customer_email,
+      :customer_cpf,
+      :customer_phone
+    )
   end
 
   def order_menu_item_params
     params.require(:order_menu_item).permit(:portion_id, :menu_item_id, :quantity)
-  end
-
-  def order_params
-    params.require(:order).permit(:customer_name, :customer_email, :customer_cpf)
   end
 end

@@ -1,11 +1,10 @@
 <div class="container mt-4">
-  <% if notice %>
-    <div class="alert alert-success" role="alert">
-      <%= notice %>
+  <% if alert %>
+    <div class="alert alert-danger">
+      <%= alert %>
     </div>
   <% end %>
 
-  
   <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
       <h2>Pedido #<%= @order.id %></h2>
@@ -35,15 +34,35 @@
         <div class="col-md-6">
           <h4>Informações do Cliente</h4>
           <% if @order.status == 'draft' %>
-            <%= form_with model: @order, url: establishment_order_path(@order.establishment, @order), method: :patch, id: 'update-order-form' do |f| %>
-              <p><strong>Nome:</strong> <%= f.text_field :customer_name %></p>
-              <p><strong>Email:</strong> <%= f.text_field :customer_email %></p>
-              <p><strong>cpf:</strong> <%= f.text_field :customer_cpf %></p>
+            <%= form_with model: @order, url: establishment_order_path(@order.establishment, @order), method: :patch, id: 'update-order-form', local: true do |f| %>
+              
+              <div class="form-group">
+                <%= f.label :customer_name, 'Nome:' %>
+                <%= f.text_field :customer_name, class: 'form-control' %>
+              </div>
+              
+              <div class="form-group">
+                <%= f.label :customer_email, 'Email:' %>
+                <%= f.text_field :customer_email, class: 'form-control' %>
+              </div>
+              
+              <div class="form-group">
+                <%= f.label :customer_cpf, 'CPF:' %>
+                <%= f.text_field :customer_cpf, class: 'form-control' %>
+              </div>
+
+              <div class="form-group">
+                <%= f.label :customer_phone, 'Telefone:' %>
+                <%= f.text_field :customer_phone, class: 'form-control' %>
+              </div>
+              
+              <%= f.submit 'Atualizar', class: 'btn btn-primary', id: 'update-order-button' %>
             <% end %>
           <% else %>
             <p><strong>Nome:</strong> <%= @order.customer_name %></p>
             <p><strong>Email:</strong> <%= @order.customer_email %></p>
             <p><strong>cpf:</strong> <%= @order.customer_cpf %></p>
+            <p><strong>Telefone:</strong> <%= @order.customer_phone %></p>
           <% end %>
         </div>
       </div>

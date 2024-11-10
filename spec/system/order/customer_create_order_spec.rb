@@ -1,27 +1,28 @@
 require 'rails_helper'
+require 'cpf_cnpj'
 
 RSpec.describe 'Cliente cria um pedido', type: :system do
   it 'com sucesso' do
     user = User.create!(
-      name: 'User', 
-      email: 'user99913@example.com', 
-      last_name: 'Last Name', 
-      cpf: '483.556.180-50', 
-      password: 'password1234567'
-    )
+        name: 'User', 
+        email: 'user99913@example.com', 
+        last_name: 'Last Name', 
+        cpf: '483.556.180-50', 
+        password: 'password1234567'
+      )
 
-    establishment = Establishment.create!(
-      name: 'Establishment', 
-      social_name: 'Establishment', 
-      cnpj: '47.761.353/0001-78', 
-      full_address: '123 Main St', 
-      city: 'Anytown', 
-      state: 'ST', 
-      postal_code: '12345', 
-      email: 'establishment9992@example.com', 
-      phone_number: '1234567890', 
-      user_id: user.id
-    )
+      establishment = Establishment.create!(
+        name: 'Establishment', 
+        social_name: 'Establishment', 
+        cnpj: '47.761.353/0001-78', 
+        full_address: '123 Main St', 
+        city: 'Anytown', 
+        state: 'ST', 
+        postal_code: '12345', 
+        email: 'establishment9992@example.com', 
+        phone_number: '1234567890', 
+        user_id: user.id
+      )
 
     dish = Dish.create!(
       name: 'X-Burger',
@@ -42,9 +43,9 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
     order = Order.create(
       establishment: establishment    )
     login_as(user)
-    save_and_open_page  # Adicione esta linha
+    save_and_open_page
 
-    visit establishment_order_path(establishment, order) # Altere para a rota correta
+    visit establishment_order_path(establishment, order)
  
     
     click_link 'Adicionar Items'
@@ -62,127 +63,160 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
   end
 
   it 'com dados incompletos' do
+    # Setup
     user = User.create!(
-      name: 'User', 
-      email: 'user99913@example.com', 
-      last_name: 'Last Name', 
-      cpf: '483.556.180-50', 
-      password: 'password1234567'
-    )
+        name: 'User', 
+        email: 'user99913@example.com', 
+        last_name: 'Last Name', 
+        cpf: '483.556.180-50', 
+        password: 'password1234567'
+      )
 
-    establishment = Establishment.create!(
-      name: 'Establishment', 
-      social_name: 'Establishment', 
-      cnpj: '47.761.353/0001-78', 
-      full_address: '123 Main St', 
-      city: 'Anytown', 
-      state: 'ST', 
-      postal_code: '12345', 
-      email: 'establishment9992@example.com', 
-      phone_number: '1234567890', 
-      user_id: user.id
-    )
+      establishment = Establishment.create!(
+        name: 'Establishment', 
+        social_name: 'Establishment', 
+        cnpj: '47.761.353/0001-78', 
+        full_address: '123 Main St', 
+        city: 'Anytown', 
+        state: 'ST', 
+        postal_code: '12345', 
+        email: 'establishment9992@example.com', 
+        phone_number: '1234567890', 
+        user_id: user.id
+      )
 
-    dish = Dish.create!(
-      name: 'X-Burger',
-      description: 'teste',
-      establishment: establishment
-    )
-    portion_dish = Portion.create!(description: 'Pequeno', price: 10.0, dish_id: dish.id)
-    menu = Menu.create(
-      name: 'Menu 1',
-      description:'teste',
-      establishment: establishment
-    )
-    menu_item_dish = MenuItem.create(
-      menu: menu,
-      dish: dish    
-    )
-
-    order = Order.create(
-      establishment: establishment    )
-    login_as(user)
-    save_and_open_page  # Adicione esta linha
+    order = Order.create!(establishment: establishment, status: :draft)
     
-    visit establishment_order_path(establishment, order) # Altere para a rota correta
- 
+    login_as user
+    visit establishment_order_path(establishment, order)
     
-    click_link 'Adicionar Items'
-    click_link 'Ver'
-    click_link 'Adicionar ao Pedido'
-
+    within '#update-order-form' do
+      fill_in 'Nome:', with: 'João'
+      fill_in 'Email:', with: ''
+      fill_in 'CPF:', with: '260.405.490-68'
+      click_button 'Atualizar'
+    end
+    
     expect(page).to have_content 'É necessário informar um telefone ou email'
+  end
+
+  it 'com email preenchido' do
+    # Setup
+    user = User.create!(
+        name: 'User', 
+        email: 'user99913@example.com', 
+        last_name: 'Last Name', 
+        cpf: '483.556.180-50', 
+        password: 'password1234567'
+      )
+
+      establishment = Establishment.create!(
+        name: 'Establishment', 
+        social_name: 'Establishment', 
+        cnpj: '47.761.353/0001-78', 
+        full_address: '123 Main St', 
+        city: 'Anytown', 
+        state: 'ST', 
+        postal_code: '12345', 
+        email: 'establishment9992@example.com', 
+        phone_number: '1234567890', 
+        user_id: user.id
+      )
+
+    order = Order.create!(establishment: establishment, status: :draft)
+    
+    login_as user
+    visit establishment_order_path(establishment, order)
+    
+    within '#update-order-form' do
+      fill_in 'Nome:', with: 'João'
+      fill_in 'Email:', with: 'joao@email.com'
+      fill_in 'CPF:', with: '260.405.490-68'
+      click_button 'Atualizar'
+    end
+    
+    expect(page).to have_content 'Pedido atualizado com sucesso'
   end
 
   it 'com CPF inválido' do
     # Setup
     user = User.create!(
-      name: 'User', 
-      email: 'user99913@example.com', 
-      last_name: 'Last Name', 
-      cpf: '987.780.040-39', 
-      password: 'password1234567'
-    )
-  
-    establishment = Establishment.create!(
-      name: 'Establishment', 
-      social_name: 'Establishment', 
-      cnpj: '27.806.491/0001-19', 
-      full_address: '123 Main St', 
-      city: 'Anytown', 
-      state: 'ST', 
-      postal_code: '12345', 
-      email: 'establishment9992@example.com', 
-      phone_number: '1234567890', 
-      user_id: user.id
-    )
-  
-    dish = Dish.create!(
-      name: 'X-Burger',
-      description: 'teste',
-      establishment: establishment
-    )
+        name: 'User', 
+        email: 'user99913@example.com', 
+        last_name: 'Last Name', 
+        cpf: '483.556.180-50', 
+        password: 'password1234567'
+      )
+
+      establishment = Establishment.create!(
+        name: 'Establishment', 
+        social_name: 'Establishment', 
+        cnpj: '47.761.353/0001-78', 
+        full_address: '123 Main St', 
+        city: 'Anytown', 
+        state: 'ST', 
+        postal_code: '12345', 
+        email: 'establishment9992@example.com', 
+        phone_number: '1234567890', 
+        user_id: user.id
+      )
+
+    order = Order.create!(establishment: establishment, status: :draft)
     
-    portion_dish = Portion.create!(
-      description: 'Pequeno', 
-      price: 10.0, 
-      dish_id: dish.id
-    )
-    
-    menu = Menu.create!(
-      name: 'Menu 1',
-      description: 'teste',
-      establishment: establishment
-    )
-    
-    menu_item_dish = MenuItem.create!(
-      menu: menu,
-      dish: dish    
-    )
-  
-    # Criar um pedido em status draft
-    order = Order.create!(
-      establishment: establishment,
-      status: :draft
-    )
-  
-    login_as(user)
-    
-    # Visitar a página do pedido
+    login_as user
     visit establishment_order_path(establishment, order)
-  
-  # Debug para ver os campos disponíveis
-  # puts page.html
-  
-  # Preencher usando os IDs corretos dos campos
-  fill_in 'order_customer_name', with: 'João Silva'
-  fill_in 'order_customer_email', with: 'joao@example.com'
-  fill_in 'order_customer_cpf', with: '987.780.040-39'
-  
-  click_button 'Atualizar'
-  
-  # Expectativas
-  expect(page).to have_content 'CPF inválido'
-  expect(order.reload.status).to eq 'draft'
-end
+    
+    within '#update-order-form' do
+      fill_in 'Nome:', with: 'João'
+      fill_in 'Email:', with: 'joao@email.com'
+      fill_in 'CPF:', with: '000.000.000-00'
+      click_button 'Atualizar'
+    end
+    
+    # Debug temporário
+    puts "Current Path: #{current_path}"
+    puts "Page HTML: #{page.html}"
+    puts "Flash Messages: #{page.find('.alert', match: :first).text}" rescue "No alert found"
+    puts "Order Errors: #{Order.last.errors.full_messages}" rescue "No order found"
+    
+    expect(page).to have_content 'CPF inválido'
+  end
+
+  it 'sem CPF' do
+    # Setup
+    user = User.create!(
+        name: 'User', 
+        email: 'user99913@example.com', 
+        last_name: 'Last Name', 
+        cpf: '483.556.180-50', 
+        password: 'password1234567'
+      )
+
+      establishment = Establishment.create!(
+        name: 'Establishment', 
+        social_name: 'Establishment', 
+        cnpj: '47.761.353/0001-78', 
+        full_address: '123 Main St', 
+        city: 'Anytown', 
+        state: 'ST', 
+        postal_code: '12345', 
+        email: 'establishment9992@example.com', 
+        phone_number: '1234567890', 
+        user_id: user.id
+      )
+
+    order = Order.create!(establishment: establishment, status: :draft)
+    
+    login_as user
+    visit establishment_order_path(establishment, order)
+    
+    within '#update-order-form' do
+      fill_in 'Nome:', with: 'João'
+      fill_in 'Email:', with: 'joao@email.com'
+      fill_in 'CPF:', with: ''
+      click_button 'Atualizar'
+    end
+    
+    expect(page).to have_content 'Pedido atualizado com sucesso'
+  end
 end

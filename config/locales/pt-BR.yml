@@ -9,6 +9,10 @@ pt-BR:
         state: "Estado"
         postal_code: "CEP"
         dishes: "Pratos"
+      order:
+        customer_cpf: "CPF"
+        customer_email: "Email"
+        customer_name: "Nome"
     errors:
       messages:
         record_invalid: 'A validação falhou: %{errors}'
@@ -28,6 +32,10 @@ pt-BR:
               blank: "Sobrenome não pode ficar em branco"
             cpf:
               blank: "CPF não pode ficar em branco"
+              invalid: "CPF inválido"
+        order:
+          attributes:
+            customer_cpf:
               invalid: "CPF inválido"
     models:
       tag: Característica

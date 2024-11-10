@@ -33,6 +33,8 @@ Rails.application.routes.draw do
         patch :cancel, to: 'orders#cancel'
       end
     end
+
+    resources :employee_invitations
   end
   resources :users
   resources :portions

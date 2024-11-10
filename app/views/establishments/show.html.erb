@@ -1,4 +1,9 @@
 <div class="container mt-4">
+  <% if current_user.role? %>
+    <%= link_to 'Convites de Funcionários', 
+                new_establishment_employee_invitation_path(@establishment), 
+                class: 'btn btn-primary' %>
+  <% end %>
   <div class="card shadow-sm">
     <div class="card-body bg-light">
       <h2 class="card-title text-primary"><%= @establishment.name %></h2>
