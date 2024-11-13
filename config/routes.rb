@@ -41,4 +41,12 @@ Rails.application.routes.draw do
   end
   resources :users
   resources :portions
+
+  namespace :api do
+    namespace :v1 do
+      resources :establishments, param: :code do
+        resources :orders, only: [:index]
+      end
+    end
+  end
 end
