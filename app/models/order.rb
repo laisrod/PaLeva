@@ -38,7 +38,7 @@ class Order < ApplicationRecord
   end
   
   private
-  
+
   def reset_timestamps
     if status_changed? && status_was == 'draft' && status != 'draft'
       self.created_at = DateTime.now

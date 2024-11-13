@@ -1,7 +1,7 @@
 <%= form_with(model: establishment) do |form| %>
 
   <% if establishment.errors.any? %>
-    <div style="color: red">
+    <div class="alert alert-danger">
       <h2><%= pluralize(establishment.errors.count, "error") %> impediram o cadastro:</h2>
 
       <ul>
@@ -12,45 +12,47 @@
     </div>
   <% end %>
   
-  <div class="form-group">
-    <div>
-      <%= form.label :name, 'Nome Fantasia' %>
-      <%= form.text_field :name %>
-    </div>
-    <div>
-      <%= form.label :social_name, 'Razão Social' %>
-      <%= form.text_field :social_name %>
-    </div>
-    <div>
-      <%= form.label :cnpj, 'CNPJ' %>
-      <%= form.text_field :cnpj %>
-    </div>
-    <div>
-      <%= form.label :full_address, 'Endereço' %>
-      <%= form.text_field :full_address %>
-    </div>
-    <div>
-      <%= form.label :city, 'Cidade' %>
-      <%= form.text_field :city %>
-    </div>
-    <div>
-      <%= form.label :state, 'Estado' %>
-      <%= form.text_field :state %>
-    </div>
-    <div>
-      <%= form.label :postal_code, 'Código Postal' %>
-      <%= form.text_field :postal_code %>
-    </div>
-    <div>
-      <%= form.label :email, 'E-mail' %>
-      <%= form.email_field :email %>
-    </div>
-    <div>
-      <%= form.label :phone_number, 'Telefone' %>
-      <%= form.telephone_field :phone_number %>
-    </div>
-    <div class="d-flex gap-3">
-      <%= form.submit "Salvar Restaurante", class: "btn btn-primary" %>
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <%= form.label :name, 'Nome Fantasia', class: "form-label" %>
+        <%= form.text_field :name, class: "form-control" %>
+      </div>
+      <div class="col-md-6">
+        <%= form.label :social_name, 'Razão Social', class: "form-label" %>
+        <%= form.text_field :social_name, class: "form-control" %>
+      </div>
+      <div class="col-md-6">
+        <%= form.label :cnpj, 'CNPJ', class: "form-label" %>
+        <%= form.text_field :cnpj, class: "form-control" %>
+      </div>
+      <div class="col-md-6">
+        <%= form.label :full_address, 'Endereço', class: "form-label" %>
+        <%= form.text_field :full_address, class: "form-control" %>
+      </div>
+      <div class="col-md-4">
+        <%= form.label :city, 'Cidade', class: "form-label" %>
+        <%= form.text_field :city, class: "form-control" %>
+      </div>
+      <div class="col-md-4">
+        <%= form.label :state, 'Estado', class: "form-label" %>
+        <%= form.text_field :state, class: "form-control" %>
+      </div>
+      <div class="col-md-4">
+        <%= form.label :postal_code, 'Código Postal', class: "form-label" %>
+        <%= form.text_field :postal_code, class: "form-control" %>
+      </div>
+      <div class="col-md-6">
+        <%= form.label :email, 'E-mail', class: "form-label" %>
+        <%= form.email_field :email, class: "form-control" %>
+      </div>
+      <div class="col-md-6">
+        <%= form.label :phone_number, 'Telefone', class: "form-label" %>
+        <%= form.telephone_field :phone_number, class: "form-control" %>
+      </div>
+      <div class="col-12 mt-3">
+        <%= form.submit "Salvar Restaurante", class: "btn btn-primary" %>
+      </div>
     </div>
   </div>
 <% end %>

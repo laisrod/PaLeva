@@ -27,8 +27,14 @@ class OrdersController < ApplicationController
   def save_item
     @order = current_order
     @order_menu_item = @order.order_menu_items.build(order_menu_item_params)
-    @order_menu_item.save!
-    redirect_to establishment_order_path(@order.establishment, @order)
+    
+    if @order_menu_item.save
+      redirect_to establishment_order_path(@order.establishment, @order), notice: 'Item adicionado com sucesso'
+    else
+      @menu_item = MenuItem.find(order_menu_item_params[:menu_item_id])
+      @establishment = @order.establishment
+      render :add_item, status: :unprocessable_entity, notice: 'Não é possível adicionar um item sem porção'
+    end
   end
 
   def remove_item

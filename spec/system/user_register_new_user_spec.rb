@@ -68,6 +68,6 @@ RSpec.describe 'Cadastro de Funcionário', type: :system do
 
     click_button 'Cadastrar'
 
-    expect(page).to have_content('12 (minimo de caracteres)')
+    expect(page).to have_content('(12 caracteres mínimos)')
   end
 end

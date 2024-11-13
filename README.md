@@ -1,24 +1,23 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+O que é a aplicação?
 
-Things you may want to cover:
+A aplicação é um sistema de gerenciamento de restaurantes.
 
-* Ruby version
+Como rodar a aplicação?
+1. Clone o repositório
+2. Rode o comando `bundle install`
+3. Rode o comando `rails db:create`
+4. Rode o comando `rails db:migrate`
+5. Rode o comando `rails db:seed`
+6. Rode o comando `rails server`
 
-* System dependencies
+Como rodar os testes?
+1. Rode o comando `rspec`
 
-* Configuration
+Regras de negócio
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+1. O usuário dono do restaurante é o primeiro usuário cadastrado.
+2. O usuário dono do restaurante é o único que pode cadastrar outros usuários (funcionários).
+3. O usuário dono do restaurante é o único que pode criar cardápios.
+4. O usuário dono do restaurante é o único que pode criar pratos e bebidas.

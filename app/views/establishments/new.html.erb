@@ -1,15 +1,12 @@
 <% content_for :title, "Novo Restaurante" %>
 
-<h1>Novo Restaurante</h1>
-<% if current_user.role? %>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Novo Restaurante</h2>
+    <%= link_to establishments_path, class: "btn btn-outline-secondary" do %>
+      <i class="fas fa-arrow-left"></i> Voltar
+    <% end %>
+  </div>
+
   <%= render "form", establishment: @establishment %>
-
-<% else %>
-  <p>Você não tem permissão para acessar esta página.</p>
-<% end %>
-
-<br>
-
-<div>
-  <%= link_to "Voltar", establishments_path %>
 </div>

@@ -8,6 +8,7 @@ class User < ApplicationRecord
   validate :cpf_valid
   
   before_create :check_employee_invitation
+  before_create :set_first_user_as_admin
 
   after_create :set_as_owner, if: :has_establishment?
 
@@ -36,6 +37,10 @@ class User < ApplicationRecord
 
   def has_establishment?
     establishment.present?
+  end
+
+  def set_first_user_as_admin
+    self.role = true if User.count.zero?
   end
 
 end

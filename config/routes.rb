@@ -8,22 +8,25 @@ Rails.application.routes.draw do
     get 'search', on: :collection
     resources :dishes do
       resources :portions
-
       member do
         patch :toggle_status
       end
     end
+
     resources :drinks do
       resources :portions
       member do
         patch :toggle_status
       end
     end
+
     resources :working_hours, only: %i[edit update]
     resources :tags
+
     resources :menus do
       resources :menu_items
     end
+
     resources :orders do
       member do
         get :add_item, to: 'orders#add_item'

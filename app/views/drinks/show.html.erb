@@ -2,9 +2,8 @@
   <div class="card shadow-sm">
     <div class="card-body bg-light">
       <h1 class="card-title text-primary"><%= @drink.name %></h1>
-
       <div class="card shadow-sm mb-3">
-        <div class="card-body">
+        <div class="card-body bg-light">
           <p><strong>Descrição:</strong> <%= @drink.description %></p>
           <p><strong>Alcoólica:</strong> <%= @drink.alcoholic ? 'Sim' : 'Não' %></p>
           <p><strong>Calorias:</strong> <%= @drink.calories %></p>
@@ -34,7 +33,7 @@
       </div>
 
       <div class="card shadow-sm mb-3">
-        <div class="card-body">
+        <div class="card-body bg-light">
           <h2 class="card-title">Porções Disponíveis</h2>
           
           <% if @drink.portions.any? %>
@@ -80,7 +79,7 @@
       </div>
 
       <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="card-body bg-light">
           <h3 class="card-title">Histórico de Preços</h3>
           <% @price_histories.order(created_at: :desc).each do |history| %>
             <p>
