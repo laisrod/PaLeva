@@ -45,7 +45,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :establishments, param: :code do
-        resources :orders, only: [:index]
+        resources :orders, param: :code, only: [:index, :show]
       end
     end
   end

@@ -13,6 +13,12 @@ module Api
           
           render json: @orders
         end
+
+        def show
+          @order = Order.find_by(code: params[:code])
+          @order_menu_items = @order.order_menu_items
+          render json: @order, include: ['order_menu_items']
+        end
   
         private
   
