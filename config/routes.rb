@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
 
-  devise_for :users
+  devise_for :users, path: '', path_names: { 
+    sign_in: 'login', 
+    sign_out: 'logout', 
+    registration: 'signup' 
+  }
 
   root to: 'establishments#index'
 
@@ -45,7 +49,12 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :establishments, param: :code do
-        resources :orders, param: :code, only: [:index, :show]
+        resources :orders, param: :code, only: [:index, :show] do
+          member do
+            patch :prepare_order, to: 'orders#prepare_order'
+            patch :ready_order, to: 'orders#ready_order'
+          end
+        end
       end
     end
   end

@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_active_storage_url_options
   before_action :create_current_order
+  protect_from_forgery with: :exception, unless: -> { request.format.json? }
+  skip_before_action :verify_authenticity_token, if: :devise_controller?
 
 
   def after_sign_up_path_for(resource)
