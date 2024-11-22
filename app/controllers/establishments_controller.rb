@@ -1,6 +1,7 @@
 class EstablishmentsController < ApplicationController
-  before_action :set_establishment, only: [:edit, :update, :destroy, :search]
+  before_action :authenticate_user!
   before_action :check_establishment!, only: [:index, :edit, :update, :destroy]
+  before_action :set_establishment, only: [:edit, :update, :destroy, :search]
 
   def index
     @establishment = current_user.establishment

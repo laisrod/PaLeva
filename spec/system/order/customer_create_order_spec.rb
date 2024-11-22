@@ -31,6 +31,7 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
       establishment: establishment
     )
     portion_dish = Portion.create!(description: 'Pequeno', price: 10.0, dish_id: dish.id)
+    
     menu = Menu.create(
       name: 'Menu 1',
       description:'teste',
@@ -42,7 +43,9 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
     )
 
     order = Order.create(
-      establishment: establishment    )
+    establishment: establishment    
+    )
+
     login_as(user)
     save_and_open_page
 

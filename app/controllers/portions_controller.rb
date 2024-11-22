@@ -1,5 +1,6 @@
 class PortionsController < ApplicationController
-
+  before_action :authenticate_user!
+  before_action :check_establishment!
   def new
     @establishment = Establishment.find(params[:establishment_id])
     @portionable = params[:dish_id] ? @dish = Dish.find(params[:dish_id]) : @drink = Drink.find(params[:drink_id])

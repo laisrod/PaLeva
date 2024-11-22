@@ -1,15 +1,10 @@
 Rails.application.routes.draw do
-
-  devise_for :users, path: '', path_names: { 
-    sign_in: 'login', 
-    sign_out: 'logout', 
-    registration: 'signup' 
-  }
-
+  devise_for :users
   root to: 'establishments#index'
 
   resources :establishments do
     get 'search', on: :collection
+    resources :working_hours, only: %i[edit update]
     resources :dishes do
       resources :portions
       member do
@@ -24,7 +19,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :working_hours, only: %i[edit update]
+    resources :portions
     resources :tags
 
     resources :menus do
@@ -43,8 +38,6 @@ Rails.application.routes.draw do
 
     resources :employee_invitations
   end
-  resources :users
-  resources :portions
 
   namespace :api do
     namespace :v1 do
@@ -56,6 +49,11 @@ Rails.application.routes.draw do
           end
         end
       end
+
+      resources :users, only: [:create]
+      post '/sign_in', to: 'sessions#create'
+      delete '/sign_out', to: 'sessions#destroy'
+      get '/is_signed_in', to: 'sessions#is_signed_in?'
     end
   end
 end

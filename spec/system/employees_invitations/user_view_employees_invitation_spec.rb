@@ -97,10 +97,11 @@ RSpec.describe 'Visualização de convites de funcionários', type: :system do
       employee = User.create!(
         name: 'Employee', email: 'employee@example.com',
         password: 'testes123456', last_name: 'Test',
-        cpf: '860.392.110-59', role: false
+        cpf: '343.686.820-16',
+        role: false
       )
       employee_invitation = EmployeeInvitation.create!(
-        email: 'employee@example.com', cpf: '860.392.110-59',
+        email: 'employee@example.com', cpf: '343.686.820-16',
         establishment: establishment
       )
 
@@ -110,7 +111,7 @@ RSpec.describe 'Visualização de convites de funcionários', type: :system do
 
       # Assert
       expect(page).to have_content 'employee@example.com'
-      expect(page).to have_content '86039211059'
+      expect(page).to have_content '34368682016'
     end
   end
 end

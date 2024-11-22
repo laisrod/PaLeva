@@ -1,5 +1,6 @@
 class TagsController < ApplicationController
   before_action :authenticate_user!
+  before_action :check_establishment!
   before_action :set_establishment, only: [:new, :create, :edit, :update, :destroy]
 
   def index

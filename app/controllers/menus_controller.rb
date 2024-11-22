@@ -1,5 +1,6 @@
 class MenusController < ApplicationController
   before_action :authenticate_user!
+  before_action :check_establishment!
   before_action :set_establishment
 
   def index

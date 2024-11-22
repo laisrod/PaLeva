@@ -29,7 +29,7 @@ describe 'Usuário remove um estabelecimento' do
     # Act
     login_as(user)
     visit establishment_path(establishment)
-    click_link 'Remover'
+    click_button 'Remover'
 
     # Assert
     expect(current_path).to eq new_establishment_path
@@ -85,7 +85,7 @@ describe 'Usuário remove um estabelecimento' do
     visit establishment_path(establishment)
 
     # Assert
-    expect(page).to have_link('Remover')
+    expect(page).to have_button('Remover')
   end
 end
 

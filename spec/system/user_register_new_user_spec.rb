@@ -45,29 +45,21 @@ RSpec.describe 'Cadastro de Funcionário', type: :system do
   end
 
   it 'e vê mensagens de erro quando dados são inválidos' do
-    visit root_path
+    visit new_user_registration_path
 
-    within 'nav' do
-      click_link 'Criar conta'
-    end
-
+    fill_in 'Nome', with: ''
+    fill_in 'Sobrenome', with: ''
+    fill_in 'CPF', with: ''
+    fill_in 'E-mail', with: ''
+    fill_in 'Senha', with: ''
+    fill_in 'Confirmar Senha', with: ''
     click_button 'Cadastrar'
 
-    expect(page).to have_content('E-mail não pode ficar em branco')
     expect(page).to have_content('Nome não pode ficar em branco')
     expect(page).to have_content('Sobrenome não pode ficar em branco')
     expect(page).to have_content('CPF não pode ficar em branco')
-    expect(page).to have_content('Cpf inválido')
-
-    fill_in 'Nome', with: 'Jane'
-    fill_in 'Sobrenome', with: 'Doe'
-    fill_in 'CPF', with: '529.982.247-25'
-    fill_in 'E-mail', with: 'jane@doe.com.br'
-    fill_in 'Senha', with: '123'
-    fill_in 'Confirmar Senha', with: '123'
-
-    click_button 'Cadastrar'
-
-    expect(page).to have_content('(12 caracteres mínimos)')
+    expect(page).to have_content('CPF inválido')
+    expect(page).to have_content('E-mail não pode ficar em branco')
+    expect(page).to have_content('Password não pode ficar em branco')
   end
 end

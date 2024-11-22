@@ -1,4 +1,7 @@
 class OrdersController < ApplicationController
+  before_action :authenticate_user!
+  before_action :check_establishment!
+
   def index
     @orders = Order.all
   end

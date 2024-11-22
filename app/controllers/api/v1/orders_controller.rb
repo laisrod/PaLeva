@@ -1,11 +1,8 @@
 module Api
     module V1
       class OrdersController < ApplicationController
-        skip_before_action :authenticate_user!
         before_action :set_establishment_by_code
-        before_action :set_order, only: [:show, :prepare_order, :ready_order]
-        # before_action :verify_establishment_access
-        # before_action :verify_authenticity_token
+        before_action :set_order, only: [:show, :prepare_order]
         skip_before_action :verify_authenticity_token
 
 

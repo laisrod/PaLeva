@@ -8,7 +8,7 @@
     <div class="card shadow-sm mb-4">
       <div class="card-body bg-light">
         <h3 class="card-title text-primary">Informações do Cardápio</h3>
-        <p class="text-secondary"><%= @menu.description %></p>
+        <p class="text-secondary">Descrição: <%= @menu.description %></p>
         
         <div class="actions">
           <%= link_to 'Editar', edit_establishment_menu_path(@establishment, @menu), class: 'btn btn-outline-primary' %>

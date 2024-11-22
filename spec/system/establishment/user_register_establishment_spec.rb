@@ -19,6 +19,10 @@ describe 'Registro de Estabelecimento pelo Usuário' do
 
     # Assert
     expect(page).to have_content('Novo Restaurante')
+    expect(page).to have_field('Nome Fantasia')
+    expect(page).to have_field('Razão Social')
+    expect(page).to have_field('CNPJ')
+    expect(page).to have_button('Salvar')
   end
 
   it 'com sucesso' do
@@ -47,6 +51,7 @@ describe 'Registro de Estabelecimento pelo Usuário' do
     click_button 'Salvar'
 
     # Assert
+    expect(page).to have_content('Estabelecimento cadastrado com sucesso.')
     expect(page).to have_content('Novo estabelecimento')
     expect(current_path).to eq(root_path)
   end
@@ -88,5 +93,63 @@ describe 'Registro de Estabelecimento pelo Usuário' do
     expect(page).to have_content('Phone number não pode ficar em branco')
     expect(page).to have_content('Email não é válido')
     expect(page).to have_content('Cnpj inválido')
+  end
+
+  it 'e não consegue registrar com CNPJ duplicado' do
+    # Arrange
+    user = User.create!(
+      email: 'user@example.com',
+      password: '123456789012',
+      name: 'João',
+      last_name: 'Silva',
+      cpf: '860.392.110-59',
+      role: true
+    )
+
+    another_user = User.create!(
+      email: 'another@example.com',
+      password: '123456789012',
+      name: 'Maria',
+      last_name: 'Silva',
+      cpf: '171.853.820-04',
+      role: true
+    )
+
+    Establishment.create!(
+      name: 'Restaurante Existente',
+      social_name: 'Restaurante Existente LTDA',
+      cnpj: '85.449.105/0001-85',
+      full_address: '123 Main St',
+      city: 'Sample City',
+      state: 'Sample State',
+      postal_code: 'EST123',
+      email: 'existing@example.com',
+      phone_number: '123-456-7890',
+      user: another_user
+    )
+
+    # Act
+    login_as(user)
+    visit new_establishment_path
+    fill_in 'Nome Fantasia', with: 'Novo Restaurante'
+    fill_in 'Razão Social', with: 'Novo Restaurante LTDA'
+    fill_in 'CNPJ', with: '85.449.105/0001-85'
+    fill_in 'Endereço', with: 'Rua das Flores, 123'
+    fill_in 'Cidade', with: 'São Paulo'
+    fill_in 'Estado', with: 'SP'
+    fill_in 'Código Postal', with: '01234-567'
+    fill_in 'E-mail', with: 'novo@example.com'
+    fill_in 'Telefone', with: '11-98765-4321'
+    click_on 'Salvar'
+
+    # Assert
+    expect(page).to have_content('Cnpj já está em uso')
+    expect(page).to have_content('Estabelecimento não cadastrado.')
+    expect(Establishment.count).to eq 1
+  end
+
+  it 'e não consegue registrar sem estar autenticado' do
+    # Act
+    visit new_establishment_path
   end
 end

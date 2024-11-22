@@ -1,4 +1,6 @@
 class MenuItemsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :check_establishment!
   before_action :set_menu
   before_action :set_menu_item, only: [:show, :edit, :update, :destroy]
 

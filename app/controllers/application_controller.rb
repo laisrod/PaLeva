@@ -1,15 +1,12 @@
 class ApplicationController < ActionController::Base
-  allow_browser versions: :modern
-  before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_active_storage_url_options
   before_action :create_current_order
-  protect_from_forgery with: :exception, unless: -> { request.format.json? }
-  skip_before_action :verify_authenticity_token, if: :devise_controller?
 
 
   def after_sign_up_path_for(resource)
-    new_establishment_path # Redireciona para a página de cadastro do restaurante
+    Rails.logger.debug ">>> after_sign_up_path_for called for #{resource.inspect}"
+    new_establishment_path
   end
 
   def after_sign_in_path_for(resource)

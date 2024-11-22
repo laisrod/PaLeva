@@ -16,6 +16,7 @@ class Establishment < ApplicationRecord
   validate :cnpj_valid
 
   before_create :generate_code
+  after_create :set_user_as_owner
   after_save :create_working_hours
 
   private
@@ -35,5 +36,10 @@ class Establishment < ApplicationRecord
         WorkingHour.create(week_day: day, establishment: self)
       end
     end
+  end
+
+  def set_user_as_owner
+    self.user.role = true
+    self.user.save
   end
 end

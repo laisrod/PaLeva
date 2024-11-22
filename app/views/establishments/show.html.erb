@@ -22,8 +22,8 @@
           <div class="d-flex gap-3">
             <%= link_to 'Editar', edit_establishment_path(@establishment), class: 'btn btn-outline-primary' %>
             <%= link_to 'Voltar', establishments_path, class: 'btn btn-outline-secondary' %>
-            <%= link_to 'Remover', establishment_path(@establishment), 
-                        data: { turbo_method: :delete, turbo_confirm: 'Tem certeza?' }, class: 'btn btn-outline-secondary' %>
+            <%= button_to 'Remover', establishment_path(@establishment), 
+                         method: :delete, confirm: 'Tem certeza?', class: 'btn btn-outline-secondary' %>
           </div>
         </div>
       </div>
