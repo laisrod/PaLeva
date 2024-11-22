@@ -28,6 +28,14 @@
                   when 'cancelled' then 'Cancelado'               
                 end %>
           </span></p>
+            <% if @order.status == 'cancelled' %>
+            <div class="cancellation-info">
+              <p class="text-danger">
+                <strong>Motivo do cancelamento:</strong>
+                <%= @order.cancellation_reason.present? ? @order.cancellation_reason : 'Não informado' %>
+              </p>
+            </div>
+          <% end %>
           <p><strong>Valor Total:</strong> <%= number_to_currency(@order.total_price) %></p>
         </div>
 

@@ -18,6 +18,7 @@
           <p><strong>CEP:</strong> <%= @establishment.postal_code %></p>
           <p><strong>Email:</strong> <%= @establishment.email %></p>
           <p><strong>Telefone:</strong> <%= @establishment.phone_number %></p>
+          <p><strong>Código:</strong> <%= @establishment.code %></p>
 
           <div class="d-flex gap-3">
             <%= link_to 'Editar', edit_establishment_path(@establishment), class: 'btn btn-outline-primary' %>

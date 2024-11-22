@@ -46,6 +46,7 @@ Rails.application.routes.draw do
           member do
             patch :prepare_order, to: 'orders#prepare_order'
             patch :ready_order, to: 'orders#ready_order'
+            patch :cancelled, to: 'orders#cancel'
           end
         end
       end

@@ -19,6 +19,8 @@ class Order < ApplicationRecord
     cancelled: "cancelled"
   }
   
+  attr_accessor :cancellation_reason
+
   def next_status(cancel = false)
     return 'cancelled' if cancel
     case status
