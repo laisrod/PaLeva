@@ -28,7 +28,8 @@ RSpec.describe WorkingHour, type: :model do
       )
 
       working_hour.week_day = nil
-      working_hour.save(validate: false) # Save without validation to simulate update
+      working_hour.save(validate: false)
+
       expect(working_hour).to be_invalid(:update)
     end
 
