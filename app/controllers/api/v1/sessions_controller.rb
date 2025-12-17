@@ -1,50 +1,33 @@
 module Api
   module V1
     class SessionsController < ApplicationController
+      before_action :authenticate_api_user!, only: %i[destroy is_signed_in?]
+
       def create
-        @user = User.find_by(email: session_params[:email])
-        if @user && @user.valid_password?(session_params[:password])
-          session[:user_id] = @user.id
-          render json: {
-            status: 200,
-            user: @user
-          }
+        user = User.find_by(email: session_params[:email])
+
+        if user&.valid_password?(session_params[:password])
+          user.regenerate_api_token if user.api_token.blank?
+          render json: { token: user.api_token, user: user.slice(:id, :email, :name) }, status: :ok
         else
-          render json: { 
-            status: 401, 
-            error: "Email ou senha inválidos"
-          }
+          render json: { error: 'Email ou senha inválidos' }, status: :unauthorized
         end
       end
 
       def is_signed_in?
-        if current_user
-          render json: {
-            status: 200,
-            signed_in: true,
-            user: current_user
-          }
+        if current_api_user
+          render json: { signed_in: true, user: current_api_user.slice(:id, :email, :name) }, status: :ok
         else
-          render json: {
-            status: 401,
-            signed_in: false
-          }
+          render json: { signed_in: false }, status: :unauthorized
         end
       end
 
       def destroy
-        session.delete :user_id
-        render json: {
-          status: 200,
-          signed_out: true
-        }
+        current_api_user&.regenerate_api_token
+        render json: { signed_out: true }, status: :ok
       end
 
       private
-
-      def current_user
-        @current_user ||= User.find(session[:user_id]) if session[:user_id]
-      end
 
       def session_params
         params.require(:user).permit(:email, :password)

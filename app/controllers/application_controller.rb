@@ -32,6 +32,18 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_api_user!
+    token = request.headers['Authorization']&.split&.last
+    @current_user = User.find_by(api_token: token)
+    return if @current_user
+
+    render json: { error: 'Unauthorized' }, status: :unauthorized
+  end
+
+  def current_api_user
+    @current_user
+  end
+
   def check_establishment!
     if current_user && current_user.establishment.nil?
       redirect_to new_establishment_path
