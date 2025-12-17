@@ -8,6 +8,8 @@ class User < ApplicationRecord
   validates :cpf, uniqueness: true, format: { with: /\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/ }
   validates :role, inclusion: { in: [true, false] }
 
+  has_secure_token :api_token
+
   
   before_create :check_employee_invitation
 
