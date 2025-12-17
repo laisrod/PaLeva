@@ -1,0 +1,19 @@
+current directory: /home/lais/Projetos/PaLeva/vendor/bundle/ruby/3.3.0/gems/debug-1.10.0/ext/debug
+/home/lais/.rbenv/versions/3.3.4/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/lais/Projetos/PaLeva/vendor/bundle/ruby/3.3.0/gems/debug-1.10.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20250211-16472-ywnhoq sitelibdir\=./.gem.20250211-16472-ywnhoq clean
+
+current directory: /home/lais/Projetos/PaLeva/vendor/bundle/ruby/3.3.0/gems/debug-1.10.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20250211-16472-ywnhoq sitelibdir\=./.gem.20250211-16472-ywnhoq
+compiling debug.c
+compiling iseq_collector.c
+linking shared-object debug/debug.so
+
+current directory: /home/lais/Projetos/PaLeva/vendor/bundle/ruby/3.3.0/gems/debug-1.10.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20250211-16472-ywnhoq sitelibdir\=./.gem.20250211-16472-ywnhoq install
+/usr/bin/install -c -m 0755 debug.so ./.gem.20250211-16472-ywnhoq/debug
+
+current directory: /home/lais/Projetos/PaLeva/vendor/bundle/ruby/3.3.0/gems/debug-1.10.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20250211-16472-ywnhoq sitelibdir\=./.gem.20250211-16472-ywnhoq clean

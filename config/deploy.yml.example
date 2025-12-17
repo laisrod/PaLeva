@@ -1,0 +1,32 @@
+# Kamal deployment configuration example
+# Copie este arquivo para .kamal/deploy.yml e configure com seus dados
+# Para usar: kamal setup (primeira vez) ou kamal deploy (deploys subsequentes)
+
+service: paleva
+
+image: paleva-app
+
+servers:
+  web:
+    hosts:
+      - seu-servidor.com  # Substitua pelo IP ou domínio do seu servidor
+    options:
+      env:
+        RAILS_MASTER_KEY: <%= ENV["RAILS_MASTER_KEY"] %>
+        RAILS_ENV: production
+      volumes:
+        - /rails/storage:/rails/storage  # Para persistir o banco SQLite
+
+registry:
+  # Se usar Docker Hub:
+  username: seu-usuario-dockerhub
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# SSL com Let's Encrypt (recomendado)
+builder:
+  arch: amd64
+
+deploy:
+  wait: 10
+
