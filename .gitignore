@@ -34,3 +34,10 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 /vendor/bundle
+
+# Node / frontend artifacts
+node_modules
+/frontend/node_modules
+
+# Local rails tmp/log copies
+/backend
