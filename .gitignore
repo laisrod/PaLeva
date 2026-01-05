@@ -57,3 +57,6 @@ node_modules
 # Backend bundle
 /backend/vendor/bundle
 /backend/.bundle
+
+# Arquivos duplicados removidos - usar apenas backend/
+# .rubocop.yml, .ruby-version, Dockerfile, .dockerignore agora só em backend/
