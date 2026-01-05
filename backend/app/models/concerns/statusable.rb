@@ -1,15 +1,15 @@
-# Concern for models with status
+# Concern para modelos com status
 module Statusable
   extend ActiveSupport::Concern
 
   included do
-    # Models that include this concern should have an enum :status
+    # Models que incluem este concern devem ter um enum :status
   end
 
   class_methods do
     def with_status(status)
       return all unless status.present?
-      where(status: status) if respond_to?(:statuses) && statuses.keys.include?(status.to_s)
+      where(status: status) if statuses.keys.include?(status.to_s)
     end
 
     def active
