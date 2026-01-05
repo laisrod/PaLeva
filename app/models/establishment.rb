@@ -1,4 +1,6 @@
 class Establishment < ApplicationRecord
+  include CodeGeneratable
+
   belongs_to :user
   has_many :drinks, dependent: :destroy
   has_many :dishes, dependent: :destroy
@@ -15,16 +17,10 @@ class Establishment < ApplicationRecord
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   validate :cnpj_valid
 
-  before_create :generate_code
   after_create :set_user_as_owner
   after_save :create_working_hours
 
   private
-
-  def generate_code
-    new_code = SecureRandom.hex(6)
-    Establishment.where(code: new_code).exists? ? generate_code : self.code = new_code
-  end
 
   def cnpj_valid
     errors.add(:cnpj, "inválido") unless CNPJ.valid?(cnpj)
