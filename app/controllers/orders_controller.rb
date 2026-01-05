@@ -1,15 +1,18 @@
 class OrdersController < ApplicationController
+  include EstablishmentScoped
+
   before_action :authenticate_user!
   before_action :check_establishment!
+  before_action :set_establishment
+  before_action :set_order, only: [:show, :update, :change_status, :cancel, :remove_item]
 
   def index
-    @orders = Order.all
+    @orders = @establishment.orders.recent
   end
 
   def update
-    @order = Order.find(params[:id])
     if @order.update(order_params)
-      redirect_to establishment_order_path(@order.establishment, @order), notice: 'Pedido atualizado com sucesso'
+      redirect_to establishment_order_path(@establishment, @order), notice: 'Pedido atualizado com sucesso'
     else
       flash.now[:alert] = @order.errors.full_messages.join(', ')
       render :show, status: :unprocessable_entity
@@ -17,62 +20,65 @@ class OrdersController < ApplicationController
   end
 
   def show
-    @order = Order.find(params[:id])
+    # @order already set by set_order
   end
 
   def add_item
     @order = current_order
-    @establishment = @order.establishment
     @menu_item = MenuItem.find(params[:menu_item_id])
     @order_menu_item = @order.order_menu_items.build
   end
 
   def save_item
     @order = current_order
-    @order_menu_item = @order.order_menu_items.build(order_menu_item_params)
-    
-    if @order_menu_item.save
+    result = OrderItemService.add_item(@order, order_menu_item_params)
+
+    if result[:success]
       redirect_to establishment_order_path(@order.establishment, @order), notice: 'Item adicionado com sucesso'
     else
       @menu_item = MenuItem.find(order_menu_item_params[:menu_item_id])
       @establishment = @order.establishment
-      render :add_item, status: :unprocessable_entity, notice: 'Não é possível adicionar um item sem porção'
+      flash.now[:alert] = result[:error]
+      render :add_item, status: :unprocessable_entity
     end
   end
 
   def remove_item
-    @order = current_order
-    @order_menu_item = @order.order_menu_items.find(params[:item_id])
-    @order_menu_item.destroy
-    redirect_to establishment_order_path(@order.establishment, @order)
+    result = OrderItemService.remove_item(@order, params[:item_id])
+    redirect_to establishment_order_path(@establishment, @order)
   end
 
   def change_status
-    @order = Order.find(params[:id])
-    
-    if @order.can_progress?
-      @order.update_attribute(:status, @order.next_status)
-      @order.update_total_price
-      notice = case @order.status
-               when 'pending' then 'Pedido enviado para a cozinha!'
-               when 'preparing' then 'Pedido em preparação!'
-               when 'ready' then 'Pedido pronto!'
-               when 'delivered' then 'Pedido entregue!'
-               end
-      redirect_to establishment_order_path(@order.establishment, @order), notice: notice
+    service = OrderStatusService.new(@order)
+    result = service.progress!
+
+    if result[:success]
+      redirect_to establishment_order_path(@establishment, @order), notice: result[:notice]
     else
-      redirect_to establishment_order_path(@order.establishment, @order), 
-                  alert: 'Não é possível alterar o status deste pedido.'
+      redirect_to establishment_order_path(@establishment, @order), alert: result[:message]
     end
   end
 
   def cancel
-    @order = Order.find(params[:id])
-    @order.update_attribute(:status, 'cancelled')
-    redirect_to establishment_order_path(@order.establishment, @order), notice: 'Pedido cancelado com sucesso!'
+    service = OrderStatusService.new(@order)
+    result = service.cancel!
+
+    if result[:success]
+      redirect_to establishment_order_path(@establishment, @order), notice: result[:notice]
+    else
+      redirect_to establishment_order_path(@establishment, @order), alert: result[:message]
+    end
   end
 
   private
+
+  def set_establishment
+    @establishment = Establishment.find(params[:establishment_id])
+  end
+
+  def set_order
+    @order = @establishment.orders.find(params[:id])
+  end
 
   def order_params
     params.require(:order).permit(

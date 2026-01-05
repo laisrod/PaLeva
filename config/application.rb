@@ -29,5 +29,10 @@ module TakeAway
     config.session_store :cookie_store, key: '_pa_leva_session'
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use config.session_store, config.session_options
+
+    # Autoload paths for services and concerns
+    config.autoload_paths += %W[
+      #{config.root}/app/services
+    ]
   end
 end
