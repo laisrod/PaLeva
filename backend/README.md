@@ -1,24 +1,70 @@
-# README
+# Backend - PaLeva
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Aplicação Rails que serve como backend para o sistema PaLeva.
 
-Things you may want to cover:
+##  Estrutura Organizada
 
-* Ruby version
+O backend segue boas práticas de arquitetura Rails:
 
-* System dependencies
+- **Controllers magros** - Lógica de negócio em services
+- **Services** - Encapsulam regras de negócio complexas
+- **Concerns** - Código compartilhado reutilizável
+- **Models limpos** - Apenas relacionamentos, validações e métodos do domínio
 
-* Configuration
+##  Configuração Inicial
 
-* Database creation
+```bash
+bundle install
+rails db:create
+rails db:migrate
+rails db:seed
+```
 
-* Database initialization
+## 🏃 Executando
 
-* How to run the test suite
+### Desenvolvimento Local
 
-* Services (job queues, cache servers, search engines, etc.)
+Para rodar o backend:
 
-* Deployment instructions
+```bash
+# No diretório backend/
+rails server
+```
 
-* ...
+O servidor estará disponível em `http://localhost:3000`
+
+**Nota:** Se você também precisa rodar o frontend React (em `/frontend`), abra outro terminal:
+
+```bash
+# No diretório frontend/
+npm run dev
+```
+
+O frontend estará disponível em `http://localhost:5176` e fará proxy das requisições `/api` para o backend.
+
+##  Documentação
+
+- **Arquitetura:** Ver `ARCHITECTURE.md`
+- **API:** Ver `config/routes.rb` namespace `api/v1`
+
+##  Estrutura de Diretórios
+
+```
+app/
+├── controllers/
+│   ├── api/v1/          # API REST
+│   ├── concerns/        # Concerns de controllers
+│   └── *.rb            # Controllers web
+├── models/
+│   ├── concerns/        # Concerns de models
+│   └── *.rb            # Models do domínio
+├── services/            # Lógica de negócio
+└── views/               # Templates ERB
+```
+
+##  Testes
+
+```bash
+rspec
+```
+
