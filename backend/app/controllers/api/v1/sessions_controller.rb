@@ -3,7 +3,7 @@ module Api
     class SessionsController < ApplicationController
       skip_before_action :verify_authenticity_token
       skip_before_action :create_current_order
-      before_action :authenticate_api_user!, only: %i[destroy]
+      before_action :authenticate_api_user!, only: %i[destroy is_signed_in?]
 
       def create
         user = User.find_by(email: session_params[:email])

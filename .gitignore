@@ -34,3 +34,29 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 /vendor/bundle
+
+# Node / frontend artifacts
+node_modules
+/frontend/node_modules
+/backend/node_modules
+
+# Backend logs and temp files
+/backend/log/*
+/backend/tmp/*
+!/backend/log/.keep
+!/backend/tmp/.keep
+/backend/tmp/pids/*
+!/backend/tmp/pids/.keep
+/backend/tmp/storage/*
+!/backend/tmp/storage/.keep
+
+# Backend storage
+/backend/storage/*
+!/backend/storage/.keep
+
+# Backend bundle
+/backend/vendor/bundle
+/backend/.bundle
+
+# Arquivos duplicados removidos - usar apenas backend/
+# .rubocop.yml, .ruby-version, Dockerfile, .dockerignore agora só em backend/
