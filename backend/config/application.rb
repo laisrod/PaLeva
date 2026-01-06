@@ -25,6 +25,7 @@ module TakeAway
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.i18n.default_locale = :'pt-BR'
+    config.i18n.available_locales = [:en, :'pt-BR']
 
     config.session_store :cookie_store, key: '_pa_leva_session'
     config.middleware.use ActionDispatch::Cookies
