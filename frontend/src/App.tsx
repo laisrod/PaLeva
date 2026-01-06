@@ -1,81 +1,47 @@
-import { useMemo, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-
-import './App.css'
-
-type StatusStep = {
-  label: string
-  color: string
-  progress: number
-  badge: string
-}
-
-const STATUS_STEPS: StatusStep[] = [
-  { label: 'Recebido', badge: '📥', color: '#7dd3fc', progress: 20 },
-  { label: 'Preparando', badge: '🔥', color: '#fbbf24', progress: 45 },
-  { label: 'Pronto', badge: '✅', color: '#34d399', progress: 75 },
-  { label: 'Entregue', badge: '🚀', color: '#a78bfa', progress: 100 },
-]
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Login from './shared/pages/Login'
+import Register from './shared/pages/Register'
+import Home from './shared/pages/Home'
+import Menu from './client/pages/Menu'
+import RestaurantsList from './client/pages/RestaurantsList'
+import CreateEstablishment from './owner/pages/CreateEstablishment'
+import Dashboard from './owner/pages/Dashboard'
+import Dishes from './owner/pages/Dishes'
+import Drinks from './owner/pages/Drinks'
+import MenusList from './owner/pages/MenusList'
+import CreateMenu from './owner/pages/CreateMenu'
+import EditMenu from './owner/pages/EditMenu'
+import ViewMenu from './owner/pages/ViewMenu'
+import CreateDish from './owner/pages/CreateDish'
+import CreateDrink from './owner/pages/CreateDrink'
+import Tags from './owner/pages/Tags'
+import Orders from './owner/pages/Orders'
+import './css/shared/App.css'
 
 function App() {
-  const [count, setCount] = useState<number>(0)
-  const [step, setStep] = useState<number>(0)
-
-  const current = useMemo(() => STATUS_STEPS[step], [step])
-
-  const handleNext = () => setStep((prev) => (prev + 1) % STATUS_STEPS.length)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-
-      <div className="card">
-        <button onClick={() => setCount((value) => value + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-
-      <section className="status-card">
-        <header>
-          <div>
-            <p className="eyebrow">Pedido #123</p>
-            <h2>{current.badge} {current.label}</h2>
-          </div>
-          <span className="badge" style={{ background: current.color }}>
-            {current.progress}%
-          </span>
-        </header>
-
-        <div className="progress-track">
-          <div
-            className="progress-bar"
-            style={{
-              width: `${current.progress}%`,
-              background: `linear-gradient(90deg, ${current.color}, #1f2937)`,
-            }}
-          />
-        </div>
-
-        <div className="status-actions">
-          <p className="muted">Clique para avançar o status.</p>
-          <button className="ghost" onClick={handleNext}>
-            Próximo status
-          </button>
-        </div>
-      </section>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/restaurants" element={<RestaurantsList />} />
+        <Route path="/establishments/new" element={<CreateEstablishment />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/menu/:code" element={<Menu />} />
+        <Route path="/establishment/:code" element={<Dashboard />} />
+        <Route path="/establishment/:code/dishes" element={<Dishes />} />
+        <Route path="/establishment/:code/dishes/new" element={<CreateDish />} />
+        <Route path="/establishment/:code/drinks" element={<Drinks />} />
+        <Route path="/establishment/:code/drinks/new" element={<CreateDrink />} />
+        <Route path="/establishment/:code/menus" element={<MenusList />} />
+        <Route path="/establishment/:code/menus/new" element={<CreateMenu />} />
+        <Route path="/establishment/:code/menus/:id" element={<ViewMenu />} />
+        <Route path="/establishment/:code/menus/:id/edit" element={<EditMenu />} />
+        <Route path="/establishment/:code/tags" element={<Tags />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
