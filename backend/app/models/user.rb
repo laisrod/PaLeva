@@ -7,6 +7,7 @@ class User < ApplicationRecord
   validates :name, :email, :last_name, :cpf, presence: true
   validates :cpf, uniqueness: true, format: { with: /\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/ }
   validates :role, inclusion: { in: [true, false] }
+  validate :cpf_valid
 
   has_secure_token :api_token
 

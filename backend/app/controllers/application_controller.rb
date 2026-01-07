@@ -7,6 +7,22 @@ class ApplicationController < ActionController::Base
   before_action :set_active_storage_url_options
   before_action :create_current_order
 
+  # Tratamento de exceções para APIs
+  rescue_from ActionController::InvalidAuthenticityToken, with: :handle_api_exception
+
+  private
+
+  def handle_api_exception(exception)
+    if request.path.start_with?('/api/')
+      render json: {
+        status: :unprocessable_entity,
+        error: [exception.message]
+      }, status: :unprocessable_entity
+    else
+      raise exception
+    end
+  end
+
   def after_sign_up_path_for(resource)
     Rails.logger.debug ">>> after_sign_up_path_for called for #{resource.inspect}"
     new_establishment_path
