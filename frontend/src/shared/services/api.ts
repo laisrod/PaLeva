@@ -265,23 +265,23 @@ class ApiService {
   }
 
   // Tags
-  async getTags() {
+  async getTags(establishmentCode: string) {
     return this.request<
       Array<{
         id: number
         name: string
       }>
-    >('/tags')
+    >(`/establishments/${establishmentCode}/tags`)
   }
 
-  async createTag(name: string) {
+  async createTag(establishmentCode: string, name: string) {
     return this.request<{
       tag: {
         id: number
         name: string
       }
       message: string
-    }>('/tags', {
+    }>(`/establishments/${establishmentCode}/tags`, {
       method: 'POST',
       body: JSON.stringify({ tag: { name } }),
     })
@@ -485,6 +485,43 @@ async getDrinks(establishmentCode: string) {
         body: JSON.stringify({ cancellation_reason: reason }),
       }
     )
+  }
+
+  // Working Hours
+  async getWorkingHours(establishmentCode: string) {
+    return this.request<
+      Array<{
+        id: number
+        week_day: string
+        opening_hour: string | null
+        closing_hour: string | null
+        open: boolean
+      }>
+    >(`/establishments/${establishmentCode}/working_hours`)
+  }
+
+  async updateWorkingHour(
+    establishmentCode: string,
+    workingHourId: number,
+    workingHourData: {
+      opening_hour?: string
+      closing_hour?: string
+      open: boolean
+    }
+  ) {
+    return this.request<{
+      working_hour: {
+        id: number
+        week_day: string
+        opening_hour: string | null
+        closing_hour: string | null
+        open: boolean
+      }
+      message: string
+    }>(`/establishments/${establishmentCode}/working_hours/${workingHourId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ working_hour: workingHourData }),
+    })
   }
 
   // Public menu endpoint (no authentication required)

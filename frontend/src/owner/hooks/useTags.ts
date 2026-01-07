@@ -19,11 +19,13 @@ export function useTags(establishmentCode: string | undefined) {
   }, [establishmentCode])
 
   const loadTags = async () => {
+    if (!establishmentCode) return
+    
     setLoading(true)
     setError('')
     
     try {
-      const response = await api.getTags()
+      const response = await api.getTags(establishmentCode)
       
       if (response.error) {
         setError(Array.isArray(response.error) 

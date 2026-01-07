@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useParams } from 'react-router-dom'
 import { api } from '../../shared/services/api'
 import Layout from '../components/Layout'
 import '../../css/owner/pages/Dashboard.css'
@@ -19,11 +19,11 @@ interface Establishment {
 }
 
 export default function Dashboard() {
+  const { code } = useParams<{ code: string }>()
   const [establishment, setEstablishment] = useState<Establishment | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const navigate = useNavigate()
-  const establishmentCode = localStorage.getItem('establishment_code')
 
   useEffect(() => {
     const token = localStorage.getItem('auth_token')
@@ -32,38 +32,32 @@ export default function Dashboard() {
       return
     }
 
-    if (establishmentCode) {
-      loadEstablishment(establishmentCode)
+    if (code) {
+      // Salvar código no localStorage para uso posterior
+      localStorage.setItem('establishment_code', code)
+      loadEstablishment(code)
     } else {
       setError('Código do estabelecimento não encontrado')
       setLoading(false)
     }
-  }, [navigate, establishmentCode])
+  }, [navigate, code])
 
   const loadEstablishment = async (code: string) => {
     setLoading(true)
     setError('')
     
     try {
-      // TODO: Implementar endpoint da API para buscar estabelecimento
-      // Por enquanto, vamos usar dados mockados
-      const mockEstablishment: Establishment = {
-        id: 1,
-        name: 'Meu Restaurante',
-        phone_number: '(11) 99999-9999',
-        code: code,
-        working_hours: [
-          { id: 1, week_day: 'Segunda', open: true, opening_hour: '08:00', closing_hour: '18:00' },
-          { id: 2, week_day: 'Terça', open: true, opening_hour: '08:00', closing_hour: '18:00' },
-          { id: 3, week_day: 'Quarta', open: true, opening_hour: '08:00', closing_hour: '18:00' },
-          { id: 4, week_day: 'Quinta', open: true, opening_hour: '08:00', closing_hour: '18:00' },
-          { id: 5, week_day: 'Sexta', open: true, opening_hour: '08:00', closing_hour: '18:00' },
-          { id: 6, week_day: 'Sábado', open: false },
-          { id: 7, week_day: 'Domingo', open: false },
-        ]
-      }
+      const response = await api.getEstablishment(code)
       
-      setEstablishment(mockEstablishment)
+      if (response.error) {
+        setError(Array.isArray(response.error) 
+          ? response.error.join(', ') 
+          : response.error)
+      } else if (response.data) {
+        setEstablishment(response.data)
+      } else {
+        setError('Estabelecimento não encontrado')
+      }
     } catch (err) {
       setError('Erro ao carregar estabelecimento')
       console.error(err)
@@ -110,7 +104,9 @@ export default function Dashboard() {
           <div className="dashboard-card">
             <h3 className="card-title">Informações do Estabelecimento</h3>
             <div className="card-content">
-              <p><strong>Telefone:</strong> {establishment.phone_number}</p>
+              {establishment.phone_number && (
+                <p><strong>Telefone:</strong> {establishment.phone_number}</p>
+              )}
               <p><strong>Código:</strong> {establishment.code}</p>
             </div>
             <div className="card-actions">
@@ -196,25 +192,37 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {establishment.working_hours && establishment.working_hours.length > 0 && (
-            <div className="dashboard-card">
-              <h3 className="card-title">Horário de Funcionamento</h3>
-              <div className="card-content">
+          <div className="dashboard-card">
+            <h3 className="card-title">Horário de Funcionamento</h3>
+            <div className="card-content">
+              {establishment.working_hours && establishment.working_hours.length > 0 ? (
                 <ul className="working-hours-list">
                   {establishment.working_hours.map((workingHour) => (
                     <li key={workingHour.id} className="working-hours-item">
                       <span className="working-hours-day">{workingHour.week_day}</span>
                       <span className={`working-hours-time ${workingHour.open ? 'open' : 'closed'}`}>
-                        {workingHour.open
+                        {workingHour.open && workingHour.opening_hour && workingHour.closing_hour
                           ? `${workingHour.opening_hour} às ${workingHour.closing_hour}`
                           : 'Fechado'}
                       </span>
                     </li>
                   ))}
                 </ul>
-              </div>
+              ) : (
+                <p>Nenhum horário configurado</p>
+              )}
             </div>
-          )}
+            <div className="card-actions">
+              {isOwner && (
+                <Link
+                  to={`/establishment/${establishment.code}/working-hours`}
+                  className="dashboard-btn btn-primary-owner"
+                >
+                  Editar Horários
+                </Link>
+              )}
+            </div>
+          </div>
 
           <div className="dashboard-card">
             <h3 className="card-title">Pedidos</h3>

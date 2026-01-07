@@ -40,8 +40,10 @@ export function useDishes(establishmentCode: string | undefined) {
   }, [establishmentCode, selectedTags])
 
   const loadTags = async () => {
+    if (!establishmentCode) return
+    
     try {
-      const response = await api.getTags()
+      const response = await api.getTags(establishmentCode)
       if (response.data) {
         setTags(response.data)
       }
