@@ -16,6 +16,7 @@ import CreateDish from './owner/pages/CreateDish'
 import CreateDrink from './owner/pages/CreateDrink'
 import Tags from './owner/pages/Tags'
 import Orders from './owner/pages/Orders'
+import EditWorkingHours from './owner/pages/EditWorkingHours'
 import './css/shared/App.css'
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
         <Route path="/establishment/:code/menus/:id" element={<ViewMenu />} />
         <Route path="/establishment/:code/menus/:id/edit" element={<EditMenu />} />
         <Route path="/establishment/:code/tags" element={<Tags />} />
+        <Route path="/establishment/:code/working-hours" element={<EditWorkingHours />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

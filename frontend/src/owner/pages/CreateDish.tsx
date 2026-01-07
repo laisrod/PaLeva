@@ -32,13 +32,17 @@ export default function CreateDish() {
       return
     }
 
-    loadTags()
-  }, [navigate])
+    if (code) {
+      loadTags()
+    }
+  }, [navigate, code])
 
   const loadTags = async () => {
+    if (!code) return
+    
     setLoadingTags(true)
     try {
-      const response = await api.getTags()
+      const response = await api.getTags(code)
       if (response.data) {
         setTags(response.data)
       }
@@ -83,10 +87,10 @@ export default function CreateDish() {
   }
 
   const handleCreateTag = async () => {
-    if (!formData.newTagName.trim()) return
+    if (!formData.newTagName.trim() || !code) return
 
     try {
-      const response = await api.createTag(formData.newTagName.trim())
+      const response = await api.createTag(code, formData.newTagName.trim())
       if (response.data) {
         // Adicionar a nova tag à lista e selecioná-la
         const newTag = response.data.tag
