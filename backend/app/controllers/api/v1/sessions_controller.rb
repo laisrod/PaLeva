@@ -1,7 +1,8 @@
 module Api
   module V1
     class SessionsController < ApplicationController
-      before_action :authenticate_api_user!, only: %i[destroy is_signed_in?]
+      skip_before_action :verify_authenticity_token
+      before_action :authenticate_api_user!, only: [:destroy]
 
       def create
         user = User.find_by(email: session_params[:email])
@@ -12,13 +13,24 @@ module Api
         else
           render json: { error: 'Email ou senha inválidos' }, status: :unauthorized
         end
+      rescue ActionController::ParameterMissing => e
+        render json: {
+          status: :bad_request,
+          error: ["Parâmetros faltando: #{e.param}"]
+        }, status: :bad_request
       end
 
       def is_signed_in?
-        if current_api_user
-          render json: { signed_in: true, user: current_api_user.slice(:id, :email, :name) }, status: :ok
+        token = request.headers['Authorization']&.split&.last
+        user = token ? User.find_by(api_token: token) : nil
+        
+        if user
+          render json: { 
+            signed_in: true, 
+            user: user.slice(:id, :email, :name, :role)
+          }, status: :ok
         else
-          render json: { signed_in: false }, status: :unauthorized
+          render json: { signed_in: false }, status: :ok
         end
       end
 

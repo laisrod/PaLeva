@@ -42,6 +42,11 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :establishments, param: :code do
+        resources :menus, only: [:index, :show, :create]
+        resources :dishes, only: [:index, :show, :create]
+        resources :drinks, only: [:index, :show, :create]
+        resources :tags, only: [:index, :create]
+        resources :working_hours, only: [:index, :update]
         resources :orders, param: :code, only: [:index, :show] do
           member do
             patch :prepare_order, to: 'orders#prepare_order'
