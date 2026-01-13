@@ -1,120 +1,21 @@
-import { useState, useEffect } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { api } from '../../shared/services/api'
+import { useParams, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
+import { useCreateDrink } from '../hooks/useCreateDrink'
+import { useAuthCheck } from '../hooks/useAuthCheck'
 import '../../css/owner/pages/CreateDish.css'
 
 export default function CreateDrink() {
   const { code } = useParams<{ code: string }>()
-  const navigate = useNavigate()
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    alcoholic: false,
-    calories: '',
-    photo: null as File | null,
-  })
-  const [errors, setErrors] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
+  useAuthCheck()
 
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (!token) {
-      navigate('/login')
-      return
-    }
-  }, [navigate])
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value, type } = e.target
-    const checked = (e.target as HTMLInputElement).checked
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }))
-    if (errors.length > 0) {
-      setErrors([])
-    }
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null
-    setFormData((prev) => ({
-      ...prev,
-      photo: file,
-    }))
-  }
-
-  const validateForm = (): boolean => {
-    const newErrors: string[] = []
-
-    if (!formData.name.trim()) {
-      newErrors.push('Nome é obrigatório')
-    }
-    if (!formData.description.trim()) {
-      newErrors.push('Descrição é obrigatória')
-    }
-
-    setErrors(newErrors)
-    return newErrors.length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setErrors([])
-
-    if (!validateForm()) {
-      return
-    }
-
-    if (!code) {
-      setErrors(['Código do estabelecimento não encontrado'])
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      const drinkData: any = {
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-        alcoholic: formData.alcoholic,
-      }
-
-      if (formData.calories) {
-        drinkData.calories = parseInt(formData.calories)
-      }
-
-      if (formData.photo) {
-        drinkData.photo = formData.photo
-      }
-
-      const response = await api.createDrink(code, drinkData)
-
-      if (response.error || response.errors) {
-        if (response.errors && Array.isArray(response.errors) && response.errors.length > 0) {
-          setErrors(response.errors)
-        } else if (Array.isArray(response.error)) {
-          setErrors(response.error)
-        } else if (response.error) {
-          setErrors([response.error])
-        } else {
-          setErrors(['Erro ao criar bebida'])
-        }
-      } else if (response.data) {
-        // Sucesso! Redirecionar para a lista de bebidas
-        navigate(`/establishment/${code}/drinks`)
-      }
-    } catch (err) {
-      setErrors(['Erro ao criar bebida. Tente novamente.'])
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const {
+    formData,
+    errors,
+    loading,
+    handleChange,
+    handleFileChange,
+    handleSubmit,
+  } = useCreateDrink({ establishmentCode: code })
 
   return (
     <Layout>

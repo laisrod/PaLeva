@@ -76,12 +76,6 @@ export default function Login() {
     }
   }
 
-  const handleClearStorage = () => {
-    localStorage.clear()
-    alert('LocalStorage limpo! Recarregue a página.')
-    window.location.reload()
-  }
-
   return (
     <div className="login-container">
       <div className="login-card">
@@ -141,40 +135,6 @@ export default function Login() {
             </p>
           </div>
         </form>
-
-        {/* Botão temporário para desenvolvimento - REMOVER EM PRODUÇÃO */}
-        <div style={{ 
-          marginTop: '30px', 
-          paddingTop: '20px', 
-          borderTop: '2px dashed #dc3545',
-          textAlign: 'center',
-          backgroundColor: '#fff3cd',
-          padding: '15px',
-          borderRadius: '4px'
-        }}>
-          <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#856404', fontWeight: 'bold' }}>
-            🔧 DEV TOOLS
-          </p>
-          <button
-            type="button"
-            onClick={handleClearStorage}
-            style={{
-              padding: '10px 20px',
-              fontSize: '14px',
-              backgroundColor: '#dc3545',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              fontWeight: '600',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}
-            title="Limpar localStorage (apenas desenvolvimento)"
-          >
-            🗑️ Limpar LocalStorage
-          </button>
-        </div>
       </div>
     </div>
   )

@@ -1,0 +1,31 @@
+import { Tag } from './tag'
+
+export interface Dish {
+  id: number
+  name: string
+  description?: string
+  tags?: Tag[]
+}
+
+export interface CreateDishFormData {
+  name: string
+  description: string
+  calories: string
+  photo: File | null
+  selectedTags: number[]
+  newTagName: string
+}
+
+export interface DishData {
+  name: string
+  description: string
+  calories?: number
+  photo?: File
+  tag_ids?: number[]
+  tags_attributes?: Array<{ name: string }>
+}
+
+export interface UseCreateDishOptions {
+  establishmentCode: string | undefined
+  onSuccess?: () => void
+}

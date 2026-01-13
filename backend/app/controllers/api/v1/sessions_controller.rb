@@ -9,7 +9,7 @@ module Api
 
         if user&.valid_password?(session_params[:password])
           user.regenerate_api_token if user.api_token.blank?
-          render json: { token: user.api_token, user: user.slice(:id, :email, :name) }, status: :ok
+          render json: { token: user.api_token, user: format_user_data(user) }, status: :ok
         else
           render json: { error: 'Email ou senha inválidos' }, status: :unauthorized
         end
@@ -27,7 +27,7 @@ module Api
         if user
           render json: { 
             signed_in: true, 
-            user: user.slice(:id, :email, :name, :role)
+            user: format_user_data(user)
           }, status: :ok
         else
           render json: { signed_in: false }, status: :ok
@@ -43,6 +43,25 @@ module Api
 
       def session_params
         params.require(:user).permit(:email, :password)
+      end
+
+      def format_user_data(user)
+        user_data = {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role
+        }
+
+        if user.establishment.present?
+          user_data[:establishment] = {
+            id: user.establishment.id,
+            code: user.establishment.code,
+            name: user.establishment.name
+          }
+        end
+
+        user_data
       end
     end
   end

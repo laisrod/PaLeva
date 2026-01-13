@@ -1,187 +1,26 @@
-import { useState, useEffect } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { api } from '../../shared/services/api'
+import { useParams, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
+import { useCreateDish } from '../hooks/useCreateDish'
+import { useAuthCheck } from '../hooks/useAuthCheck'
 import '../../css/owner/pages/CreateDish.css'
-
-interface Tag {
-  id: number
-  name: string
-}
 
 export default function CreateDish() {
   const { code } = useParams<{ code: string }>()
-  const navigate = useNavigate()
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    calories: '',
-    photo: null as File | null,
-    selectedTags: [] as number[],
-    newTagName: '',
-  })
-  const [tags, setTags] = useState<Tag[]>([])
-  const [loadingTags, setLoadingTags] = useState(true)
-  const [errors, setErrors] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
+  useAuthCheck()
 
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (!token) {
-      navigate('/login')
-      return
-    }
-
-    if (code) {
-      loadTags()
-    }
-  }, [navigate, code])
-
-  const loadTags = async () => {
-    if (!code) return
-    
-    setLoadingTags(true)
-    try {
-      const response = await api.getTags(code)
-      if (response.data) {
-        setTags(response.data)
-      }
-    } catch (err) {
-      console.error('Erro ao carregar características:', err)
-    } finally {
-      setLoadingTags(false)
-    }
-  }
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-    if (errors.length > 0) {
-      setErrors([])
-    }
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null
-    setFormData((prev) => ({
-      ...prev,
-      photo: file,
-    }))
-  }
-
-  const handleTagToggle = (tagId: number) => {
-    setFormData((prev) => {
-      const isSelected = prev.selectedTags.includes(tagId)
-      return {
-        ...prev,
-        selectedTags: isSelected
-          ? prev.selectedTags.filter((id) => id !== tagId)
-          : [...prev.selectedTags, tagId],
-      }
-    })
-  }
-
-  const handleCreateTag = async () => {
-    if (!formData.newTagName.trim() || !code) return
-
-    try {
-      const response = await api.createTag(code, formData.newTagName.trim())
-      if (response.data) {
-        // Adicionar a nova tag à lista e selecioná-la
-        const newTag = response.data.tag
-        setTags((prev) => [...prev, newTag])
-        setFormData((prev) => ({
-          ...prev,
-          selectedTags: [...prev.selectedTags, newTag.id],
-          newTagName: '',
-        }))
-      } else if (response.error) {
-        setErrors([response.error])
-      }
-    } catch (err) {
-      console.error('Erro ao criar característica:', err)
-    }
-  }
-
-  const validateForm = (): boolean => {
-    const newErrors: string[] = []
-
-    if (!formData.name.trim()) {
-      newErrors.push('Nome é obrigatório')
-    }
-    if (!formData.description.trim()) {
-      newErrors.push('Descrição é obrigatória')
-    }
-
-    setErrors(newErrors)
-    return newErrors.length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setErrors([])
-
-    if (!validateForm()) {
-      return
-    }
-
-    if (!code) {
-      setErrors(['Código do estabelecimento não encontrado'])
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      const dishData: any = {
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-      }
-
-      if (formData.calories) {
-        dishData.calories = parseInt(formData.calories)
-      }
-
-      if (formData.photo) {
-        dishData.photo = formData.photo
-      }
-
-      if (formData.selectedTags.length > 0) {
-        dishData.tag_ids = formData.selectedTags
-      }
-
-      if (formData.newTagName.trim()) {
-        dishData.tags_attributes = [{ name: formData.newTagName.trim() }]
-      }
-
-      const response = await api.createDish(code, dishData)
-
-      if (response.error || response.errors) {
-        if (response.errors && Array.isArray(response.errors) && response.errors.length > 0) {
-          setErrors(response.errors)
-        } else if (Array.isArray(response.error)) {
-          setErrors(response.error)
-        } else if (response.error) {
-          setErrors([response.error])
-        } else {
-          setErrors(['Erro ao criar prato'])
-        }
-      } else if (response.data) {
-        // Sucesso! Redirecionar para a lista de pratos
-        navigate(`/establishment/${code}/dishes`)
-      }
-    } catch (err) {
-      setErrors(['Erro ao criar prato. Tente novamente.'])
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const {
+    formData,
+    tags,
+    errors,
+    loading,
+    loadingTags,
+    handleChange,
+    handleFileChange,
+    handleTagToggle,
+    handleCreateTag,
+    handleSubmit,
+    setFormData,
+  } = useCreateDish({ establishmentCode: code })
 
   return (
     <Layout>
@@ -288,13 +127,9 @@ export default function CreateDish() {
                   <div className="new-tag-section">
                     <input
                       type="text"
+                      name="newTagName"
                       value={formData.newTagName}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          newTagName: e.target.value,
-                        }))
-                      }
+                      onChange={handleChange}
                       placeholder="Nova característica"
                       disabled={loading}
                       onKeyPress={(e) => {

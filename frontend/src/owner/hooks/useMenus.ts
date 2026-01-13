@@ -1,62 +1,55 @@
-import { useState, useEffect } from 'react'
-import { api } from '../../shared/services/api'
-
-interface Menu {
-  id: number
-  name: string
-  description: string
-}
+import { useState, useEffect, useCallback } from 'react'
+import { ownerApi } from '../services/api'
+import { useApiData } from './useApiData'
+import { getErrorMessage } from './errorHandler'
+import { Menu } from '../types/menu'
 
 export function useMenus(establishmentCode: string | undefined) {
   const [menus, setMenus] = useState<Menu[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  
+  const { loading, error, executeRequest } = useApiData<Menu[]>({
+    defaultErrorMessage: 'Erro ao carregar cardápios',
+    onSuccess: (data) => setMenus(data)
+  })
+
+  const loadMenus = useCallback(async () => {
+    if (!establishmentCode) {
+      return
+    }
+    
+    await executeRequest(() => ownerApi.getMenus(establishmentCode))
+  }, [establishmentCode, executeRequest])
 
   useEffect(() => {
     if (establishmentCode) {
       loadMenus()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [establishmentCode])
 
-  const loadMenus = async () => {
-    setLoading(true)
-    setError('')
-    
-    try {
-      const response = await api.getMenus(establishmentCode!)
-      
-      if (response.error) {
-        setError(Array.isArray(response.error) 
-          ? response.error.join(', ') 
-          : response.error)
-      } else if (response.data) {
-        setMenus(response.data)
-      }
-    } catch (err) {
-      setError('Erro ao carregar cardápios')
-      console.error(err)
-    } finally {
-      setLoading(false)
+  const deleteMenu = useCallback(async (menuId: number) => {
+    if (!establishmentCode) {
+      return
     }
-  }
-
-  const deleteMenu = async (menuId: number) => {
-    if (!window.confirm('Tem certeza que deseja excluir este cardápio?')) return
+    
+    const userConfirmed = window.confirm('Tem certeza que deseja excluir este cardápio?')
+    
+    if (!userConfirmed) {
+      return
+    }
     
     try {
-      const response = await api.deleteMenu(menuId)
+      const response = await ownerApi.deleteMenu(establishmentCode, menuId)
+      const errorMessage = getErrorMessage(response)
       
-      if (response.error) {
-        alert(response.error)
+      if (errorMessage) {
+        alert(errorMessage)
       } else {
-        setMenus(menus.filter(m => m.id !== menuId))
+        setMenus((previousMenus) => previousMenus.filter((menu) => menu.id !== menuId))
       }
     } catch (err) {
       alert('Erro ao excluir cardápio')
-      console.error(err)
     }
-  }
+  }, [establishmentCode])
 
   return {
     menus,
@@ -66,4 +59,3 @@ export function useMenus(establishmentCode: string | undefined) {
     refetch: loadMenus
   }
 }
-

@@ -1,52 +1,48 @@
-import { useState, useEffect } from 'react'
-import { api } from '../../shared/services/api'
-
-interface Tag {
-  id: number
-  name: string
-}
+import { useState, useEffect, useCallback } from 'react'
+import { ownerApi } from '../services/api'
+import { useApiData } from './useApiData'
+import { Tag } from '../types/tag'
 
 export function useTags(establishmentCode: string | undefined) {
   const [tags, setTags] = useState<Tag[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  
+  const { loading, error, executeRequest } = useApiData<Tag[]>({
+    defaultErrorMessage: 'Erro ao carregar características',
+    onSuccess: (data) => setTags(data)
+  })
+
+  const loadTags = useCallback(async () => {
+    if (!establishmentCode) {
+      return
+    }
+    
+    await executeRequest(() => ownerApi.getTags(establishmentCode))
+  }, [establishmentCode, executeRequest])
 
   useEffect(() => {
     if (establishmentCode) {
       loadTags()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [establishmentCode])
 
-  const loadTags = async () => {
-    if (!establishmentCode) return
-    
-    setLoading(true)
-    setError('')
+  const deleteTag = useCallback(async (tagId: number) => {
+    if (!establishmentCode) {
+      return false
+    }
     
     try {
-      const response = await api.getTags(establishmentCode)
-      
-      if (response.error) {
-        setError(Array.isArray(response.error) 
-          ? response.error.join(', ') 
-          : response.error)
-      } else if (response.data) {
-        setTags(response.data)
-      }
+      setTags((previousTags) => previousTags.filter((tag) => tag.id !== tagId))
+      return true
     } catch (err) {
-      setError('Erro ao carregar características')
-      console.error(err)
-    } finally {
-      setLoading(false)
+      return false
     }
-  }
+  }, [establishmentCode])
 
   return {
     tags,
     loading,
     error,
-    refetch: loadTags
+    refetch: loadTags,
+    deleteTag
   }
 }
-

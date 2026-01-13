@@ -42,12 +42,6 @@ export default function RestaurantsList() {
     navigate(`/menu/${code}`)
   }
 
-  const handleClearStorage = () => {
-    localStorage.clear()
-    alert('LocalStorage limpo! Redirecionando para login...')
-    navigate('/login')
-  }
-
   // Não renderizar nada enquanto verifica autenticação
   if (authLoading) {
     return (
@@ -59,39 +53,6 @@ export default function RestaurantsList() {
 
   return (
     <div className="restaurants-container">
-      {/* Botão temporário para desenvolvimento - REMOVER EM PRODUÇÃO */}
-      <div style={{ 
-        marginBottom: '20px', 
-        padding: '15px',
-        backgroundColor: '#fff3cd',
-        borderRadius: '4px',
-        border: '2px dashed #dc3545',
-        textAlign: 'center'
-      }}>
-        <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#856404', fontWeight: 'bold' }}>
-          🔧 DEV TOOLS
-        </p>
-        <button
-          type="button"
-          onClick={handleClearStorage}
-          style={{
-            padding: '10px 20px',
-            fontSize: '14px',
-            backgroundColor: '#dc3545',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            fontWeight: '600',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-          }}
-          title="Limpar localStorage (apenas desenvolvimento)"
-        >
-          🗑️ Limpar LocalStorage
-        </button>
-      </div>
-
       <div className="restaurants-header">
         <h1 className="restaurants-title">Restaurantes</h1>
         <button

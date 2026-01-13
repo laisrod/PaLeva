@@ -8,17 +8,14 @@ export default function Tags() {
   const { code } = useParams<{ code: string }>()
   useRequireAuth()
   
-  const { tags, loading, error } = useTags(code)
+  const { tags, loading, error, deleteTag } = useTags(code)
 
   const handleDelete = async (tagId: number) => {
-    if (!window.confirm('Tem certeza?')) return
+    if (!window.confirm('Tem certeza que deseja excluir esta característica?')) return
     
-    try {
-      // TODO: Implementar endpoint da API
-      setTags(tags.filter(t => t.id !== tagId))
-    } catch (err) {
+    const success = await deleteTag(tagId)
+    if (!success) {
       alert('Erro ao excluir característica')
-      console.error(err)
     }
   }
 
