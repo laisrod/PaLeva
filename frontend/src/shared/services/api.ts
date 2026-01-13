@@ -35,11 +35,43 @@ class ApiService {
         credentials: 'include',
       })
 
-      const data = await response.json()
+      // Verificar se a resposta é JSON antes de tentar fazer parse
+      const contentType = response.headers.get('content-type')
+      let data: any = {}
+
+      if (contentType && contentType.includes('application/json')) {
+        const text = await response.text()
+        try {
+          data = text ? JSON.parse(text) : {}
+        } catch (parseError) {
+          // Erro "Unexpected end of JSON input" ocorre aqui
+          // Geralmente significa que o servidor retornou resposta vazia ou incompleta
+          return {
+            error: 'Resposta inválida do servidor',
+            message: 'O servidor retornou uma resposta que não pôde ser processada. Verifique se o servidor está rodando.',
+          }
+        }
+      } else {
+        // Se não for JSON, tentar ler como texto
+        const text = await response.text()
+        
+        // Se a resposta estiver vazia, pode ser que o servidor não esteja rodando
+        if (!text || text.trim() === '') {
+          return {
+            error: 'Servidor não está respondendo',
+            message: 'O servidor Rails pode não estar rodando. Verifique se o servidor está ativo.',
+          }
+        }
+        
+        return {
+          error: 'Erro no servidor',
+          message: `O servidor retornou um erro (${response.status}). Resposta: ${text.substring(0, 200)}`,
+        }
+      }
 
       if (!response.ok) {
         return {
-          error: data.error || 'Erro na requisição',
+          error: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Erro na requisição'),
           errors: data.errors,
           message: data.message,
         }
@@ -47,8 +79,10 @@ class ApiService {
 
       return { data }
     } catch (error) {
+      // Erro de rede (servidor não acessível)
       return {
         error: error instanceof Error ? error.message : 'Erro desconhecido',
+        message: 'Não foi possível conectar ao servidor. Verifique se o servidor está rodando.',
       }
     }
   }

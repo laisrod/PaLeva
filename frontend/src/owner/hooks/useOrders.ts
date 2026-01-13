@@ -1,73 +1,67 @@
-import { useState, useEffect } from 'react'
-import { api } from '../../shared/services/api'
+import { useState, useEffect, useCallback } from 'react'
+import { ownerApi } from '../services/api'
 import { Order } from '../../shared/types/order'
+import { useApiData } from './useApiData'
+import { getErrorMessage } from './errorHandler'
+
+type OrderAction = 'prepare' | 'ready' | 'cancel'
 
 export function useOrders(establishmentCode: string | undefined) {
   const [orders, setOrders] = useState<Order[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  
+  const { loading, error, executeRequest } = useApiData<Order[]>({
+    defaultErrorMessage: 'Erro ao carregar pedidos',
+    onSuccess: (data) => setOrders(data)
+  })
+
+  const loadOrders = useCallback(async () => {
+    if (!establishmentCode) {
+      return
+    }
+    
+    await executeRequest(() => ownerApi.getOrders(establishmentCode))
+  }, [establishmentCode, executeRequest])
 
   useEffect(() => {
     if (establishmentCode) {
       loadOrders()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [establishmentCode])
 
-  const loadOrders = async () => {
-    if (!establishmentCode) return
-    
-    setLoading(true)
-    setError('')
-    
-    try {
-      const response = await api.getOrders(establishmentCode)
-      
-      if (response.error) {
-        setError(Array.isArray(response.error) 
-          ? response.error.join(', ') 
-          : response.error)
-      } else if (response.data) {
-        setOrders(response.data)
-      }
-    } catch (err) {
-      setError('Erro ao carregar pedidos')
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const changeStatus = async (
+  const changeStatus = useCallback(async (
     orderCode: string, 
-    action: 'prepare' | 'ready' | 'cancel'
+    action: OrderAction
   ) => {
-    if (!establishmentCode) return
+    if (!establishmentCode) {
+      return
+    }
 
     try {
       let response
-      switch (action) {
-        case 'prepare':
-          response = await api.prepareOrder(establishmentCode, orderCode)
-          break
-        case 'ready':
-          response = await api.readyOrder(establishmentCode, orderCode)
-          break
-        case 'cancel':
-          response = await api.cancelOrder(establishmentCode, orderCode)
-          break
+
+      if (action === 'prepare') {
+        response = await ownerApi.prepareOrder(establishmentCode, orderCode)
+      } else if (action === 'ready') {
+        response = await ownerApi.readyOrder(establishmentCode, orderCode)
+      } else if (action === 'cancel') {
+        response = await ownerApi.cancelOrder(establishmentCode, orderCode)
       }
 
-      if (!response.error) {
-        loadOrders() // Recarregar lista
+      if (!response) {
+        return
+      }
+
+      const errorMessage = getErrorMessage(response)
+      
+      if (errorMessage) {
+        alert(errorMessage)
       } else {
-        alert(response.error)
+        loadOrders()
       }
     } catch (err) {
       alert('Erro ao atualizar pedido')
-      console.error(err)
     }
-  }
+  }, [establishmentCode, loadOrders])
 
   return {
     orders,
@@ -77,4 +71,3 @@ export function useOrders(establishmentCode: string | undefined) {
     refetch: loadOrders
   }
 }
-

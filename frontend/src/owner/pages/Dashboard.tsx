@@ -1,70 +1,11 @@
-import { useState, useEffect } from 'react'
-import { useNavigate, Link, useParams } from 'react-router-dom'
-import { api } from '../../shared/services/api'
+import { Link, useParams } from 'react-router-dom'
+import { useEstablishment } from '../hooks/useEstablishment'
 import Layout from '../components/Layout'
 import '../../css/owner/pages/Dashboard.css'
 
-interface Establishment {
-  id: number
-  name: string
-  phone_number: string
-  code: string
-  working_hours?: Array<{
-    id: number
-    week_day: string
-    open: boolean
-    opening_hour?: string
-    closing_hour?: string
-  }>
-}
-
 export default function Dashboard() {
   const { code } = useParams<{ code: string }>()
-  const [establishment, setEstablishment] = useState<Establishment | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (!token) {
-      navigate('/login')
-      return
-    }
-
-    if (code) {
-      // Salvar código no localStorage para uso posterior
-      localStorage.setItem('establishment_code', code)
-      loadEstablishment(code)
-    } else {
-      setError('Código do estabelecimento não encontrado')
-      setLoading(false)
-    }
-  }, [navigate, code])
-
-  const loadEstablishment = async (code: string) => {
-    setLoading(true)
-    setError('')
-    
-    try {
-      const response = await api.getEstablishment(code)
-      
-      if (response.error) {
-        setError(Array.isArray(response.error) 
-          ? response.error.join(', ') 
-          : response.error)
-      } else if (response.data) {
-        setEstablishment(response.data)
-      } else {
-        setError('Estabelecimento não encontrado')
-      }
-    } catch (err) {
-      setError('Erro ao carregar estabelecimento')
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { establishment, loading, error } = useEstablishment(code)
 
   if (loading) {
     return (

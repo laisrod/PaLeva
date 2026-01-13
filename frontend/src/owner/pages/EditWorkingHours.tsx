@@ -1,108 +1,23 @@
-import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { api } from '../../shared/services/api'
+import { useWorkingHours } from '../hooks/useWorkingHours'
 import Layout from '../components/Layout'
 import '../../css/owner/pages/EditWorkingHours.css'
-
-interface WorkingHour {
-  id: number
-  week_day: string
-  opening_hour: string | null
-  closing_hour: string | null
-  open: boolean
-}
 
 export default function EditWorkingHours() {
   const { code } = useParams<{ code: string }>()
   const navigate = useNavigate()
-  const [workingHours, setWorkingHours] = useState<WorkingHour[]>([])
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (!token) {
-      navigate('/login')
-      return
-    }
-
-    if (code) {
-      loadWorkingHours()
-    }
-  }, [navigate, code])
-
-  const loadWorkingHours = async () => {
-    if (!code) return
-
-    setLoading(true)
-    setError('')
-
-    try {
-      const response = await api.getWorkingHours(code)
-
-      if (response.error) {
-        setError(Array.isArray(response.error) 
-          ? response.error.join(', ') 
-          : response.error)
-      } else if (response.data) {
-        setWorkingHours(response.data)
-      }
-    } catch (err) {
-      setError('Erro ao carregar horários de funcionamento')
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleChange = (id: number, field: string, value: string | boolean) => {
-    setWorkingHours(prev => prev.map(wh => 
-      wh.id === id ? { ...wh, [field]: value } : wh
-    ))
-    setSuccess('')
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!code) return
-
-    setSaving(true)
-    setError('')
-    setSuccess('')
-
-    try {
-      const updatePromises = workingHours.map(wh =>
-        api.updateWorkingHour(code, wh.id, {
-          opening_hour: wh.opening_hour || '',
-          closing_hour: wh.closing_hour || '',
-          open: wh.open
-        })
-      )
-
-      const results = await Promise.all(updatePromises)
-      const hasError = results.some(r => r.error)
-
-      if (hasError) {
-        const errors = results
-          .filter(r => r.error)
-          .map(r => r.error)
-          .flat()
-        setError(errors.join(', '))
-      } else {
-        setSuccess('Horários de funcionamento atualizados com sucesso!')
-        setTimeout(() => {
-          navigate(`/establishment/${code}`)
-        }, 1500)
-      }
-    } catch (err) {
-      setError('Erro ao atualizar horários de funcionamento')
-      console.error(err)
-    } finally {
-      setSaving(false)
-    }
-  }
+  const {
+    workingHours,
+    loading,
+    saving,
+    error,
+    success,
+    handleChange,
+    handleSubmit
+  } = useWorkingHours({
+    code,
+    onSuccess: () => navigate(`/establishment/${code}`)
+  })
 
   if (loading) {
     return (

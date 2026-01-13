@@ -1,76 +1,23 @@
-import { useState, useEffect } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { api } from '../../shared/services/api'
+import { useParams, Link } from 'react-router-dom'
+import { useMenu } from '../hooks/useMenu'
 import Layout from '../components/Layout'
+import { MenuItem } from '../types/menu'
 import '../../css/owner/pages/ViewMenu.css'
-
-interface MenuItem {
-  id: number
-  menu_item_id: number
-  name: string
-  description: string
-  price: number
-  category: string
-  portions: Array<{
-    id: number
-    name: string
-    price: number
-  }>
-  image?: string
-}
-
-interface Menu {
-  id: number
-  name: string
-  description: string
-  items: MenuItem[]
-}
 
 export default function ViewMenu() {
   const { code, id } = useParams<{ code: string; id: string }>()
-  const navigate = useNavigate()
-  const [menu, setMenu] = useState<Menu | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const { menu, loading, error } = useMenu({ 
+    menuId: id ? parseInt(id) : undefined,
+    establishmentCode: code 
+  })
 
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (!token) {
-      navigate('/login')
-      return
-    }
-
-    if (id) {
-      loadMenu(parseInt(id))
-    }
-  }, [id, navigate])
-
-  const loadMenu = async (menuId: number) => {
-    setLoading(true)
-    setError('')
-    
-    try {
-      const response = await api.getMenu(menuId)
-      
-      if (response.error) {
-        setError(response.error)
-      } else if (response.data) {
-        // O endpoint getMenu retorna apenas name e description
-        // Para ver os itens, precisaríamos de outro endpoint ou usar o endpoint público
-        setMenu({
-          id: response.data.id,
-          name: response.data.name,
-          description: response.data.description,
-          items: [] // Por enquanto vazio, pode ser expandido depois
-        })
-      }
-    } catch (err) {
-      setError('Erro ao carregar cardápio')
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  // Transformar o menu do hook para o formato esperado pela view
+  const menuData = menu ? {
+    id: menu.id,
+    name: menu.name,
+    description: menu.description,
+    items: [] as MenuItem[] // Por enquanto vazio, pode ser expandido depois
+  } : null
 
   if (loading) {
     return (
@@ -97,7 +44,7 @@ export default function ViewMenu() {
     )
   }
 
-  if (!menu) {
+  if (!menuData) {
     return (
       <Layout>
         <div className="view-menu-container">
@@ -118,7 +65,7 @@ export default function ViewMenu() {
             ← Voltar
           </Link>
           <Link
-            to={`/establishment/${code}/menus/${menu.id}/edit`}
+            to={`/establishment/${code}/menus/${menuData.id}/edit`}
             className="btn-edit"
           >
             Editar
@@ -126,14 +73,14 @@ export default function ViewMenu() {
         </div>
 
         <div className="menu-details">
-          <h1>{menu.name}</h1>
-          <p className="menu-description">{menu.description}</p>
+          <h1>{menuData.name}</h1>
+          <p className="menu-description">{menuData.description}</p>
 
-          {menu.items.length > 0 ? (
+          {menuData.items.length > 0 ? (
             <div className="menu-items">
               <h2>Itens do Cardápio</h2>
               <div className="items-grid">
-                {menu.items.map((item) => (
+                {menuData.items.map((item) => (
                   <div key={item.id} className="menu-item-card">
                     {item.image && (
                       <img src={item.image} alt={item.name} className="item-image" />

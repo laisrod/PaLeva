@@ -1,11 +1,5 @@
-/**
- * Utilitários para autenticação e verificação de roles
- * 
- * Padronização:
- * - Backend retorna role como boolean (true = proprietário, false = cliente)
- * - Frontend sempre trabalha com boolean internamente
- * - Conversão para string apenas para localStorage (compatibilidade)
- */
+//Utilitários para autenticação e verificação de roles
+ 
 
 export type UserRole = boolean // true = owner, false = client
 

@@ -12,7 +12,6 @@ export default function Dishes() {
 
   const handleFilter = (e: React.FormEvent) => {
     e.preventDefault()
-    // O loadDishes será chamado automaticamente quando selectedTags mudar
   }
 
   const isOwner = true // TODO: Verificar se o usuário é dono

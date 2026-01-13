@@ -1,121 +1,22 @@
-import { useState, useEffect } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { api } from '../../shared/services/api'
+import { useParams, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
+import { useEditMenu } from '../hooks/useEditMenu'
 import '../../css/owner/pages/CreateMenu.css'
 
 export default function EditMenu() {
   const { code, id } = useParams<{ code: string; id: string }>()
-  const navigate = useNavigate()
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
+
+  const {
+    formData,
+    errors,
+    loading,
+    loadingMenu,
+    handleChange,
+    handleSubmit,
+  } = useEditMenu({ 
+    menuId: id ? parseInt(id) : undefined,
+    establishmentCode: code 
   })
-  const [errors, setErrors] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
-  const [loadingMenu, setLoadingMenu] = useState(true)
-
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (!token) {
-      navigate('/login')
-      return
-    }
-
-    if (id) {
-      loadMenu(parseInt(id))
-    }
-  }, [id, navigate])
-
-  const loadMenu = async (menuId: number) => {
-    setLoadingMenu(true)
-    try {
-      const response = await api.getMenu(menuId)
-      if (response.data) {
-        setFormData({
-          name: response.data.name,
-          description: response.data.description,
-        })
-      } else if (response.error) {
-        setErrors([response.error])
-      }
-    } catch (err) {
-      setErrors(['Erro ao carregar cardápio'])
-      console.error(err)
-    } finally {
-      setLoadingMenu(false)
-    }
-  }
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-    if (errors.length > 0) {
-      setErrors([])
-    }
-  }
-
-  const validateForm = (): boolean => {
-    const newErrors: string[] = []
-
-    if (!formData.name.trim()) {
-      newErrors.push('Nome é obrigatório')
-    }
-    if (!formData.description.trim()) {
-      newErrors.push('Descrição é obrigatória')
-    }
-
-    setErrors(newErrors)
-    return newErrors.length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setErrors([])
-
-    if (!validateForm()) {
-      return
-    }
-
-    if (!id) {
-      setErrors(['ID do cardápio não encontrado'])
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      const response = await api.updateMenu(parseInt(id), {
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-      })
-
-      if (response.error || response.errors) {
-        if (response.errors && Array.isArray(response.errors) && response.errors.length > 0) {
-          setErrors(response.errors)
-        } else if (Array.isArray(response.error)) {
-          setErrors(response.error)
-        } else if (response.error) {
-          setErrors([response.error])
-        } else {
-          setErrors(['Erro ao atualizar cardápio'])
-        }
-      } else if (response.data) {
-        // Sucesso! Redirecionar para a lista de menus
-        navigate(`/establishment/${code}/menus`)
-      }
-    } catch (err) {
-      setErrors(['Erro ao atualizar cardápio. Tente novamente.'])
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (loadingMenu) {
     return (

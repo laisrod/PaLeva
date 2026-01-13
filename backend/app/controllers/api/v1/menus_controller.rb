@@ -46,6 +46,46 @@ module Api
         render json: { error: 'Cardápio não encontrado' }, status: :not_found
       end
 
+      def update
+        @menu = @establishment.menus.find(params[:id])
+
+        if @menu.update(menu_params)
+          render json: {
+            menu: @menu.as_json(only: [:id, :name, :description]),
+            message: 'Cardápio atualizado com sucesso'
+          }, status: :ok
+        else
+          render json: {
+            status: :unprocessable_entity,
+            error: @menu.errors.full_messages.map(&:to_s)
+          }, status: :unprocessable_entity
+        end
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: 'Cardápio não encontrado' }, status: :not_found
+      rescue ActionController::ParameterMissing => e
+        render json: {
+          status: :bad_request,
+          error: ["Parâmetros faltando: #{e.param}"]
+        }, status: :bad_request
+      end
+
+      def destroy
+        @menu = @establishment.menus.find(params[:id])
+
+        if @menu.destroy
+          render json: {
+            message: 'Cardápio excluído com sucesso'
+          }, status: :ok
+        else
+          render json: {
+            status: :unprocessable_entity,
+            error: @menu.errors.full_messages.map(&:to_s)
+          }, status: :unprocessable_entity
+        end
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: 'Cardápio não encontrado' }, status: :not_found
+      end
+
       private
 
       def set_establishment
