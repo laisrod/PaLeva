@@ -2,7 +2,7 @@
 
 Sistema completo de gerenciamento de restaurantes com backend Rails e frontend React.
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 PaLeva/
@@ -11,7 +11,7 @@ PaLeva/
 └── README.md         # Este arquivo
 ```
 
-## 🚀 Como rodar
+## Como rodar
 
 ### Backend (Rails)
 
@@ -36,7 +36,7 @@ npm run dev
 
 O frontend estará disponível em `http://localhost:5176`
 
-## 🧪 Testes
+## Testes
 
 ### Backend
 ```bash
@@ -44,14 +44,14 @@ cd backend
 rspec
 ```
 
-## 📋 Regras de Negócio
+## Regras de Negócio
 
 1. O usuário dono do restaurante é o primeiro usuário cadastrado.
 2. O usuário dono do restaurante é o único que pode cadastrar outros usuários (funcionários).
 3. O usuário dono do restaurante é o único que pode criar cardápios.
 4. O usuário dono do restaurante é o único que pode criar pratos e bebidas.
 
-## 📚 Documentação
+## Documentação
 
 - [Arquitetura do Backend](backend/ARCHITECTURE.md)
 - [Refatorações Realizadas](backend/REFACTORING.md)
