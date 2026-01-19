@@ -4,25 +4,40 @@ module Api
       skip_before_action :verify_authenticity_token
       before_action :authenticate_api_user!, only: [:destroy]
 
+      # Método create não é mais necessário - autenticação é feita pelo Firebase
+      # Mantido apenas para compatibilidade com requisições antigas
       def create
-        user = User.find_by(email: session_params[:email])
-
-        if user&.valid_password?(session_params[:password])
-          user.regenerate_api_token if user.api_token.blank?
-          render json: { token: user.api_token, user: format_user_data(user) }, status: :ok
+        # Se a requisição vem de /users/sign_in (rota antiga do Devise), retornar erro mais amigável
+        if request.path.include?('/users/sign_in')
+          render json: { 
+            error: 'Este endpoint não é mais suportado. Use Firebase Auth para autenticação.',
+            message: 'A autenticação agora é feita através do Firebase. Verifique se o frontend está usando firebaseAuth.signIn() em vez de fazer requisições para este endpoint.'
+          }, status: :gone
         else
-          render json: { error: 'Email ou senha inválidos' }, status: :unauthorized
+          render json: { 
+            error: 'Use Firebase Auth for authentication. This endpoint is deprecated.' 
+          }, status: :method_not_allowed
         end
-      rescue ActionController::ParameterMissing => e
-        render json: {
-          status: :bad_request,
-          error: ["Parâmetros faltando: #{e.param}"]
-        }, status: :bad_request
       end
 
       def is_signed_in?
         token = request.headers['Authorization']&.split&.last
-        user = token ? User.find_by(api_token: token) : nil
+        
+        unless token
+          render json: { signed_in: false }, status: :ok
+          return
+        end
+
+        # Validar token do Firebase
+        firebase_data = FirebaseTokenValidator.validate(token)
+        
+        unless firebase_data
+          render json: { signed_in: false }, status: :ok
+          return
+        end
+
+        # Buscar usuário pelo email do Firebase
+        user = User.find_by(email: firebase_data[:email])
         
         if user
           render json: { 
@@ -34,16 +49,12 @@ module Api
         end
       end
 
+      # Logout é feito no Firebase, mas mantemos o endpoint para compatibilidade
       def destroy
-        current_api_user&.regenerate_api_token
         render json: { signed_out: true }, status: :ok
       end
 
       private
-
-      def session_params
-        params.require(:user).permit(:email, :password)
-      end
 
       def format_user_data(user)
         user_data = {

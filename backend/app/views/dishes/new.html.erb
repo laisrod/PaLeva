@@ -1,6 +1,6 @@
 <div class="container mt-4">
   <h1 class="mb-4">Cadastrar Prato</h1>
-    <% if current_user.role? %>
+    <% if current_user&.role? %>
     <%= form_with(model: [@establishment, @dish]) do |form| %>
 
       <% if @dish.errors.any? %>

@@ -1,5 +1,8 @@
 require "active_support/core_ext/integer/time"
 
+# Firebase Project ID
+ENV['FIREBASE_PROJECT_ID'] ||= 'palevar'
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 

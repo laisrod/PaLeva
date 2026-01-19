@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="card shadow-sm">
     <div class="card-body bg-light">
-      <% if current_user.role? %>
+      <% if current_user&.role? %>
         <h1 class="card-title text-primary">Editar Bebida</h1>
 
         <div class="card shadow-sm mb-3">

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { firebaseAuth } from '../services/firebaseAuth'
 import { api } from '../services/api'
 import { 
   User, 
@@ -15,18 +16,19 @@ export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   /**
-   * Sincroniza dados do usuário com o backend
-   * Sempre busca dados atualizados do servidor
+   * Sincroniza dados do usuário com o backend usando token do Firebase
+   * Obtém os dados do usuário (role, establishment) do backend Rails
    */
   const syncUserFromBackend = useCallback(async (): Promise<User | null> => {
-    const token = localStorage.getItem('auth_token')
+    const firebaseToken = await firebaseAuth.getIdToken()
     
-    if (!token) {
+    if (!firebaseToken) {
       return null
     }
 
     try {
-      const response = await api.isSignedIn()
+      // Usar o token do Firebase para autenticar no backend
+      const response = await api.isSignedIn(firebaseToken)
       
       if (response.data?.signed_in && response.data.user) {
         const backendUser: User = {
@@ -54,73 +56,133 @@ export function useAuth() {
    * Verifica autenticação e sincroniza dados do usuário
    */
   const checkAuth = useCallback(async () => {
-    const token = localStorage.getItem('auth_token')
+    const firebaseUser = firebaseAuth.getCurrentUser()
     
-    if (!token) {
+    if (!firebaseUser) {
       setUser(null)
       setIsAuthenticated(false)
       setLoading(false)
       return
     }
 
-    // Sempre sincronizar com backend
+    // Sincronizar dados do backend
     const backendUser = await syncUserFromBackend()
     
     if (backendUser) {
       setUser(backendUser)
       setIsAuthenticated(true)
     } else {
-      // Token inválido ou expirado
-      clearAuthStorage()
-      setUser(null)
-      setIsAuthenticated(false)
+      // Não conseguiu obter dados do backend, mas Firebase está autenticado
+      // Criar usuário básico do Firebase como fallback
+      setUser({
+        id: parseInt(firebaseUser.uid) || 0,
+        email: firebaseUser.email || '',
+        name: firebaseUser.displayName || '',
+        role: true, // Default para owner
+      })
+      setIsAuthenticated(true)
     }
     
     setLoading(false)
   }, [syncUserFromBackend])
 
+  // Observar mudanças no estado de autenticação do Firebase
   useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
+    let mounted = true
+    
+    const unsubscribe = firebaseAuth.onAuthStateChange(async (firebaseUser) => {
+      if (!mounted) return
+      
+      try {
+        if (firebaseUser) {
+          // Usuário autenticado no Firebase, buscar dados do backend
+          const backendUser = await syncUserFromBackend()
+          
+          if (!mounted) return
+          
+          if (backendUser) {
+            setUser(backendUser)
+            setIsAuthenticated(true)
+          } else {
+            // Fallback para dados do Firebase
+            setUser({
+              id: parseInt(firebaseUser.uid) || 0,
+              email: firebaseUser.email || '',
+              name: firebaseUser.displayName || '',
+              role: true,
+            })
+            setIsAuthenticated(true)
+          }
+        } else {
+          // Usuário não autenticado
+          clearAuthStorage()
+          setUser(null)
+          setIsAuthenticated(false)
+        }
+      } catch (error) {
+        console.error('Erro ao verificar autenticação:', error)
+        if (mounted) {
+          clearAuthStorage()
+          setUser(null)
+          setIsAuthenticated(false)
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false)
+        }
+      }
+    })
+
+    return () => {
+      mounted = false
+      unsubscribe()
+    }
+  }, [syncUserFromBackend])
 
   /**
-   * Faz login e sincroniza dados do usuário
+   * Faz login usando Firebase Auth e sincroniza dados do usuário
    */
   const login = useCallback(async (email: string, password: string): Promise<{
     success: boolean
     user?: User
     error?: string | string[]
   }> => {
-    const response = await api.signIn(email, password)
+    // Autenticar no Firebase
+    const firebaseResult = await firebaseAuth.signIn(email, password)
     
-    if (response.data && response.data.user) {
-      const userData: User = {
-        id: response.data.user.id,
-        email: response.data.user.email,
-        name: response.data.user.name,
-        role: response.data.user.role === true, // Garantir boolean
-        establishment: response.data.user.establishment,
-      }
-      
-      // Salvar dados no localStorage
-      saveUserData(userData)
-      
-      // Atualizar estado
-      setUser(userData)
+    if (!firebaseResult.success || !firebaseResult.user) {
+      return { success: false, error: firebaseResult.error }
+    }
+
+    // Sincronizar com backend usando token do Firebase
+    const backendUser = await syncUserFromBackend()
+    
+    if (backendUser) {
+      setUser(backendUser)
       setIsAuthenticated(true)
-      
-      return { success: true, user: userData }
+      return { success: true, user: backendUser }
     }
     
-    return { success: false, error: response.error }
-  }, [])
+    // Fallback: usar dados do Firebase se backend não responder
+    const firebaseUserData: User = {
+      id: parseInt(firebaseResult.user.uid) || 0,
+      email: firebaseResult.user.email || email,
+      name: firebaseResult.user.displayName || '',
+      role: true, // Default
+    }
+    
+    setUser(firebaseUserData)
+    setIsAuthenticated(true)
+    
+    return { success: true, user: firebaseUserData }
+  }, [syncUserFromBackend])
 
   /**
-   * Faz logout e limpa dados
+   * Faz logout no Firebase e limpa dados
    */
   const logout = useCallback(async () => {
     try {
-      await api.signOut()
+      await firebaseAuth.signOut()
     } catch (error) {
       console.error('Erro ao fazer logout:', error)
     } finally {
@@ -135,15 +197,34 @@ export function useAuth() {
    */
   const refreshUser = useCallback(async () => {
     setLoading(true)
+    
+    // Verificar se ainda está autenticado no Firebase
+    const firebaseUser = firebaseAuth.getCurrentUser()
+    if (!firebaseUser) {
+      clearAuthStorage()
+      setUser(null)
+      setIsAuthenticated(false)
+      setLoading(false)
+      return null
+    }
+    
+    // Forçar refresh do token
+    await firebaseAuth.getIdTokenForceRefresh()
+    
     const backendUser = await syncUserFromBackend()
     
     if (backendUser) {
       setUser(backendUser)
       setIsAuthenticated(true)
     } else {
-      clearAuthStorage()
-      setUser(null)
-      setIsAuthenticated(false)
+      // Fallback para dados do Firebase
+      setUser({
+        id: parseInt(firebaseUser.uid) || 0,
+        email: firebaseUser.email || '',
+        name: firebaseUser.displayName || '',
+        role: true,
+      })
+      setIsAuthenticated(true)
     }
     
     setLoading(false)

@@ -6,5 +6,5 @@ class Tag < ApplicationRecord
 
     def  self .filter_by_title(name) 
       where( "name ILIKE ?" , "% #{name} %" ) 
-    end 
+    end
   end

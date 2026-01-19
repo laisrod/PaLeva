@@ -1,3 +1,5 @@
+import { firebaseAuth } from '../../../shared/services/firebaseAuth'
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1'
 
 export interface ApiResponse<T> {
@@ -8,15 +10,18 @@ export interface ApiResponse<T> {
 }
 
 export class BaseApiService {
-  protected getAuthToken(): string | null {
-    return localStorage.getItem('auth_token')
+  /**
+   * Obtém o token de autenticação do Firebase
+   */
+  protected async getAuthToken(): Promise<string | null> {
+    return await firebaseAuth.getIdToken()
   }
 
   protected async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    const token = this.getAuthToken()
+    const token = await this.getAuthToken()
     
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -91,7 +96,7 @@ export class BaseApiService {
     endpoint: string,
     formData: FormData
   ): Promise<ApiResponse<T>> {
-    const token = this.getAuthToken()
+    const token = await this.getAuthToken()
     const headers: HeadersInit = {}
     
     if (token) {
@@ -106,11 +111,36 @@ export class BaseApiService {
         body: formData,
       })
 
-      const data = await response.json()
+      const contentType = response.headers.get('content-type')
+      let data: any = {}
+
+      if (contentType && contentType.includes('application/json')) {
+        const text = await response.text()
+        try {
+          data = text ? JSON.parse(text) : {}
+        } catch (parseError) {
+          return {
+            error: 'Resposta inválida do servidor',
+            message: 'O servidor retornou uma resposta que não pôde ser processada.',
+          }
+        }
+      } else {
+        const text = await response.text()
+        if (!text || text.trim() === '') {
+          return {
+            error: 'Servidor não está respondendo',
+            message: 'O servidor Rails pode não estar rodando. Verifique se o servidor está ativo.',
+          }
+        }
+        return {
+          error: 'Erro no servidor',
+          message: `O servidor retornou um erro (${response.status}). Resposta: ${text.substring(0, 200)}`,
+        }
+      }
 
       if (!response.ok) {
         return {
-          error: data.error || 'Erro na requisição',
+          error: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Erro na requisição'),
           errors: data.errors,
           message: data.message,
         }

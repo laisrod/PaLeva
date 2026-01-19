@@ -1,4 +1,3 @@
-# Concern for scoping resources by establishment
 module EstablishmentScoped
   extend ActiveSupport::Concern
 

@@ -49,10 +49,17 @@ module Api
 
       def authenticate_api_user_for_create!
         token = request.headers['Authorization']&.split&.last
-        @current_api_user = token ? User.find_by(api_token: token) : nil
+        return render json: { error: 'Não autorizado' }, status: :unauthorized unless token
+
+        # Validar token do Firebase
+        firebase_data = FirebaseTokenValidator.validate(token)
+        return render json: { error: 'Token inválido' }, status: :unauthorized unless firebase_data
+
+        # Buscar usuário pelo email do Firebase
+        @current_api_user = User.find_by(email: firebase_data[:email])
         
         unless @current_api_user
-          render json: { error: 'Não autorizado' }, status: :unauthorized
+          render json: { error: 'Usuário não encontrado' }, status: :unauthorized
         end
       end
 

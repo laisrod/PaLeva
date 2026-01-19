@@ -37,19 +37,9 @@
           <button class="btn btn-outline-success" type="button">
             <%= link_to 'Ver Pedido Atual', establishment_order_path(current_user.establishment, current_order) %>
           </button>
-          <button class="btn btn-outline-primary" type="button" style="margin-right: 10px;">
-            <%= link_to current_user.email, edit_user_registration_path %>
-          </button>
-          <button class="btn btn-outline-success" type="button">
-            <%= link_to 'Sair', destroy_user_session_path, method: :delete %>
-          </button>
-        <% else %>
-          <button class="btn btn-outline-primary" type="button" style="margin-right: 10px;">
-            <%= link_to "Entrar", new_user_session_path %>
-          </button>
-          <button class="btn btn-outline-success" type="button">
-            <%= link_to "Criar conta", new_user_registration_path %>
-          </button>
+          <span class="navbar-text" style="margin-left: 10px;">
+            <%= current_user.email %>
+          </span>
         <% end %>
       </form>
     </nav>

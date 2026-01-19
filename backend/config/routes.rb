@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  devise_for :users
+  # Rota temporária para capturar requisições antigas do Devise e redirecionar para API
+  post '/users/sign_in', to: 'api/v1/sessions#create'
+  
   root to: 'establishments#index'
 
   resources :establishments do

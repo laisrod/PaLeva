@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <h1 class="mb-4">Nova Bebida</h1>
 
-  <% if current_user.role? %>
+  <% if current_user&.role? %>
 
     <%= form_with(model: [@establishment, @drink], class: "needs-validation") do |form| %>
       <% if @drink.errors.any? %>

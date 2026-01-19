@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { firebaseAuth } from '../services/firebaseAuth'
 import { api } from '../services/api'
 import '../../css/shared/Register.css'
 
@@ -85,21 +86,63 @@ export default function Register() {
     setLoading(true)
 
     try {
-      const response = await api.signUp(formData)
+      // 1. Criar usuário no Firebase
+      const displayName = `${formData.name} ${formData.last_name}`.trim()
+      const firebaseResult = await firebaseAuth.signUp(
+        formData.email,
+        formData.password,
+        displayName
+      )
+      
+      if (!firebaseResult.success || !firebaseResult.user) {
+        setError(firebaseResult.error || 'Erro ao criar conta no Firebase')
+        setLoading(false)
+        return
+      }
+
+      // Aguardar um pouco para garantir que o token está disponível
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      // Obter o token do Firebase (forçar refresh para garantir que está atualizado)
+      const firebaseToken = await firebaseAuth.getIdTokenForceRefresh()
+      if (!firebaseToken) {
+        setError('Erro ao obter token do Firebase. Tente fazer login após criar a conta.')
+        setLoading(false)
+        return
+      }
+      
+      console.log('Token obtido do Firebase:', firebaseToken.substring(0, 20) + '...')
+
+      // 2. Criar usuário no backend Rails com dados adicionais
+      // O backend validará o token do Firebase
+      const response = await api.signUp({
+        name: formData.name,
+        last_name: formData.last_name,
+        email: formData.email,
+        cpf: formData.cpf,
+        password: formData.password,
+        password_confirmation: formData.password_confirmation,
+      })
       
       if (response.error) {
+        // Se falhar no backend, fazer logout do Firebase
+        await firebaseAuth.signOut()
+        
         const errorMessage = Array.isArray(response.error) 
           ? response.error.join(', ') 
           : response.error
         setError(errorMessage)
       } else if (response.data) {
-        // Redirecionar para login após cadastro bem-sucedido
+        // Cadastro bem-sucedido - usuário já está autenticado no Firebase
         navigate('/login', { 
           state: { message: 'Cadastro realizado com sucesso! Faça login para continuar.' }
         })
       }
     } catch (err) {
+      // Em caso de erro, fazer logout do Firebase
+      await firebaseAuth.signOut()
       setError('Erro ao realizar cadastro. Tente novamente.')
+      console.error('Erro no registro:', err)
     } finally {
       setLoading(false)
     }

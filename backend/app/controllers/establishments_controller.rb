@@ -1,16 +1,30 @@
 class EstablishmentsController < ApplicationController
-  before_action :authenticate_user!
-  before_action :check_establishment!, only: [:index, :edit, :update, :destroy]
+  include Authorizable
+
+  before_action :authenticate_user!, except: [:show, :index]
+  before_action :check_establishment!, only: [:edit, :update, :destroy]
   before_action :set_establishment, only: [:edit, :update, :destroy, :search]
+  before_action :authorize_owner!, only: [:edit, :update, :destroy]
 
   def index
-    @establishment = current_user.establishment
-    @working_hours = @establishment.working_hours
+    if current_user&.establishment
+      @establishment = current_user.establishment
+    else
+      # Backend deve funcionar sozinho também:
+      # se não houver usuário logado, mostra o primeiro estabelecimento (se existir)
+      @establishment = Establishment.first
+    end
+
+    if @establishment
+      @working_hours = @establishment.working_hours
+    else
+      flash.now[:notice] = 'Nenhum estabelecimento cadastrado ainda.'
+    end
   end
 
   def show
     @establishment = Establishment.find(params[:id])
-    if @establishment.user != current_user
+    if current_user && @establishment.user != current_user
       redirect_to root_path, alert: 'Você não tem permissão para ver este estabelecimento.'
     end
   end  
@@ -20,6 +34,11 @@ class EstablishmentsController < ApplicationController
   end
 
   def create
+    unless current_user
+      redirect_to root_path, alert: 'Você precisa estar autenticado.'
+      return
+    end
+    
     @establishment = Establishment.new(establishment_params)
     @establishment.user = current_user
 
@@ -51,21 +70,18 @@ class EstablishmentsController < ApplicationController
   end
 
   def search
-    @establishment = current_user.establishment
+    @establishment = current_user&.establishment
     query = params[:query].to_s.strip
     
     @results = if @establishment
-      # Search in dishes
       dish_results = @establishment.dishes
                                  .where('LOWER(name) LIKE :query OR LOWER(description) LIKE :query', 
                                        query: "%#{query.downcase}%")
       
-      # Search in drinks
       drink_results = @establishment.drinks
                                   .where('LOWER(name) LIKE :query OR LOWER(description) LIKE :query', 
                                         query: "%#{query.downcase}%")
       
-      # Combine and sort results
       (dish_results + drink_results).sort_by(&:name)
     else
       []
@@ -79,6 +95,9 @@ class EstablishmentsController < ApplicationController
   end
 
   def set_establishment
-    @establishment = current_user.establishment
+    @establishment = current_user&.establishment
+    unless @establishment
+      redirect_to new_establishment_path, alert: 'Você precisa criar um estabelecimento primeiro.'
+    end
   end
 end

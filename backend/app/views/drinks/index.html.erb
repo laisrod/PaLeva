@@ -13,7 +13,7 @@
                     <%= link_to drink.name, establishment_drink_path(@establishment, drink), 
                         class: 'text-decoration-none text-primary' %>
                   </h3>
-                  <% if current_user.role? %> 
+                  <% if current_user&.role? %> 
                     <div class="d-flex gap-2 mb-2">
                       <%= link_to 'Editar', 
                         edit_establishment_drink_path(@establishment, drink), 
@@ -38,7 +38,7 @@
       <% end %>
 
       <div class="mt-4 d-flex gap-3">
-        <% if current_user.role? %>
+        <% if current_user&.role? %>
         <%= link_to 'Adicionar Bebida', 
             new_establishment_drink_path(@establishment), 
               class: 'btn btn-outline-primary' %>

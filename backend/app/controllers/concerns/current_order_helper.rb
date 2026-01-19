@@ -1,4 +1,3 @@
-# Concern for managing current order
 module CurrentOrderHelper
   extend ActiveSupport::Concern
 

@@ -2,7 +2,7 @@
   <div class="card shadow-sm">
     <div class="card-body bg-light">
       <h2 class="card-title text-primary">Editar Prato</h2>
-      <% if current_user.role? %>
+      <% if current_user&.role? %>
 
         <%= form_with(model: [@establishment, @dish]) do |form| %>
           <% if @dish.errors.any? %>

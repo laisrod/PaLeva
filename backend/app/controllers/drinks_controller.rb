@@ -1,11 +1,13 @@
 class DrinksController < ApplicationController
-  before_action :authenticate_user!
+  include Authorizable
+
   before_action :check_establishment!
   before_action :set_establishment
   before_action :set_drink, only: [:show, :edit, :update, :destroy, :toggle_status]
+  before_action :authorize_owner!, only: [:new, :create, :edit, :update, :destroy, :toggle_status]
 
   def index
-    @drinks = @establishment.drinks
+    @drinks = @establishment.drinks.page(params[:page]).per(20)
   end
 
   def show

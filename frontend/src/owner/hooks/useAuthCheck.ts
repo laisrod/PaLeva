@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { firebaseAuth } from '../../shared/services/firebaseAuth'
 
 /**
  * Hook para verificar autenticação e redirecionar se necessário
@@ -7,14 +8,21 @@ import { useNavigate } from 'react-router-dom'
  */
 export function useAuthCheck(redirectPath: string = '/login'): boolean {
   const navigate = useNavigate()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (!token) {
-      navigate(redirectPath)
+    const checkAuth = async () => {
+      const user = firebaseAuth.getCurrentUser()
+      if (!user) {
+        navigate(redirectPath)
+        setIsAuthenticated(false)
+      } else {
+        setIsAuthenticated(true)
+      }
     }
+    
+    checkAuth()
   }, [navigate, redirectPath])
 
-  const token = localStorage.getItem('auth_token')
-  return !!token
+  return isAuthenticated
 }

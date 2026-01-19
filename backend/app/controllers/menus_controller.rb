@@ -1,10 +1,12 @@
 class MenusController < ApplicationController
-  before_action :authenticate_user!
+  include Authorizable
+
   before_action :check_establishment!
   before_action :set_establishment
+  before_action :authorize_owner!, only: [:new, :create, :edit, :update, :destroy]
 
   def index
-    @menus = current_user.establishment.menus if current_user.establishment.present?
+    @menus = @establishment&.menus&.page(params[:page]).per(20)
   end
   
   def new

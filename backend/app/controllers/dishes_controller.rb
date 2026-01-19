@@ -1,12 +1,14 @@
 class DishesController < ApplicationController
-  before_action :authenticate_user!
+  include Authorizable
+
   before_action :check_establishment!
   before_action :set_establishment
   before_action :set_dish, only: [:show, :edit, :update, :destroy, :toggle_status]
+  before_action :authorize_owner!, only: [:new, :create, :edit, :update, :destroy, :toggle_status]
 
   def index
     @establishment = Establishment.find(params[:establishment_id])
-    @dishes = @establishment.dishes
+    @dishes = @establishment.dishes.page(params[:page]).per(20)
 
     if params[:tag_ids].present?
       @dishes = @dishes.joins(:tags)

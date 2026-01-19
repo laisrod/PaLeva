@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 class WorkingHoursController < ApplicationController
-  before_action :authenticate_user!
+  include Authorizable
+
   before_action :check_establishment!
   before_action :set_establishment
   before_action :set_working_hour, only: %i[edit update]
+  before_action :authorize_owner!, only: %i[edit update]
 
   def edit; end
 

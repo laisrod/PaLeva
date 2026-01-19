@@ -1,6 +1,8 @@
 class PortionsController < ApplicationController
-  before_action :authenticate_user!
+  include Authorizable
+
   before_action :check_establishment!
+  before_action :authorize_owner!, only: [:new, :create, :edit, :update, :destroy]
   def new
     @establishment = Establishment.find(params[:establishment_id])
     @portionable = params[:dish_id] ? @dish = Dish.find(params[:dish_id]) : @drink = Drink.find(params[:drink_id])

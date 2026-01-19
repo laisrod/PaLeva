@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ownerApi } from '../services/api'
 import { api } from '../../shared/services/api'
+import { firebaseAuth } from '../../shared/services/firebaseAuth'
 import { useAuth } from '../../shared/hooks/useAuth'
 import { getErrorMessage } from './errorHandler'
 import { CreateEstablishmentFormData, EstablishmentData, UseCreateEstablishmentOptions } from '../types/establishment'
@@ -26,25 +27,29 @@ export function useCreateEstablishment({ onSuccess }: UseCreateEstablishmentOpti
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (!token) {
-      navigate('/login')
-      return
-    }
-
-    const checkIfUserHasEstablishment = async () => {
-      try {
-        const response = await api.isSignedIn()
-        if (response.data?.signed_in && response.data?.user?.establishment) {
-          const establishmentCode = response.data.user.establishment.code
-          navigate(`/establishment/${establishmentCode}/menus`)
-        }
-      } catch (err) {
-        // Silenciar erro de verificação
+    const checkAuth = async () => {
+      const user = firebaseAuth.getCurrentUser()
+      if (!user) {
+        navigate('/login')
+        return
       }
+
+      const checkIfUserHasEstablishment = async () => {
+        try {
+          const response = await api.isSignedIn()
+          if (response.data?.signed_in && response.data?.user?.establishment) {
+            const establishmentCode = response.data.user.establishment.code
+            navigate(`/establishment/${establishmentCode}/menus`)
+          }
+        } catch (err) {
+          // Silenciar erro de verificação
+        }
+      }
+
+      checkIfUserHasEstablishment()
     }
 
-    checkIfUserHasEstablishment()
+    checkAuth()
   }, [navigate])
 
   const formatCNPJ = useCallback((value: string) => {

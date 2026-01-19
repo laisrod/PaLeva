@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Visualização de Pedido', type: :system do
-  include Devise::Test::IntegrationHelpers
-
   it 'usuário vê detalhes de um pedido com itens' do
     proprietario = User.create!(
       name: 'João',

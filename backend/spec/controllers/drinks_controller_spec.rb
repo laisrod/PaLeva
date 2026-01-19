@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe DrinksController, type: :controller do
-  include Devise::Test::ControllerHelpers
-
   it "alterna o status da bebida com sucesso" do
     user = User.create!(
       email: "test@example.com",

@@ -1,4 +1,6 @@
 // Serviço de API para comunicação com backend Rails
+import { firebaseAuth } from './firebaseAuth'
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1'
 
 interface ApiResponse<T> {
@@ -9,15 +11,18 @@ interface ApiResponse<T> {
 }
 
 class ApiService {
-  private getAuthToken(): string | null {
-    return localStorage.getItem('auth_token')
+  /**
+   * Obtém o token de autenticação do Firebase
+   */
+  private async getAuthToken(): Promise<string | null> {
+    return await firebaseAuth.getIdToken()
   }
 
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    const token = this.getAuthToken()
+    const token = await this.getAuthToken()
     
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -87,30 +92,58 @@ class ApiService {
     }
   }
 
-  // Autenticação
-  async signIn(email: string, password: string) {
-    const response = await this.request<{ token: string; user: any }>(
-      '/sign_in',
-      {
-        method: 'POST',
-        body: JSON.stringify({ user: { email, password } }),
-      }
-    )
-
-    if (response.data?.token) {
-      localStorage.setItem('auth_token', response.data.token)
+  // Autenticação - agora usando Firebase
+  // Os métodos signIn e signOut foram movidos para firebaseAuth.ts
+  // Este método verifica se o usuário está autenticado usando o token do Firebase
+  async isSignedIn(firebaseToken?: string) {
+    const token = firebaseToken || await this.getAuthToken()
+    
+    if (!token) {
+      return { data: { signed_in: false } }
     }
 
-    return response
-  }
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    }
 
-  async signOut() {
-    const response = await this.request('/sign_out', {
-      method: 'DELETE',
-    })
+    try {
+      const response = await fetch(`${API_BASE_URL}/is_signed_in`, {
+        method: 'GET',
+        headers,
+        credentials: 'include',
+      })
 
-    localStorage.removeItem('auth_token')
-    return response
+      const contentType = response.headers.get('content-type')
+      let data: any = {}
+
+      if (contentType && contentType.includes('application/json')) {
+        const text = await response.text()
+        try {
+          data = text ? JSON.parse(text) : {}
+        } catch (parseError) {
+          return {
+            error: 'Resposta inválida do servidor',
+            message: 'O servidor retornou uma resposta que não pôde ser processada.',
+          }
+        }
+      }
+
+      if (!response.ok) {
+        return {
+          error: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Erro na requisição'),
+          errors: data.errors,
+          message: data.message,
+        }
+      }
+
+      return { data }
+    } catch (error) {
+      return {
+        error: error instanceof Error ? error.message : 'Erro desconhecido',
+        message: 'Não foi possível conectar ao servidor.',
+      }
+    }
   }
 
   async signUp(userData: {
@@ -122,11 +155,26 @@ class ApiService {
     password_confirmation: string
   }) {
     try {
+      // Obter token do Firebase para autenticar a requisição
+      const token = await this.getAuthToken()
+      
+      if (!token) {
+        console.error('Token do Firebase não disponível')
+        return {
+          error: 'Token do Firebase não disponível. Tente fazer login após criar a conta.',
+        }
+      }
+      
+      console.log('Enviando requisição com token:', token.substring(0, 20) + '...')
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
+
       const response = await fetch(`${API_BASE_URL}/users`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         credentials: 'include',
         body: JSON.stringify({ user: userData }),
       })
@@ -170,8 +218,18 @@ class ApiService {
       }
 
       if (!response.ok) {
+        console.error('Erro na resposta do servidor:', {
+          status: response.status,
+          statusText: response.statusText,
+          data: data
+        })
+        
+        const errorMessage = Array.isArray(data.error) 
+          ? data.error.join(', ') 
+          : (data.error || `Erro ao criar conta (${response.status})`)
+        
         return {
-          error: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Erro ao criar conta'),
+          error: errorMessage,
           message: data.message,
         }
       }
@@ -186,9 +244,6 @@ class ApiService {
     }
   }
 
-  async isSignedIn() {
-    return this.request<{ signed_in: boolean; user?: { id: number; email: string; name: string; role: boolean; establishment?: { id: number; code: string; name: string } } }>('/is_signed_in')
-  }
 
   // Establishments (public for clients)
   async getEstablishments() {
@@ -390,7 +445,7 @@ async getDrinks(establishmentCode: string) {
       })
     }
 
-    const token = this.getAuthToken()
+    const token = await this.getAuthToken()
     const headers: HeadersInit = {}
     
     if (token) {
@@ -447,7 +502,7 @@ async getDrinks(establishmentCode: string) {
       formData.append('drink[photo]', drinkData.photo)
     }
 
-    const token = this.getAuthToken()
+    const token = await this.getAuthToken()
     const headers: HeadersInit = {}
     
     if (token) {

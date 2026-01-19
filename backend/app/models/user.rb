@@ -1,21 +1,18 @@
 class User < ApplicationRecord
-  devise :database_authenticatable, :registerable,
-         :rememberable, :validatable
-
   has_one :establishment, dependent: :destroy
+  
+  # Validações de email e senha (mantidas para compatibilidade, mas senha não é mais usada para autenticação)
+  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   validates :name, :email, :last_name, :cpf, presence: true
   validates :cpf, uniqueness: true, format: { with: /\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/ }
   validates :role, inclusion: { in: [true, false] }
   validate :cpf_valid
 
-  has_secure_token :api_token
-
-  
   before_create :check_employee_invitation
 
   def owner?
-    self.role?
+    self.role? # Retorna true se role == true
   end
   
   private

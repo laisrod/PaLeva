@@ -1,17 +1,25 @@
 <div class="container">
   <div class="header text-center mb-4">
     <h1 class="text-primary">PaLevá</h1>
-    <h2 class="text-secondary"><%= @establishment.name %></h2>
+    <% if @establishment %>
+      <h2 class="text-secondary"><%= @establishment.name %></h2>
+    <% else %>
+      <h2 class="text-secondary">Nenhum estabelecimento cadastrado</h2>
+    <% end %>
   </div>
 
   <div class="content">
     <div class="card shadow-sm">
       <div class="card-body bg-light">
         <h3 class="card-title text-primary">Informações do Estabelecimento</h3>
-        <p><strong>Telefone:</strong> <%= @establishment.phone_number %></p>
+        <% if @establishment %>
+          <p><strong>Telefone:</strong> <%= @establishment.phone_number %></p>
+        <% else %>
+          <p>Nenhum estabelecimento disponível.</p>
+        <% end %>
         
         <div class="actions">
-          <% if current_user.role? %>
+          <% if current_user&.role? && @establishment %>
             <%= link_to 'Editar Estabelecimento', edit_establishment_path(@establishment), class: 'btn btn-outline-primary' %>
             <%= link_to 'Remover Estabelecimento', establishment_path(@establishment), method: :delete, class: 'btn btn-outline-danger', data: { confirm: 'Tem certeza?' } %>
           <% end %>
@@ -24,7 +32,7 @@
       <div class="card-body bg-light">
         <h3 class="card-title text-primary">Cardápios</h3>
         <div class="actions">
-          <% if current_user.role? %>
+          <% if current_user&.role? && @establishment %>
             <%= link_to 'Criar Cardápio', new_establishment_menu_path(@establishment), class: 'btn btn-outline-primary' %>
           <% end %>
           <%= link_to 'Ver Cardápios', establishment_menus_path(@establishment), class: 'btn btn-outline-info' %>
@@ -38,7 +46,7 @@
           <div class="col-md-6">
             <h3 class="card-title text-primary">Bebidas</h3>
             <div class="actions">
-              <% if current_user.role? %>
+              <% if current_user&.role? %>
                 <%= link_to 'Nova Bebida', new_establishment_drink_path(@establishment), class: 'btn btn-outline-primary' %>
               <% end %>
               <%= link_to 'Ver Bebidas', establishment_drinks_path(@establishment), class: 'btn btn-outline-info' %>
@@ -48,7 +56,7 @@
           <div class="col-md-6">
             <h3 class="card-title text-primary">Pratos</h3>
             <div class="actions">
-              <% if current_user.role? %>
+              <% if current_user&.role? %>
                 <%= link_to 'Novo Prato', new_establishment_dish_path(@establishment), class: 'btn btn-outline-primary' %>
               <% end %>
               <%= link_to 'Ver Pratos', establishment_dishes_path(@establishment), class: 'btn btn-outline-info' %>
@@ -63,7 +71,7 @@
         <h3 class="card-title text-primary">Horário de Funcionamento</h3>
 
         <ul class="list-unstyled">
-          <% @establishment.working_hours.each do |working_hour| %>
+          <% (@establishment&.working_hours || []).each do |working_hour| %>
             <li class="d-flex justify-content-between align-items-center mb-2">
               <span>
                 <%= working_hour.week_day %> - 
@@ -71,7 +79,7 @@
                   <%= working_hour.open ? "#{working_hour.opening_hour} às #{working_hour.closing_hour}" : 'Fechado' %>
                 </span>
               </span>
-              <% if current_user.role? %>
+              <% if current_user&.role? %>
                 <%= link_to 'Editar', edit_establishment_working_hour_path(@establishment, working_hour), class: 'btn btn-sm btn-outline-primary' %>
               <% end %>
             </li>

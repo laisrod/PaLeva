@@ -1,11 +1,13 @@
 class MenuItemsController < ApplicationController
-  before_action :authenticate_user!
+  include Authorizable
+
   before_action :check_establishment!
   before_action :set_menu
   before_action :set_menu_item, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_owner!, only: [:new, :create, :edit, :update, :destroy]
 
   def index
-    @menu_items = @menu.menu_items
+    @menu_items = @menu.menu_items.page(params[:page]).per(20)
   end
 
   def new

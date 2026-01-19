@@ -1,8 +1,9 @@
 class EmployeeInvitationsController < ApplicationController
-  before_action :authenticate_user!
+  include Authorizable
+
   before_action :check_establishment!
   before_action :set_establishment
-  before_action :ensure_owner
+  before_action :authorize_owner!
 
   def index
     @employee_invitations = @establishment.employee_invitations
@@ -35,12 +36,6 @@ class EmployeeInvitationsController < ApplicationController
 
   def set_establishment
     @establishment = Establishment.find(params[:establishment_id])
-  end
-
-  def ensure_owner
-    unless current_user == @establishment.user && current_user.owner?
-      redirect_to root_path, alert: 'Acesso não autorizado'
-    end
   end
 
   def employee_invitation_params

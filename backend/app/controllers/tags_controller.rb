@@ -1,10 +1,12 @@
 class TagsController < ApplicationController
-  before_action :authenticate_user!
+  include Authorizable
+
   before_action :check_establishment!
   before_action :set_establishment, only: [:new, :create, :edit, :update, :destroy]
+  before_action :authorize_owner!, only: [:new, :create, :edit, :update, :destroy]
 
   def index
-    @tags = Tag.all
+    @tags = Tag.all.page(params[:page]).per(20)
     @establishment = Establishment.find(params[:establishment_id])
   end
 

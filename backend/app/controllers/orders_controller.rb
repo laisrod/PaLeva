@@ -1,13 +1,14 @@
 class OrdersController < ApplicationController
   include EstablishmentScoped
+  include Authorizable
 
-  before_action :authenticate_user!
   before_action :check_establishment!
   before_action :set_establishment
   before_action :set_order, only: [:show, :update, :change_status, :cancel, :remove_item]
+  before_action :authorize_owner!, only: [:update, :change_status, :cancel]
 
   def index
-    @orders = @establishment.orders.recent
+    @orders = @establishment.orders.recent.page(params[:page]).per(20)
   end
 
   def update

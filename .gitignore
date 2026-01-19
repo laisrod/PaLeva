@@ -60,3 +60,8 @@ node_modules
 
 # Arquivos duplicados removidos - usar apenas backend/
 # .rubocop.yml, .ruby-version, Dockerfile, .dockerignore agora só em backend/
+
+# Frontend environment files
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.*.local

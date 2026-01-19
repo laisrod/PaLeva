@@ -1,4 +1,3 @@
-# Concern for API controllers to scope by establishment code
 module ApiEstablishmentScoped
   extend ActiveSupport::Concern
 
