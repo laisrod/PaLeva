@@ -38,6 +38,12 @@ pt-BR:
         name: "Nome"
         last_name: "Sobrenome"
 
+  time:
+    formats:
+      short: "%d/%m/%Y %H:%M"
+      long: "%d de %B de %Y às %H:%M"
+      default: "%d/%m/%Y %H:%M:%S"
+
   errors:
     messages:
       too_short: "é muito curto (mínimo de %{count} caracteres)"
