@@ -27,6 +27,11 @@ export function useAuth() {
     }
 
     try {
+      // Definir cookie para requisições HTML (fazer silenciosamente, não bloquear se falhar)
+      api.setCookie(firebaseToken).catch(err => {
+        console.warn('Erro ao definir cookie (não crítico):', err)
+      })
+      
       // Usar o token do Firebase para autenticar no backend
       const response = await api.isSignedIn(firebaseToken)
       
@@ -157,6 +162,12 @@ export function useAuth() {
     // Sincronizar com backend usando token do Firebase
     const backendUser = await syncUserFromBackend()
     
+    // Definir cookie para requisições HTML
+    const firebaseToken = await firebaseAuth.getIdToken()
+    if (firebaseToken) {
+      await api.setCookie(firebaseToken)
+    }
+    
     if (backendUser) {
       setUser(backendUser)
       setIsAuthenticated(true)
@@ -183,6 +194,8 @@ export function useAuth() {
   const logout = useCallback(async () => {
     try {
       await firebaseAuth.signOut()
+      // Limpar cookie no backend
+      await api.clearCookie()
     } catch (error) {
       console.error('Erro ao fazer logout:', error)
     } finally {

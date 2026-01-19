@@ -146,6 +146,77 @@ class ApiService {
     }
   }
 
+  // Define cookie com token Firebase para requisições HTML
+  async setCookie(firebaseToken?: string) {
+    const token = firebaseToken || await this.getAuthToken()
+    
+    if (!token) {
+      return { error: 'Token não disponível' }
+    }
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/set_cookie`, {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+      })
+
+      const contentType = response.headers.get('content-type')
+      let data: any = {}
+
+      if (contentType && contentType.includes('application/json')) {
+        const text = await response.text()
+        try {
+          data = text ? JSON.parse(text) : {}
+        } catch (parseError) {
+          return {
+            error: 'Resposta inválida do servidor',
+            message: 'O servidor retornou uma resposta que não pôde ser processada.',
+          }
+        }
+      }
+
+      if (!response.ok) {
+        return {
+          error: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Erro na requisição'),
+          errors: data.errors,
+          message: data.message,
+        }
+      }
+
+      return { data }
+    } catch (error) {
+      return {
+        error: error instanceof Error ? error.message : 'Erro desconhecido',
+        message: 'Não foi possível conectar ao servidor.',
+      }
+    }
+  }
+
+  // Limpa cookie de autenticação
+  async clearCookie() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/sign_out`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      })
+
+      // Não importa se falhar, apenas tentar limpar
+      return { success: true }
+    } catch (error) {
+      // Ignorar erros ao limpar cookie
+      return { success: false }
+    }
+  }
+
   async signUp(userData: {
     name: string
     last_name: string
