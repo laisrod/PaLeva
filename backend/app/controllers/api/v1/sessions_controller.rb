@@ -49,9 +49,69 @@ module Api
         end
       end
 
+      # Endpoint para definir cookie com token Firebase (para requisições HTML)
+      def set_cookie
+        token = request.headers['Authorization']&.split&.last || params[:token]
+        
+        unless token
+          render json: { error: 'Token não fornecido' }, status: :bad_request
+          return
+        end
+
+        # Validar token do Firebase
+        firebase_data = FirebaseTokenValidator.validate(token)
+        
+        unless firebase_data
+          render json: { error: 'Token inválido' }, status: :unauthorized
+          return
+        end
+
+        # Definir cookie com o token (válido por 1 hora, mesmo tempo que tokens Firebase)
+        cookies[:firebase_token] = {
+          value: token,
+          expires: 1.hour.from_now,
+          httponly: true,
+          secure: Rails.env.production?,
+          same_site: :lax
+        }
+
+        render json: { success: true }, status: :ok
+      end
+
       # Logout é feito no Firebase, mas mantemos o endpoint para compatibilidade
       def destroy
+        # Limpar cookie de autenticação
+        cookies.delete(:firebase_token)
         render json: { signed_out: true }, status: :ok
+      end
+
+      # Endpoint para definir cookie com token Firebase (para requisições HTML)
+      def set_cookie
+        token = request.headers['Authorization']&.split&.last || params[:token]
+        
+        unless token
+          render json: { error: 'Token não fornecido' }, status: :bad_request
+          return
+        end
+
+        # Validar token do Firebase
+        firebase_data = FirebaseTokenValidator.validate(token)
+        
+        unless firebase_data
+          render json: { error: 'Token inválido' }, status: :unauthorized
+          return
+        end
+
+        # Definir cookie com o token (válido por 1 hora, mesmo tempo que tokens Firebase)
+        cookies[:firebase_token] = {
+          value: token,
+          expires: 1.hour.from_now,
+          httponly: true,
+          secure: Rails.env.production?,
+          same_site: :lax
+        }
+
+        render json: { success: true }, status: :ok
       end
 
       private

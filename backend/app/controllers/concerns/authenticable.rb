@@ -23,6 +23,9 @@ module Authenticable
 
   def authenticate_user_from_firebase_token
     token = request.headers['Authorization']&.split&.last
+    
+    token ||= cookies[:firebase_token]
+    
     return nil unless token
 
     firebase_data = FirebaseTokenValidator.validate(token)
