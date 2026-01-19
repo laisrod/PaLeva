@@ -1,9 +1,7 @@
-# Concern para modelos com status
 module Statusable
   extend ActiveSupport::Concern
 
   included do
-    # Models que incluem este concern devem ter um enum :status
   end
 
   class_methods do

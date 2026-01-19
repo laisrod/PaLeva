@@ -1,4 +1,3 @@
-# Concern for generating unique codes
 module CodeGeneratable
   extend ActiveSupport::Concern
 
