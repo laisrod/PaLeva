@@ -32,21 +32,29 @@ export class BaseApiService {
       headers['Authorization'] = `Bearer ${token}`
     }
 
+    const url = `${API_BASE_URL}${endpoint}`
+    console.log('API Request:', url, { method: options.method || 'GET', headers })
+
     try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      const response = await fetch(url, {
         ...options,
         headers,
         credentials: 'include',
       })
+      
+      console.log('API Response:', url, response.status, response.statusText)
 
       const contentType = response.headers.get('content-type')
       let data: any = {}
 
       if (contentType && contentType.includes('application/json')) {
         const text = await response.text()
+        console.log('API Response Body (texto):', text.substring(0, 500))
         try {
           data = text ? JSON.parse(text) : {}
+          console.log('API Response Body (parseado):', data)
         } catch (parseError) {
+          console.error('Erro ao fazer parse do JSON:', parseError, 'Texto:', text.substring(0, 200))
           return {
             error: 'Resposta inválida do servidor',
             message: 'O servidor retornou uma resposta que não pôde ser processada. Verifique se o servidor está rodando.',
@@ -54,6 +62,7 @@ export class BaseApiService {
         }
       } else {
         const text = await response.text()
+        console.log('API Response não é JSON:', text.substring(0, 200))
         
         if (!text || text.trim() === '') {
           return {
@@ -69,6 +78,11 @@ export class BaseApiService {
       }
 
       if (!response.ok) {
+        console.error('API Response não OK:', {
+          status: response.status,
+          statusText: response.statusText,
+          data: data
+        })
         return {
           error: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Erro na requisição'),
           errors: data.errors,
@@ -76,6 +90,7 @@ export class BaseApiService {
         }
       }
 
+      console.log('API Response OK, data:', data)
       return { data }
     } catch (error) {
       if (error instanceof TypeError && error.message === 'Failed to fetch') {
@@ -103,22 +118,34 @@ export class BaseApiService {
       headers['Authorization'] = `Bearer ${token}`
     }
 
+    const url = `${API_BASE_URL}${endpoint}`
+    console.log('Enviando FormData para:', url)
+    console.log('Headers:', headers)
+    
+    // Log do conteúdo do FormData (apenas chaves, não valores sensíveis)
+    console.log('FormData keys:', Array.from(formData.keys()))
+
     try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      const response = await fetch(url, {
         method: 'POST',
         headers,
         credentials: 'include',
         body: formData,
       })
+      
+      console.log('Status da resposta:', response.status, response.statusText)
 
       const contentType = response.headers.get('content-type')
       let data: any = {}
 
       if (contentType && contentType.includes('application/json')) {
         const text = await response.text()
+        console.log('Resposta JSON (texto):', text)
         try {
           data = text ? JSON.parse(text) : {}
+          console.log('Resposta JSON (parseado):', data)
         } catch (parseError) {
+          console.error('Erro ao fazer parse do JSON:', parseError)
           return {
             error: 'Resposta inválida do servidor',
             message: 'O servidor retornou uma resposta que não pôde ser processada.',
@@ -126,6 +153,7 @@ export class BaseApiService {
         }
       } else {
         const text = await response.text()
+        console.log('Resposta não é JSON:', text)
         if (!text || text.trim() === '') {
           return {
             error: 'Servidor não está respondendo',
@@ -139,6 +167,11 @@ export class BaseApiService {
       }
 
       if (!response.ok) {
+        console.error('Resposta não OK:', {
+          status: response.status,
+          statusText: response.statusText,
+          data: data
+        })
         return {
           error: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Erro na requisição'),
           errors: data.errors,
@@ -146,6 +179,7 @@ export class BaseApiService {
         }
       }
 
+      console.log('Resposta OK, retornando data:', data)
       return { data }
     } catch (error) {
       if (error instanceof TypeError && error.message === 'Failed to fetch') {

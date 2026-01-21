@@ -8,7 +8,7 @@ export default function Dishes() {
   const { code } = useParams<{ code: string }>()
   useRequireAuth()
   
-  const { dishes, tags, selectedTags, loading, error, toggleTag } = useDishes(code)
+  const { dishes, tags, selectedTags, loading, error, toggleTag, refetch } = useDishes(code)
 
   const handleFilter = (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,7 +20,12 @@ export default function Dishes() {
     return (
       <Layout>
         <div className="container mt-4">
-          <p>Carregando...</p>
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <div className="spinner-border" role="status" style={{ marginBottom: '20px' }}>
+              <span className="visually-hidden">Carregando...</span>
+            </div>
+            <p>Carregando pratos...</p>
+          </div>
         </div>
       </Layout>
     )
@@ -31,6 +36,18 @@ export default function Dishes() {
       <div className="dishes-container">
         <div className="dishes-header">
           <h1 className="dishes-title">Pratos</h1>
+          {error && (
+            <div className="alert alert-danger mb-4">
+              <strong>Erro ao carregar pratos:</strong> {error}
+              <button 
+                onClick={() => refetch()} 
+                className="btn btn-primary mt-2"
+                style={{ marginLeft: '10px' }}
+              >
+                Tentar novamente
+              </button>
+            </div>
+          )}
           <div className="dishes-actions">
             {isOwner && (
               <>

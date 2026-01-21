@@ -12,7 +12,7 @@ class User < ApplicationRecord # donos, funcionários e clientes
   before_create :check_employee_invitation
 
   def owner?
-    self.role? # verifica se usuario é dono
+    role == true # verifica se usuario é dono (role: true = dono, false = funcionário/cliente)
   end
   
   private

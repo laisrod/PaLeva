@@ -115,6 +115,7 @@ export default function Register() {
 
       // 2. Criar usuário no backend Rails com dados adicionais
       // O backend validará o token do Firebase
+      console.log('Chamando api.signUp...')
       const response = await api.signUp({
         name: formData.name,
         last_name: formData.last_name,
@@ -124,6 +125,8 @@ export default function Register() {
         password_confirmation: formData.password_confirmation,
       })
       
+      console.log('Resposta do api.signUp:', response)
+      
       if (response.error) {
         // Se falhar no backend, fazer logout do Firebase
         await firebaseAuth.signOut()
@@ -132,11 +135,17 @@ export default function Register() {
           ? response.error.join(', ') 
           : response.error
         setError(errorMessage)
+        setLoading(false)
       } else if (response.data) {
         // Cadastro bem-sucedido - usuário já está autenticado no Firebase
+        console.log('Cadastro bem-sucedido, redirecionando...')
         navigate('/login', { 
           state: { message: 'Cadastro realizado com sucesso! Faça login para continuar.' }
         })
+      } else {
+        console.error('Resposta inesperada:', response)
+        setError('Resposta inesperada do servidor. Tente novamente.')
+        setLoading(false)
       }
     } catch (err) {
       // Em caso de erro, fazer logout do Firebase

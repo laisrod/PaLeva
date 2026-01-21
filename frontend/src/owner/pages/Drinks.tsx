@@ -8,7 +8,7 @@ export default function Drinks() {
   const { code } = useParams<{ code: string }>()
   useRequireAuth()
   
-  const { drinks, loading, error } = useDrinks(code)
+  const { drinks, loading, error, refetch } = useDrinks(code)
 
   const isOwner = true // TODO: Verificar se o usuário é dono
 
@@ -16,7 +16,12 @@ export default function Drinks() {
     return (
       <Layout>
         <div className="container mt-4">
-          <p>Carregando...</p>
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <div className="spinner-border" role="status" style={{ marginBottom: '20px' }}>
+              <span className="visually-hidden">Carregando...</span>
+            </div>
+            <p>Carregando bebidas...</p>
+          </div>
         </div>
       </Layout>
     )
@@ -47,7 +52,14 @@ export default function Drinks() {
 
         {error && (
           <div className="alert alert-danger mb-4">
-            {error}
+            <strong>Erro ao carregar bebidas:</strong> {error}
+            <button 
+              onClick={() => refetch()} 
+              className="btn btn-primary mt-2"
+              style={{ marginLeft: '10px' }}
+            >
+              Tentar novamente
+            </button>
           </div>
         )}
 

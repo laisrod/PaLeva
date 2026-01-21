@@ -1,22 +1,25 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { firebaseAuth } from '../services/firebaseAuth'
+import { useAuth } from './useAuth'
 
 /**
  * Hook para verificar autenticação e redirecionar se não autenticado
+ * Usa o hook useAuth para verificar o estado de autenticação
  */
 export function useRequireAuth() {
   const navigate = useNavigate()
+  const { isAuthenticated, loading } = useAuth()
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const user = firebaseAuth.getCurrentUser()
-      if (!user) {
-        navigate('/login')
-      }
+    // Aguardar verificação de autenticação
+    if (loading) {
+      return
     }
-    
-    checkAuth()
-  }, [navigate])
+
+    // Se não estiver autenticado, redirecionar para login
+    if (!isAuthenticated) {
+      navigate('/login', { replace: true })
+    }
+  }, [navigate, isAuthenticated, loading])
 }
 

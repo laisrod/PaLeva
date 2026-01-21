@@ -101,17 +101,27 @@ export function useCreateDrink({ establishmentCode, onSuccess }: UseCreateDrinkO
 
     try {
       const drinkData = prepareDrinkData()
+      console.log('Enviando dados da bebida:', drinkData)
+      console.log('Código do estabelecimento:', establishmentCode)
+      
       const response = await ownerApi.createDrink(establishmentCode, drinkData)
+      console.log('Resposta completa do servidor:', response)
 
       if (response.error || response.errors) {
         const errorMessage = getErrorMessage(response)
         const errorToShow = errorMessage || 'Erro ao criar bebida'
+        console.error('Erro ao criar bebida:', errorToShow, response)
         setErrors([errorToShow])
       } else if (response.data) {
+        console.log('Bebida criada com sucesso!', response.data)
         onSuccess?.()
         navigate(`/establishment/${establishmentCode}/drinks`)
+      } else {
+        console.error('Resposta inesperada - sem data e sem error:', response)
+        setErrors(['Resposta inesperada do servidor. Verifique o console para mais detalhes.'])
       }
     } catch (err) {
+      console.error('Erro ao criar bebida (catch):', err)
       setErrors(['Erro ao criar bebida. Tente novamente.'])
     } finally {
       setLoading(false)

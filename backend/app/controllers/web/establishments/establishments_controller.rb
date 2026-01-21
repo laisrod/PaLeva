@@ -4,7 +4,6 @@ module Web
       include Authorizable
 
       before_action :authenticate_user!, except: [:show, :index]
-      before_action :check_establishment!, only: [:edit, :update, :destroy]
       before_action :set_establishment, only: [:edit, :update, :destroy, :search]
       before_action :authorize_owner!, only: [:edit, :update, :destroy]
 
@@ -23,9 +22,26 @@ module Web
       end
 
       def show
-        @establishment = Establishment.find(params[:id])
-        if current_user && @establishment.user != current_user
-          redirect_to root_path, alert: 'Você não tem permissão para ver este estabelecimento.'
+        # Se houver ID nos params, buscar por ID
+        if params[:id]
+          begin
+            @establishment = Establishment.find(params[:id])
+            # Verificar se o usuário tem permissão para ver este estabelecimento
+            if current_user && @establishment.user != current_user
+              redirect_to root_path, alert: 'Você não tem permissão para ver este estabelecimento.'
+              return
+            end
+          rescue ActiveRecord::RecordNotFound
+            redirect_to root_path, alert: 'Estabelecimento não encontrado.'
+            return
+          end
+        else
+          # Caso contrário, usar o estabelecimento do usuário atual
+          @establishment = current_user&.establishment
+          unless @establishment
+            redirect_to new_establishment_path, alert: 'Você precisa criar um estabelecimento primeiro.'
+            return
+          end
         end
       end  
 
@@ -43,7 +59,10 @@ module Web
         @establishment.user = current_user
 
         if @establishment.save
-          redirect_to root_path, notice: 'Estabelecimento cadastrado com sucesso.'
+          # O callback after_create :set_user_as_owner deve definir role = true
+          # Mas vamos garantir que está correto
+          current_user.reload
+          redirect_to establishment_path(@establishment), notice: 'Estabelecimento cadastrado com sucesso.'
         else
           flash.now[:notice] = 'Estabelecimento não cadastrado.'
           render 'new'
@@ -54,7 +73,7 @@ module Web
 
       def update
         if @establishment.update(establishment_params)
-          redirect_to establishment_path(@establishment.id), notice: 'Estabelecimento atualizado com sucesso.'
+          redirect_to establishment_path(@establishment), notice: 'Estabelecimento atualizado com sucesso.'
         else
           flash.now[:notice] = 'Não foi possivel atualizar o restaurante.'
           render 'edit'

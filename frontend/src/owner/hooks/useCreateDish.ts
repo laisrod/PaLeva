@@ -150,17 +150,27 @@ export function useCreateDish({ establishmentCode, onSuccess }: UseCreateDishOpt
 
     try {
       const dishData = prepareDishData()
+      console.log('Enviando dados do prato:', dishData)
+      console.log('Código do estabelecimento:', establishmentCode)
+      
       const response = await ownerApi.createDish(establishmentCode, dishData)
+      console.log('Resposta completa do servidor:', response)
 
       if (response.error || response.errors) {
         const errorMessage = getErrorMessage(response)
         const errorToShow = errorMessage || 'Erro ao criar prato'
+        console.error('Erro ao criar prato:', errorToShow, response)
         setErrors([errorToShow])
       } else if (response.data) {
+        console.log('Prato criado com sucesso!', response.data)
         onSuccess?.()
         navigate(`/establishment/${establishmentCode}/dishes`)
+      } else {
+        console.error('Resposta inesperada - sem data e sem error:', response)
+        setErrors(['Resposta inesperada do servidor. Verifique o console para mais detalhes.'])
       }
     } catch (err) {
+      console.error('Erro ao criar prato (catch):', err)
       setErrors(['Erro ao criar prato. Tente novamente.'])
     } finally {
       setLoading(false)

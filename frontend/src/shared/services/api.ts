@@ -99,37 +99,50 @@ class ApiService {
     const token = firebaseToken || await this.getAuthToken()
     
     if (!token) {
+      console.warn('isSignedIn: Token não disponível')
       return { data: { signed_in: false } }
     }
 
+    console.log('isSignedIn: Fazendo requisição para /is_signed_in')
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/is_signed_in`, {
+      const url = `${API_BASE_URL}/is_signed_in`
+      console.log('isSignedIn: URL:', url)
+      
+      const response = await fetch(url, {
         method: 'GET',
         headers,
         credentials: 'include',
       })
 
+      console.log('isSignedIn: Status:', response.status, response.statusText)
       const contentType = response.headers.get('content-type')
       let data: any = {}
 
       if (contentType && contentType.includes('application/json')) {
         const text = await response.text()
+        console.log('isSignedIn: Resposta (texto):', text.substring(0, 200))
         try {
           data = text ? JSON.parse(text) : {}
+          console.log('isSignedIn: Resposta (parseada):', data)
         } catch (parseError) {
+          console.error('isSignedIn: Erro ao fazer parse:', parseError)
           return {
             error: 'Resposta inválida do servidor',
             message: 'O servidor retornou uma resposta que não pôde ser processada.',
           }
         }
+      } else {
+        const text = await response.text()
+        console.warn('isSignedIn: Resposta não é JSON:', text.substring(0, 200))
       }
 
       if (!response.ok) {
+        console.error('isSignedIn: Resposta não OK:', response.status, data)
         return {
           error: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Erro na requisição'),
           errors: data.errors,
@@ -137,8 +150,10 @@ class ApiService {
         }
       }
 
+      console.log('isSignedIn: Sucesso!', data)
       return { data }
     } catch (error) {
+      console.error('isSignedIn: Erro na requisição:', error)
       return {
         error: error instanceof Error ? error.message : 'Erro desconhecido',
         message: 'Não foi possível conectar ao servidor.',
@@ -243,12 +258,37 @@ class ApiService {
         'Authorization': `Bearer ${token}`,
       }
 
-      const response = await fetch(`${API_BASE_URL}/users`, {
+      console.log('Fazendo fetch para:', `${API_BASE_URL}/users`)
+      console.log('Dados enviados:', { user: userData })
+      
+      // Criar um AbortController para timeout
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 segundos
+      
+      let response
+      try {
+        response = await fetch(`${API_BASE_URL}/users`, {
         method: 'POST',
         headers,
         credentials: 'include',
         body: JSON.stringify({ user: userData }),
+          signal: controller.signal,
       })
+        clearTimeout(timeoutId)
+      } catch (fetchError: any) {
+        clearTimeout(timeoutId)
+        if (fetchError.name === 'AbortError') {
+          console.error('Requisição timeout após 30 segundos')
+          return {
+            error: 'Timeout na requisição',
+            message: 'O servidor demorou muito para responder. Verifique se o servidor Rails está rodando na porta 3000.',
+          }
+        }
+        throw fetchError
+      }
+
+      console.log('Resposta recebida - Status:', response.status, response.statusText)
+      console.log('Headers da resposta:', Object.fromEntries(response.headers.entries()))
 
       // Verificar se a resposta é JSON antes de tentar fazer parse
       const contentType = response.headers.get('content-type')

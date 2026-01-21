@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import '../../css/owner/pages/CreateEstablishment.css'
 import { useCreateEstablishment } from '../hooks/useCreateEstablishment'
 import { useRequireNewEstablishment } from '../hooks/useRequireNewEstablishment'
@@ -12,10 +13,36 @@ export default function CreateEstablishment() {
     handleSubmit,
   } = useCreateEstablishment()
 
-  if (authLoading) {
+  // Timeout de segurança: se authLoading demorar mais de 1 segundo, renderizar mesmo assim
+  const [forceRender, setForceRender] = useState(false)
+  
+  useEffect(() => {
+    // Renderizar imediatamente se não estiver carregando
+    if (!authLoading) {
+      setForceRender(true)
+      return
+    }
+    
+    // Se estiver carregando, aguardar no máximo 1 segundo
+    const timeout = setTimeout(() => {
+      console.warn('CreateEstablishment: Timeout na autenticação - renderizando página mesmo assim')
+      setForceRender(true)
+    }, 1000)
+    
+    return () => clearTimeout(timeout)
+  }, [authLoading])
+
+  // Se ainda estiver carregando após 1 segundo, renderizar mesmo assim
+  if (authLoading && !forceRender) {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
-        <p>Carregando...</p>
+        <div className="spinner-border" role="status" style={{ marginBottom: '20px' }}>
+          <span className="visually-hidden">Carregando...</span>
+        </div>
+        <p>Verificando autenticação...</p>
+        <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
+          Se esta mensagem persistir, a página será carregada automaticamente em breve...
+        </p>
       </div>
     )
   }

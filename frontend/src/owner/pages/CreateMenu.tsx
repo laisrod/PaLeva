@@ -1,12 +1,12 @@
 import { useParams, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useCreateMenu } from '../hooks/useCreateMenu'
-import { useAuthCheck } from '../hooks/useAuthCheck'
+import { useRequireAuth } from '../../shared/hooks/useRequireAuth'
 import '../../css/owner/pages/CreateMenu.css'
 
 export default function CreateMenu() {
   const { code } = useParams<{ code: string }>()
-  useAuthCheck()
+  useRequireAuth()
 
   const {
     formData,

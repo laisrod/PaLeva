@@ -33,7 +33,7 @@
         </div>
 
       <form class="form-inline">
-        <% if current_user&.establishment && current_order %>
+        <% if current_user&.establishment&.persisted? && current_order %>
           <button class="btn btn-outline-success" type="button">
             <%= link_to 'Ver Pedido Atual', establishment_order_path(current_user.establishment, current_order) %>
           </button>

@@ -23,21 +23,26 @@ if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
   })
 }
 
-let app
-let auth
+let app: any = null
+let auth: any = null
 
 try {
-  app = initializeApp(firebaseConfig)
-  auth = getAuth(app)
-  console.log('Firebase inicializado com sucesso')
-  console.log('Configuração:', {
-    projectId: firebaseConfig.projectId,
-    authDomain: firebaseConfig.authDomain,
-    apiKey: firebaseConfig.apiKey ? `${firebaseConfig.apiKey.substring(0, 10)}...` : 'não configurado'
-  })
+  if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+    app = initializeApp(firebaseConfig)
+    auth = getAuth(app)
+    console.log('Firebase inicializado com sucesso')
+    console.log('Configuração:', {
+      projectId: firebaseConfig.projectId,
+      authDomain: firebaseConfig.authDomain,
+      apiKey: firebaseConfig.apiKey ? `${firebaseConfig.apiKey.substring(0, 10)}...` : 'não configurado'
+    })
+  } else {
+    console.warn('Firebase não configurado - variáveis de ambiente ausentes')
+  }
 } catch (error) {
   console.error('Erro ao inicializar Firebase:', error)
-  throw error
+  // Não lançar erro para não quebrar a aplicação
+  // A aplicação pode funcionar sem Firebase em modo de desenvolvimento
 }
 
 export { auth }

@@ -16,6 +16,12 @@ export interface FirebaseAuthResult {
 
 export class FirebaseAuthService {
   async signIn(email: string, password: string): Promise<FirebaseAuthResult> {
+    if (!auth) {
+      return {
+        success: false,
+        error: 'Firebase não está configurado. Verifique as variáveis de ambiente.',
+      }
+    }
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       return {
@@ -57,6 +63,12 @@ export class FirebaseAuthService {
     password: string,
     displayName?: string
   ): Promise<FirebaseAuthResult> {
+    if (!auth) {
+      return {
+        success: false,
+        error: 'Firebase não está configurado. Verifique as variáveis de ambiente.',
+      }
+    }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       
@@ -102,6 +114,9 @@ export class FirebaseAuthService {
   }
 
   async signOut(): Promise<{ success: boolean; error?: string }> {
+    if (!auth) {
+      return { success: false, error: 'Firebase não está configurado.' }
+    }
     try {
       await signOut(auth)
       return { success: true }
@@ -114,10 +129,12 @@ export class FirebaseAuthService {
   }
 
   getCurrentUser(): FirebaseUser | null {
+    if (!auth) return null
     return auth.currentUser
   }
 
   async getIdToken(): Promise<string | null> {
+    if (!auth) return null
     const user = auth.currentUser
     if (!user) return null
     
@@ -130,6 +147,7 @@ export class FirebaseAuthService {
   }
 
   async getIdTokenForceRefresh(): Promise<string | null> {
+    if (!auth) return null
     const user = auth.currentUser
     if (!user) return null
     
@@ -142,6 +160,11 @@ export class FirebaseAuthService {
   }
 
   onAuthStateChange(callback: (user: FirebaseUser | null) => void): () => void {
+    if (!auth) {
+      // Se Firebase não está inicializado, retornar função vazia e chamar callback com null
+      callback(null)
+      return () => {}
+    }
     return onAuthStateChanged(auth, callback)
   }
 }

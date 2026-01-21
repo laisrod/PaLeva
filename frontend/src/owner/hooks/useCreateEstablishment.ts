@@ -30,19 +30,29 @@ export function useCreateEstablishment({ onSuccess }: UseCreateEstablishmentOpti
     const checkAuth = async () => {
       const user = firebaseAuth.getCurrentUser()
       if (!user) {
-        navigate('/login')
+        navigate('/login', { replace: true })
         return
       }
 
       const checkIfUserHasEstablishment = async () => {
         try {
-          const response = await api.isSignedIn()
-          if (response.data?.signed_in && response.data?.user?.establishment) {
+          // Timeout de 3 segundos para não travar
+          const timeoutPromise = new Promise<{ data?: any; error?: string }>((resolve) => {
+            setTimeout(() => {
+              resolve({ error: 'Timeout' })
+            }, 3000)
+          })
+          
+          const apiCall = api.isSignedIn()
+          const response = await Promise.race([apiCall, timeoutPromise])
+          
+          if (!response.error && response.data?.signed_in && response.data?.user?.establishment) {
             const establishmentCode = response.data.user.establishment.code
-            navigate(`/establishment/${establishmentCode}/menus`)
+            navigate(`/establishment/${establishmentCode}/menus`, { replace: true })
           }
         } catch (err) {
-          // Silenciar erro de verificação
+          // Silenciar erro de verificação - permitir que a página carregue
+          console.warn('Erro ao verificar estabelecimento (não crítico):', err)
         }
       }
 
@@ -202,20 +212,29 @@ export function useCreateEstablishment({ onSuccess }: UseCreateEstablishmentOpti
 
     try {
       const establishmentData = prepareEstablishmentData()
+      console.log('Enviando dados do estabelecimento:', establishmentData)
+      
       const response = await ownerApi.createEstablishment(establishmentData)
+      console.log('Resposta completa do servidor:', response)
 
       if (response.error || response.errors) {
         const errorMessage = getErrorMessage(response)
         const errorToShow = errorMessage || 'Erro ao criar estabelecimento'
+        console.error('Erro ao criar estabelecimento:', errorToShow, response)
         setErrors([errorToShow])
       } else if (response.data) {
+        console.log('Estabelecimento criado com sucesso!', response.data)
         const establishmentCode = response.data.establishment.code
         
         await refreshUser()
         onSuccess?.()
         navigate(`/establishment/${establishmentCode}/menus`)
+      } else {
+        console.error('Resposta inesperada - sem data e sem error:', response)
+        setErrors(['Resposta inesperada do servidor. Verifique o console para mais detalhes.'])
       }
     } catch (err) {
+      console.error('Erro ao criar estabelecimento (catch):', err)
       setErrors(['Erro ao criar estabelecimento. Tente novamente.'])
     } finally {
       setLoading(false)

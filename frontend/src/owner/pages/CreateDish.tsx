@@ -1,12 +1,12 @@
 import { useParams, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useCreateDish } from '../hooks/useCreateDish'
-import { useAuthCheck } from '../hooks/useAuthCheck'
+import { useRequireAuth } from '../../shared/hooks/useRequireAuth'
 import '../../css/owner/pages/CreateDish.css'
 
 export default function CreateDish() {
   const { code } = useParams<{ code: string }>()
-  useAuthCheck()
+  useRequireAuth()
 
   const {
     formData,
