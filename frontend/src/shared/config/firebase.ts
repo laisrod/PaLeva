@@ -12,7 +12,7 @@ const firebaseConfig = {
 
 // Verificar se as variáveis de ambiente estão configuradas
 if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-  console.error('❌ Firebase não configurado! Configure as variáveis de ambiente VITE_FIREBASE_* no arquivo .env')
+  console.error('Firebase não configurado! Configure as variáveis de ambiente VITE_FIREBASE_* no arquivo .env')
   console.error('Variáveis necessárias:', {
     VITE_FIREBASE_API_KEY: !!firebaseConfig.apiKey,
     VITE_FIREBASE_AUTH_DOMAIN: !!firebaseConfig.authDomain,
@@ -29,14 +29,14 @@ let auth
 try {
   app = initializeApp(firebaseConfig)
   auth = getAuth(app)
-  console.log('✅ Firebase inicializado com sucesso')
+  console.log('Firebase inicializado com sucesso')
   console.log('Configuração:', {
     projectId: firebaseConfig.projectId,
     authDomain: firebaseConfig.authDomain,
     apiKey: firebaseConfig.apiKey ? `${firebaseConfig.apiKey.substring(0, 10)}...` : 'não configurado'
   })
 } catch (error) {
-  console.error('❌ Erro ao inicializar Firebase:', error)
+  console.error('Erro ao inicializar Firebase:', error)
   throw error
 }
 

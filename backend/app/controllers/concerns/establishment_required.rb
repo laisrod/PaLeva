@@ -1,4 +1,4 @@
-module EstablishmentRequired
+module EstablishmentRequired # validação de estabelecimento obrigatório para usuários
   extend ActiveSupport::Concern
 
   private

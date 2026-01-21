@@ -1,4 +1,4 @@
-module Authenticable
+module Authenticable #autenticação via firebase
   extend ActiveSupport::Concern
 
   included do
@@ -12,7 +12,8 @@ module Authenticable
       if request.format.json? || request.path.start_with?('/api/')
         render json: { error: 'Não autorizado' }, status: :unauthorized
       else
-        render plain: 'Não autorizado', status: :unauthorized
+        # Para requisições HTML, redirecionar para o frontend para fazer login
+        redirect_to 'http://localhost:5176/login', allow_other_host: true
       end
     end
   end

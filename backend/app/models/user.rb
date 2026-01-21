@@ -1,18 +1,18 @@
-class User < ApplicationRecord
+class User < ApplicationRecord # donos, funcionários e clientes
   has_one :establishment, dependent: :destroy
   
-  # Validações de email e senha (mantidas para compatibilidade, mas senha não é mais usada para autenticação)
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   validates :name, :email, :last_name, :cpf, presence: true
   validates :cpf, uniqueness: true, format: { with: /\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/ }
-  validates :role, inclusion: { in: [true, false] }
+  validates :role, inclusion: { in: [true, false] } #Atributo role: true = dono, false = funcionário/cliente
+
   validate :cpf_valid
 
   before_create :check_employee_invitation
 
   def owner?
-    self.role? # Retorna true se role == true
+    self.role? # verifica se usuario é dono
   end
   
   private

@@ -1,78 +1,65 @@
 //Utilitários para autenticação e verificação de roles
  
 
-export type UserRole = boolean // true = owner, false = client
+export type UserRole = boolean // true = owner, false = funcionário/cliente
 
 export interface User {
   id: number
   email: string
   name: string
   role: UserRole
-  establishment?: {
+  establishment?: { //só existe se for dono
     id: number
     code: string
     name: string
   }
 }
 
-/**
- * Converte role boolean para string (para localStorage)
- */
+//converte role boolean para string (para localStorage)
+//pq localStorage armazena strings; o backend usa boolean. Essas funções fazem a conversão.
 export const roleToString = (role: UserRole): 'owner' | 'client' => {
-  return role === true ? 'owner' : 'client'
+  return role === true ? 'owner' : 'client' // Converte boolean para string (para salvar no localStorage)
+
 }
 
-/**
- * Converte role string para boolean (de localStorage)
- */
+//Converte role string para boolean (de localStorage)
+//pq o backend usa boolean; localStorage armazena strings. Essas funções fazem a conversão.
 export const stringToRole = (role: string | null): UserRole | null => {
   if (role === 'owner') return true
   if (role === 'client') return false
   return null
 }
 
-/**
- * Verifica se o usuário é proprietário
- */
+//Verifica se o usuário é proprietário
 export const isOwner = (role: UserRole | null | undefined): boolean => {
   return role === true
 }
 
-/**
- * Verifica se o usuário é cliente
- */
+//Verifica se o usuário é cliente
 export const isClient = (role: UserRole | null | undefined): boolean => {
   return role === false
 }
 
-/**
- * Obtém o role do localStorage (retorna boolean ou null)
- */
+//Obtém o role do localStorage (retorna boolean ou null)
 export const getStoredRole = (): UserRole | null => {
   const roleString = localStorage.getItem('user_role')
   return stringToRole(roleString)
 }
 
-/**
- * Salva o role no localStorage (aceita boolean ou string)
- */
+//Salva o role no localStorage (aceita boolean ou string)
 export const setStoredRole = (role: UserRole | string): void => {
   const roleBoolean = typeof role === 'boolean' ? role : stringToRole(role) ?? false
   localStorage.setItem('user_role', roleToString(roleBoolean))
 }
 
-/**
- * Limpa todos os dados de autenticação do localStorage
- */
+//Limpa todos os dados de autenticação do localStorage
 export const clearAuthStorage = (): void => {
   localStorage.removeItem('auth_token')
   localStorage.removeItem('user_role')
   localStorage.removeItem('establishment_code')
 }
 
-/**
- * Salva dados do usuário no localStorage
- */
+//Salva dados do usuário no localStorage
 export const saveUserData = (user: User): void => {
   setStoredRole(user.role)
   if (user.establishment?.code) {
@@ -80,9 +67,7 @@ export const saveUserData = (user: User): void => {
   }
 }
 
-/**
- * Obtém dados do usuário do localStorage (parcial)
- */
+//Obtém dados do usuário do localStorage (parcial)
 export const getStoredUserData = (): Partial<User> | null => {
   const role = getStoredRole()
   const establishmentCode = localStorage.getItem('establishment_code')

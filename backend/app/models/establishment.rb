@@ -17,7 +17,7 @@ class Establishment < ApplicationRecord
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   validate :cnpj_valid
 
-  after_create :set_user_as_owner
+  after_create :set_user_as_owner #quando estabelecimento é criado, o usuario é setado como dono
   after_save :create_working_hours
 
   private
@@ -35,7 +35,7 @@ class Establishment < ApplicationRecord
   end
 
   def set_user_as_owner
-    self.user.role = true
+    self.user.role = true # quando cria estabelecimento, vira dono
     self.user.save
   end
 end
