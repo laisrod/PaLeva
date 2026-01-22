@@ -9,7 +9,6 @@ class User < ApplicationRecord
   validates :role, inclusion: { in: [true, false] }
   validate :cpf_valid
 
-  has_secure_token :api_token
 
   
   before_create :check_employee_invitation

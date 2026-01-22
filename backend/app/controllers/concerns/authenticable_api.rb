@@ -9,8 +9,8 @@ module AuthenticableApi
   private
 
   def authenticate_api_user!
-    token = request.headers['Authorization']&.split&.last
-    @current_user = User.find_by(api_token: token)
+    email = request.headers['Authorization']&.split&.last
+    @current_user = User.find_by(email: email)
     return if @current_user
 
     render json: { error: 'Unauthorized' }, status: :unauthorized

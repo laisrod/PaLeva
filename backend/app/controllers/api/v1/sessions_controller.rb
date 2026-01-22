@@ -7,9 +7,9 @@ module Api
       def create
         user = User.find_by(email: session_params[:email])
 
-        if user&.valid_password?(session_params[:password])
-          user.regenerate_api_token if user.api_token.blank?
-          render json: { token: user.api_token, user: format_user_data(user) }, status: :ok
+        if user.valid_password?(session_params[:password])
+          # user.regenerate_api_token if user.api_token.blank?
+          render json: { token: user.email, user: format_user_data(user) }, status: :ok
         else
           render json: { error: 'Email ou senha inválidos' }, status: :unauthorized
         end
@@ -21,8 +21,8 @@ module Api
       end
 
       def is_signed_in?
-        token = request.headers['Authorization']&.split&.last
-        user = token ? User.find_by(api_token: token) : nil
+        email = request.headers['Authorization']&.split&.last
+        user = email ? User.find_by(email: email) : nil
         
         if user
           render json: { 
@@ -35,7 +35,7 @@ module Api
       end
 
       def destroy
-        current_api_user&.regenerate_api_token
+        current_api_user
         render json: { signed_out: true }, status: :ok
       end
 
