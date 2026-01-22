@@ -46,3 +46,17 @@ pt-BR:
       invalid: "não é válido"
       confirmation: "não confere"
 
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d/%m/%Y"
+      long: "%d de %B de %Y"
+
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d/%m/%Y %H:%M"      # ← esse é o que está faltando!
+      long: "%d de %B de %Y, %H:%M"
+      datetime:
+        formats:
+          default: "%d/%m/%Y %H:%M"

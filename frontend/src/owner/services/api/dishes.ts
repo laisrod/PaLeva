@@ -81,4 +81,10 @@ export class DishesApi extends BaseApiService {
       method: 'PATCH',
     })
   }
+
+  async deleteDish(establishmentCode: string, dishId: number) {
+    return this.request<{ message: string }>(`/establishments/${establishmentCode}/dishes/${dishId}`, {
+      method: 'DELETE',
+    })
+  }
 }

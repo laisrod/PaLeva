@@ -89,7 +89,8 @@ export class BaseApiService {
 
   protected async requestFormData<T>(
     endpoint: string,
-    formData: FormData
+    formData: FormData,
+    options?: { method?: string }
   ): Promise<ApiResponse<T>> {
     const token = this.getAuthToken()
     const headers: HeadersInit = {}
@@ -100,7 +101,7 @@ export class BaseApiService {
 
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        method: 'POST',
+        method: options?.method || 'POST',
         headers,
         credentials: 'include',
         body: formData,

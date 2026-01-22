@@ -65,8 +65,20 @@ class OwnerApiService {
     return this.dishes.getDishes(establishmentCode, tagIds)
   }
 
+  getDish(establishmentCode: string, dishId: number) {
+    return this.dishes.getDish(establishmentCode, dishId)
+  }
+
   createDish(establishmentCode: string, dishData: any) {
     return this.dishes.createDish(establishmentCode, dishData)
+  }
+
+  updateDish(establishmentCode: string, dishId: number, dishData: any) {
+    return this.dishes.updateDish(establishmentCode, dishId, dishData)
+  }
+
+  deleteDish(establishmentCode: string, dishId: number) {
+    return this.dishes.deleteDish(establishmentCode, dishId)
   }
 
   getDrinks(establishmentCode: string) {

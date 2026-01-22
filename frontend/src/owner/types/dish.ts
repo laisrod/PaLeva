@@ -4,6 +4,8 @@ export interface Dish {
   id: number
   name: string
   description?: string
+  calories?: number
+  photo_url?: string
   tags?: Tag[]
 }
 
