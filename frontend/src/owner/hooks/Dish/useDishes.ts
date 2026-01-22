@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ownerApi } from '../services/api'
-import { useApiData } from './useApiData'
-import { Dish } from '../types/dish'
-import { Tag } from '../types/tag'
+import { ownerApi } from '../../services/api'
+import { useApiData } from '../useApiData'
+import { Dish } from '../../types/dish'
+import { Tag } from '../../types/tag'
 
 export function useDishes(establishmentCode: string | undefined) {
   const [dishes, setDishes] = useState<Dish[]>([])

@@ -1,12 +1,20 @@
-import { useState, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ownerApi } from '../services/api'
-import { useTags } from './useTags'
-import { getErrorMessage } from './errorHandler'
-import { CreateDishFormData, DishData, UseCreateDishOptions } from '../types/dish'
+import { ownerApi } from '../../services/api'
+import { useDish } from './useDish'
+import { useTags } from '../useTags'
+import { getErrorMessage } from '../errorHandler'
+import { CreateDishFormData, DishData } from '../../types/dish'
 
-export function useCreateDish({ establishmentCode, onSuccess }: UseCreateDishOptions) {
+interface UseEditDishOptions {
+  dishId: number | undefined
+  establishmentCode: string | undefined
+  onSuccess?: () => void
+}
+
+export function useEditDish({ dishId, establishmentCode, onSuccess }: UseEditDishOptions) {
   const navigate = useNavigate()
+  const { dish, loading: loadingDish, error: dishError } = useDish({ dishId, establishmentCode })
   const { tags, loading: loadingTags, refetch: refetchTags } = useTags(establishmentCode)
   
   const [formData, setFormData] = useState<CreateDishFormData>({
@@ -20,6 +28,23 @@ export function useCreateDish({ establishmentCode, onSuccess }: UseCreateDishOpt
   
   const [errors, setErrors] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (dish) {
+      setFormData({
+        name: dish.name || '',
+        description: dish.description || '',
+        calories: dish.calories?.toString() || '',
+        photo: null,
+        selectedTags: dish.tags?.map(tag => tag.id) || [],
+        newTagName: '',
+      })
+    }
+    
+    if (dishError) {
+      setErrors([dishError])
+    }
+  }, [dish, dishError])
 
   const handleChange = useCallback((
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -136,8 +161,13 @@ export function useCreateDish({ establishmentCode, onSuccess }: UseCreateDishOpt
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors([])
-
+  
     if (!validateForm()) {
+      return
+    }
+  
+    if (!dishId) {
+      setErrors(['ID do prato não encontrado'])
       return
     }
 
@@ -145,34 +175,34 @@ export function useCreateDish({ establishmentCode, onSuccess }: UseCreateDishOpt
       setErrors(['Código do estabelecimento não encontrado'])
       return
     }
-
+  
     setLoading(true)
-
+  
     try {
       const dishData = prepareDishData()
-      const response = await ownerApi.createDish(establishmentCode, dishData)
+      const response = await ownerApi.updateDish(establishmentCode, dishId, dishData)
 
       if (response.error || response.errors) {
         const errorMessage = getErrorMessage(response)
-        const errorToShow = errorMessage || 'Erro ao criar prato'
+        const errorToShow = errorMessage || 'Erro ao atualizar prato'
         setErrors([errorToShow])
       } else if (response.data) {
-        // Redireciona para a lista de pratos após criar
-        navigate(`/establishment/${establishmentCode}/dishes`)
         onSuccess?.()
+        navigate(`/establishment/${establishmentCode}/dishes`)
       }
     } catch (err) {
-      setErrors(['Erro ao criar prato. Tente novamente.'])
+      setErrors(['Erro ao atualizar prato. Tente novamente.'])
     } finally {
       setLoading(false)
     }
-  }, [validateForm, prepareDishData, establishmentCode, navigate, onSuccess])
+  }, [validateForm, prepareDishData, dishId, establishmentCode, navigate, onSuccess])
 
   return {
     formData,
     tags,
     errors,
-    loading,
+    loading: loading || loadingDish,
+    loadingDish,
     loadingTags,
     handleChange,
     handleFileChange,

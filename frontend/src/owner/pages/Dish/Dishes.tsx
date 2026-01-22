@@ -1,14 +1,21 @@
 import { useParams, Link } from 'react-router-dom'
-import { useRequireAuth } from '../../shared/hooks/useRequireAuth'
-import { useDishes } from '../hooks/useDishes'
-import Layout from '../components/Layout'
-import '../../css/owner/pages/Dishes.css'
+import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useDishes } from '../../hooks/Dish/useDishes'
+import { useDeleteDish } from '../../hooks/Dish/useDeleteDish'
+import Layout from '../../components/Layout'
+import '../../../css/owner/pages/Dishes.css'
 
 export default function Dishes() {
   const { code } = useParams<{ code: string }>()
   useRequireAuth()
   
-  const { dishes, tags, selectedTags, loading, error, toggleTag } = useDishes(code)
+  const { dishes, tags, selectedTags, loading, error, toggleTag, refetch } = useDishes(code)
+  const { deleteDish, loading: deleting } = useDeleteDish({ 
+    establishmentCode: code,
+    onSuccess: () => {
+      refetch()
+    }
+  })
 
   const handleFilter = (e: React.FormEvent) => {
     e.preventDefault()
@@ -106,16 +113,25 @@ export default function Dishes() {
                 )}
                 <div className="dish-card-actions">
                   {isOwner && (
-                    <button
-                      className="dish-card-btn dish-card-btn-danger"
-                      onClick={() => {
-                        if (window.confirm('Tem certeza que deseja remover este prato?')) {
-                          // TODO: Implementar remoção
-                        }
-                      }}
-                    >
-                      Remover
-                    </button>
+                    <>
+                      <Link
+                        to={`/establishment/${code}/dishes/${dish.id}/edit`}
+                        className="dish-card-btn dish-card-btn-primary"
+                      >
+                        Editar
+                      </Link>
+                      <button
+                        className="dish-card-btn dish-card-btn-danger"
+                        onClick={async () => {
+                          if (window.confirm('Tem certeza que deseja remover este prato?')) {
+                            await deleteDish(dish.id)
+                          }
+                        }}
+                        disabled={deleting}
+                      >
+                        {deleting ? 'Removendo...' : 'Remover'}
+                      </button>
+                    </>
                   )}
                   <Link
                     to={`/establishment/${code}/dishes/${dish.id}/portions/new`}
