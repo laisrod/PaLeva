@@ -5,9 +5,10 @@ module Api
       before_action :set_establishment
 
       def index
-        @dishes = @establishment.dishes.includes(:tags)
-        @dishes = @dishes.joins(:tags).where(tags: { id: params[:tag_ids] }) if params[:tag_ids].present?
-        render json: @dishes.as_json(include: { tags: { only: [:id, :name] } })
+        @dishes = @establishment.dishes
+      
+        simple_dishes = @dishes.map { |d| { id: d.id, name: d.name } }
+        render json: simple_dishes, status: :ok
       end
 
       def show
@@ -19,17 +20,20 @@ module Api
 
       def create
         @dish = @establishment.dishes.new(dish_params)
+        if @dish.save! 
+          new_dish = {
+            id: @dish.id,
+            name: @dish.name,
+            description: @dish.description,
+            calories: @dish.calories,
+            status: @dish.status,
+            photo_url: @dish.photo.attached? ? url_for(@dish.photo) : nil,
+            tags: @dish.tags.map { |tag| { id: tag.id, name: tag.name } }
 
-        if @dish.save
-          render json: {
-            dish: @dish.as_json(include: { tags: { only: [:id, :name] } }),
-            message: 'Prato criado com sucesso'
-          }, status: :created
+          }
+          render json: { dish: new_dish, message: 'Prato criado!' }, status: :created
         else
-          render json: {
-            status: :unprocessable_entity,
-            error: @dish.errors.full_messages.map(&:to_s)
-          }, status: :unprocessable_entity
+          render json: { status: :unprocessable_entity, error: @dish.errors.full_messages }, status: :unprocessable_entity
         end
       end
 

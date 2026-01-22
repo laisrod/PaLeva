@@ -28,13 +28,13 @@ export class DishesApi extends BaseApiService {
     }
     
     if (dishData.tag_ids && dishData.tag_ids.length > 0) {
-      dishData.tag_ids.forEach((tagId) => {
+      dishData.tag_ids.forEach((tagId: number) => {
         formData.append('dish[tag_ids][]', tagId.toString())
       })
     }
     
     if (dishData.tags_attributes && dishData.tags_attributes.length > 0) {
-      dishData.tags_attributes.forEach((tag, index) => {
+      dishData.tags_attributes.forEach((tag: { name: string }, index: number) => {
         formData.append(`dish[tags_attributes][${index}][name]`, tag.name)
       })
     }
@@ -43,5 +43,42 @@ export class DishesApi extends BaseApiService {
       dish: Dish
       message: string
     }>(`/establishments/${establishmentCode}/dishes`, formData)
+  }
+
+  async getDish(establishmentCode: string, dishId: number) {
+    return this.request<Dish>(`/establishments/${establishmentCode}/dishes/${dishId}`)
+  }
+
+  async updateDish(establishmentCode: string, dishId: number, dishData: DishData) {
+    const formData = new FormData()
+    formData.append('dish[name]', dishData.name)
+    formData.append('dish[description]', dishData.description)
+    
+    if (dishData.calories !== undefined) {
+      formData.append('dish[calories]', dishData.calories.toString())
+    }
+    
+    if (dishData.photo) {
+      formData.append('dish[photo]', dishData.photo)
+    }
+    
+    if (dishData.tag_ids && dishData.tag_ids.length > 0) {
+      dishData.tag_ids.forEach((tagId: number) => {
+        formData.append('dish[tag_ids][]', tagId.toString())
+      })
+    }
+    
+    if (dishData.tags_attributes && dishData.tags_attributes.length > 0) {
+      dishData.tags_attributes.forEach((tag: { name: string }, index: number) => {
+        formData.append(`dish[tags_attributes][${index}][name]`, tag.name)
+      })
+    }
+
+    return this.requestFormData<{
+      dish: Dish
+      message: string
+    }>(`/establishments/${establishmentCode}/dishes/${dishId}`, formData, {
+      method: 'PATCH',
+    })
   }
 }

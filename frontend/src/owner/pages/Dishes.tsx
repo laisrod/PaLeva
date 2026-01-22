@@ -106,24 +106,16 @@ export default function Dishes() {
                 )}
                 <div className="dish-card-actions">
                   {isOwner && (
-                    <>
-                      <Link
-                        to={`/establishment/${code}/dishes/${dish.id}/edit`}
-                        className="dish-card-btn dish-card-btn-primary"
-                      >
-                        Editar
-                      </Link>
-                      <button
-                        className="dish-card-btn dish-card-btn-danger"
-                        onClick={() => {
-                          if (window.confirm('Tem certeza que deseja remover este prato?')) {
-                            // TODO: Implementar remoção
-                          }
-                        }}
-                      >
-                        Remover
-                      </button>
-                    </>
+                    <button
+                      className="dish-card-btn dish-card-btn-danger"
+                      onClick={() => {
+                        if (window.confirm('Tem certeza que deseja remover este prato?')) {
+                          // TODO: Implementar remoção
+                        }
+                      }}
+                    >
+                      Remover
+                    </button>
                   )}
                   <Link
                     to={`/establishment/${code}/dishes/${dish.id}/portions/new`}

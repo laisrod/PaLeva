@@ -48,8 +48,8 @@ module Api
       private
 
       def authenticate_api_user_for_create!
-        token = request.headers['Authorization']&.split&.last
-        @current_api_user = token ? User.find_by(api_token: token) : nil
+        email = request.headers['Authorization']&.split&.last
+        @current_api_user = email ? User.find_by(email: email) : nil
         
         unless @current_api_user
           render json: { error: 'Não autorizado' }, status: :unauthorized

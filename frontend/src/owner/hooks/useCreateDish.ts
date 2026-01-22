@@ -157,15 +157,16 @@ export function useCreateDish({ establishmentCode, onSuccess }: UseCreateDishOpt
         const errorToShow = errorMessage || 'Erro ao criar prato'
         setErrors([errorToShow])
       } else if (response.data) {
-        onSuccess?.()
+        // Redireciona para a lista de pratos após criar
         navigate(`/establishment/${establishmentCode}/dishes`)
+        onSuccess?.()
       }
     } catch (err) {
       setErrors(['Erro ao criar prato. Tente novamente.'])
     } finally {
       setLoading(false)
     }
-  }, [formData, validateForm, prepareDishData, establishmentCode, navigate, onSuccess])
+  }, [validateForm, prepareDishData, establishmentCode, navigate, onSuccess])
 
   return {
     formData,
