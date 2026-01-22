@@ -7,12 +7,30 @@ module Api
       def index
         @dishes = @establishment.dishes.includes(:tags)
         @dishes = @dishes.joins(:tags).where(tags: { id: params[:tag_ids] }) if params[:tag_ids].present?
-        render json: @dishes.as_json(include: { tags: { only: [:id, :name] } })
+        render json: @dishes.as_json(
+          only: [:id, :name, :description, :calories, :created_at, :updated_at],
+          include: { 
+            tags: { 
+              only: [:id, :name],
+              methods: []
+            }
+          },
+          methods: []
+        )
       end
 
       def show
         @dish = @establishment.dishes.find(params[:id])
-        render json: @dish.as_json(include: { tags: { only: [:id, :name] } })
+        render json: @dish.as_json(
+          only: [:id, :name, :description, :calories, :created_at, :updated_at],
+          include: { 
+            tags: { 
+              only: [:id, :name],
+              methods: []
+            }
+          },
+          methods: []
+        )
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Prato não encontrado' }, status: :not_found
       end
@@ -22,7 +40,16 @@ module Api
 
         if @dish.save
           render json: {
-            dish: @dish.as_json(include: { tags: { only: [:id, :name] } }),
+            dish: @dish.as_json(
+              only: [:id, :name, :description, :calories, :created_at, :updated_at],
+              include: { 
+                tags: { 
+                  only: [:id, :name],
+                  methods: []
+                }
+              },
+              methods: []
+            ),
             message: 'Prato criado com sucesso'
           }, status: :created
         else

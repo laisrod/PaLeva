@@ -1,0 +1,333 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1>PaLeva</h1>
+    <h2>Login</h2>
+    
+    <% if current_user %>
+      <div class="alert alert-info" role="alert" style="background-color: #d1ecf1; color: #0c5460; padding: 14px 16px; border-radius: 4px; margin-bottom: 24px; border: 1px solid #bee5eb;">
+        <strong>Você já está autenticado como:</strong> <%= current_user.email %>
+        <br>
+        <%= button_to "Fazer Logout", logout_path, method: :delete, class: "btn btn-sm btn-outline-danger mt-2", style: "margin-top: 8px;" %>
+      </div>
+    <% end %>
+
+    <% if flash[:alert] %>
+      <div class="error-message">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <% if flash[:notice] %>
+      <div class="success-message">
+        <%= flash[:notice] %>
+      </div>
+    <% end %>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          value=""
+          placeholder="seu@email.com"
+          required
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input
+          id="password"
+          type="password"
+          value=""
+          placeholder="••••••••"
+          required
+          autocomplete="current-password"
+        />
+      </div>
+
+      <div id="errorMessage" class="error-message" style="display: none;"></div>
+      <div id="successMessage" class="success-message" style="display: none;"></div>
+
+      <button 
+        type="submit" 
+        class="btn-primary"
+        id="submitButton"
+      >
+        <span id="buttonText">Entrar</span>
+      </button>
+
+      <div class="login-footer">
+        <p>
+          Não tem uma conta? <a href="/register" data-turbo="false" id="registerLink">Cadastre-se</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+
+  const firebaseConfig = {
+    apiKey: '<%= firebase_config[:apiKey] %>',
+    authDomain: '<%= firebase_config[:authDomain] %>',
+    projectId: '<%= firebase_config[:projectId] %>',
+    storageBucket: '<%= firebase_config[:storageBucket] %>',
+    messagingSenderId: '<%= firebase_config[:messagingSenderId] %>',
+    appId: '<%= firebase_config[:appId] %>'
+  };
+  
+  // Verificar se a API key está configurada
+  if (!firebaseConfig.apiKey || firebaseConfig.apiKey === '') {
+    console.error('Firebase API Key não configurada! Configure a variável de ambiente FIREBASE_API_KEY ou VITE_FIREBASE_API_KEY');
+  }
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const loginForm = document.getElementById('loginForm');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const errorMessage = document.getElementById('errorMessage');
+  const successMessage = document.getElementById('successMessage');
+  const submitButton = document.getElementById('submitButton');
+  const buttonText = document.getElementById('buttonText');
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Limpar mensagens anteriores
+    errorMessage.style.display = 'none';
+    successMessage.style.display = 'none';
+    
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+      showError('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    // Desabilitar botão e mostrar loading
+    submitButton.disabled = true;
+    buttonText.textContent = 'Entrando...';
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const token = await user.getIdToken();
+      
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: `firebase_token=${encodeURIComponent(token)}`
+      });
+
+      if (response.ok) {
+        window.location.href = '/';
+      } else {
+        const data = await response.text();
+        showError('Erro ao fazer login. Tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro no login:', error);
+      
+      let errorMsg = 'Erro ao fazer login. Tente novamente.';
+      
+      if (error.code === 'auth/user-not-found') {
+        errorMsg = 'Usuário não encontrado.';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMsg = 'Senha incorreta.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMsg = 'Email inválido.';
+      } else if (error.code === 'auth/user-disabled') {
+        errorMsg = 'Usuário desabilitado.';
+      } else if (error.message) {
+        errorMsg = error.message;
+      }
+      
+      showError(errorMsg);
+    } finally {
+      submitButton.disabled = false;
+      buttonText.textContent = 'Entrar';
+    }
+  });
+
+  function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.style.display = 'block';
+  }
+
+  function showSuccess(message) {
+    successMessage.textContent = message;
+    successMessage.style.display = 'block';
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const registerLink = document.getElementById('registerLink');
+    if (registerLink) {
+      registerLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = '/register';
+        return false;
+      });
+    }
+  });
+</script>
+
+<style>
+  .login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    padding: 20px;
+  }
+
+  .login-card {
+    background: white;
+    border-radius: 0;
+    padding: 60px 50px;
+    box-shadow: none;
+    width: 100%;
+    max-width: 450px;
+    border: 1px solid #e5e5e5;
+  }
+
+  .login-card h1 {
+    margin: 0 0 40px 0;
+    color: #dc3545;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.5px;
+  }
+
+  .login-card h2 {
+    margin: 0 0 40px 0;
+    color: #212529;
+    font-size: 1.75rem;
+    font-weight: 400;
+    text-align: center;
+  }
+
+  .form-group {
+    margin-bottom: 24px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: #212529;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-sizing: border-box;
+    background-color: #fff;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  }
+
+  .form-group input:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 14px 16px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    border: 1px solid #f5c6cb;
+    font-size: 0.95rem;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+    margin-top: 8px;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: #c82333;
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    background: #dc3545;
+  }
+
+  .success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 14px 16px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    border: 1px solid #c3e6cb;
+    font-size: 0.95rem;
+  }
+
+  .login-footer {
+    text-align: center;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .login-footer p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.95rem;
+  }
+
+  .login-footer a {
+    color: #dc3545;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s ease-in-out;
+  }
+
+  .login-footer a:hover {
+    color: #c82333;
+    text-decoration: underline;
+  }
+</style>

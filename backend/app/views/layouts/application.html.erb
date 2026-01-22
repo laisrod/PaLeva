@@ -33,13 +33,18 @@
         </div>
 
       <form class="form-inline">
-        <% if current_user&.establishment&.persisted? && current_order %>
-          <button class="btn btn-outline-success" type="button">
-            <%= link_to 'Ver Pedido Atual', establishment_order_path(current_user.establishment, current_order) %>
-          </button>
+        <% if current_user %>
+          <% if current_user.establishment&.persisted? && current_order %>
+            <button class="btn btn-outline-success" type="button">
+              <%= link_to 'Ver Pedido Atual', establishment_order_path(current_user.establishment, current_order) %>
+            </button>
+          <% end %>
           <span class="navbar-text" style="margin-left: 10px;">
             <%= current_user.email %>
           </span>
+          <%= button_to 'Sair', logout_path, method: :delete, class: "btn btn-outline-danger", style: "margin-left: 10px;" %>
+        <% else %>
+          <%= link_to 'Login', login_path, class: "btn btn-outline-primary" %>
         <% end %>
       </form>
     </nav>

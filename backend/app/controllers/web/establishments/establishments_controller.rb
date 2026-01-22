@@ -8,6 +8,11 @@ module Web
       before_action :authorize_owner!, only: [:edit, :update, :destroy]
 
       def index
+        unless current_user
+          redirect_to login_path, status: :found
+          return
+        end
+
         if current_user&.establishment
           @establishment = current_user.establishment
         else

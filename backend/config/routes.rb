@@ -1,6 +1,13 @@
 Rails.application.routes.draw do
   post '/users/sign_in', to: 'api/v1/sessions#create'
   
+  get '/login', to: 'web/sessions#new', as: :login
+  post '/login', to: 'web/sessions#create'
+  delete '/logout', to: 'web/sessions#destroy', as: :logout
+  
+  get '/register', to: 'web/registrations#new', as: :register
+  post '/register', to: 'web/registrations#create'
+  
   root to: 'web/establishments/establishments#index'
 
   resources :establishments, controller: 'web/establishments/establishments' do

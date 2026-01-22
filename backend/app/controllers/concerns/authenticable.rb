@@ -12,9 +12,11 @@ module Authenticable #autenticação via firebase
       if request.format.json? || request.path.start_with?('/api/')
         render json: { error: 'Não autorizado' }, status: :unauthorized
       else
-        # Para requisições HTML, redirecionar para o frontend para fazer login
-        # Usar redirect_to com status 302 explícito e allow_other_host
-        redirect_to 'http://localhost:5176/login', allow_other_host: true, status: :found
+        # Para requisições HTML, redirecionar para a página de login do backend
+        # Evitar loop infinito se já estiver na página de login
+        unless request.path == '/login' || request.path == login_path
+          redirect_to login_path, status: :found
+        end
       end
     end
   end

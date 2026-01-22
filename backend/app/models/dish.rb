@@ -3,8 +3,8 @@ class Dish < ApplicationRecord
   
   has_one_attached :photo
   has_many :portions, dependent: :destroy
-  has_many :dish_tags
-  has_many :tags, through: :dish_tags, dependent: :destroy
+  has_many :dish_tags, dependent: :destroy
+  has_many :tags, through: :dish_tags
   
   accepts_nested_attributes_for :tags, reject_if: :all_blank, allow_destroy: false
   
