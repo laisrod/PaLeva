@@ -134,7 +134,7 @@ export default function Dishes() {
                     </>
                   )}
                   <Link
-                    to={`/establishment/${code}/dishes/${dish.id}/portions/new`}
+                    to={`/establishment/${code}/dishes/${dish.id}/portions`}
                     className="dish-card-btn dish-card-btn-secondary"
                   >
                     Porções

@@ -14,6 +14,9 @@ import EditMenu from './owner/pages/EditMenu'
 import ViewMenu from './owner/pages/ViewMenu'
 import CreateDish from './owner/pages/Dish/CreateDish'
 import EditDish from './owner/pages/Dish/EditDish'
+import Portions from './owner/pages/Portion/Portions'
+import CreatePortion from './owner/pages/Portion/CreatePortion'
+import EditPortion from './owner/pages/Portion/EditPortion'
 import CreateDrink from './owner/pages/CreateDrink'
 import Tags from './owner/pages/Tags'
 import Orders from './owner/pages/Orders'
@@ -35,6 +38,9 @@ function App() {
         <Route path="/establishment/:code/dishes" element={<Dishes />} />
         <Route path="/establishment/:code/dishes/new" element={<CreateDish />} />
         <Route path="/establishment/:code/dishes/:id/edit" element={<EditDish />} />
+        <Route path="/establishment/:code/dishes/:id/portions" element={<Portions />} />
+        <Route path="/establishment/:code/dishes/:id/portions/new" element={<CreatePortion />} />
+        <Route path="/establishment/:code/dishes/:id/portions/:portionId/edit" element={<EditPortion />} />
         <Route path="/establishment/:code/drinks" element={<Drinks />} />
         <Route path="/establishment/:code/drinks/new" element={<CreateDrink />} />
         <Route path="/establishment/:code/menus" element={<MenusList />} />

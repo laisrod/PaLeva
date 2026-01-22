@@ -5,6 +5,7 @@ import { DishesApi } from './dishes'
 import { DrinksApi } from './drinks'
 import { OrdersApi } from './orders'
 import { WorkingHoursApi } from './workingHours'
+import { PortionsApi } from './portions'
 
 class OwnerApiService {
   establishments: EstablishmentsApi
@@ -14,6 +15,7 @@ class OwnerApiService {
   drinks: DrinksApi
   orders: OrdersApi
   workingHours: WorkingHoursApi
+  portions: PortionsApi
 
   constructor() {
     this.establishments = new EstablishmentsApi()
@@ -23,6 +25,7 @@ class OwnerApiService {
     this.drinks = new DrinksApi()
     this.orders = new OrdersApi()
     this.workingHours = new WorkingHoursApi()
+    this.portions = new PortionsApi()
   }
 
   getEstablishment(code: string) {
@@ -79,6 +82,26 @@ class OwnerApiService {
 
   deleteDish(establishmentCode: string, dishId: number) {
     return this.dishes.deleteDish(establishmentCode, dishId)
+  }
+
+  getPortions(establishmentCode: string, dishId: number) {
+    return this.portions.getPortions(establishmentCode, dishId)
+  }
+
+  getPortion(establishmentCode: string, dishId: number, portionId: number) {
+    return this.portions.getPortion(establishmentCode, dishId, portionId)
+  }
+
+  createPortion(establishmentCode: string, dishId: number, portionData: any) {
+    return this.portions.createPortion(establishmentCode, dishId, portionData)
+  }
+
+  updatePortion(establishmentCode: string, dishId: number, portionId: number, portionData: any) {
+    return this.portions.updatePortion(establishmentCode, dishId, portionId, portionData)
+  }
+
+  deletePortion(establishmentCode: string, dishId: number, portionId: number) {
+    return this.portions.deletePortion(establishmentCode, dishId, portionId)
   }
 
   getDrinks(establishmentCode: string) {
