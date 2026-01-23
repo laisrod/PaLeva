@@ -84,6 +84,21 @@ export default function EditMenu() {
               />
             </div>
 
+            <div className="form-group">
+              <label htmlFor="price">Preço</label>
+              <input
+                id="price"
+                name="price"
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="Ex: 25.50"
+                disabled={loading}
+              />
+            </div>
+
             <div className="form-actions">
               <Link
                 to={`/establishment/${code}/menus`}

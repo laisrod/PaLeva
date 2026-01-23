@@ -13,6 +13,7 @@ export function useMenu({ menuId, establishmentCode }: UseMenuOptions) {
         id: data.id,
         name: data.name,
         description: data.description,
+        price: data.price,
       })
     }
   })
