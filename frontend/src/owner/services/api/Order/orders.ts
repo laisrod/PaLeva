@@ -1,4 +1,4 @@
-import { BaseApiService } from './base'
+import { BaseApiService } from '../base'
 
 export class OrdersApi extends BaseApiService {
   async getOrders(establishmentCode: string) {
@@ -35,5 +35,31 @@ export class OrdersApi extends BaseApiService {
         body: JSON.stringify({ cancellation_reason: reason }),
       }
     )
+  }
+
+  async createOrder(establishmentCode: string, orderData?: { customer_name?: string }) {
+    const orderPayload: { customer_name?: string } = {}
+    if (orderData?.customer_name) {
+      orderPayload.customer_name = orderData.customer_name
+    }
+
+    return this.request<{
+      order: {
+        id: number
+        code: string
+        status: string
+        total_price: number
+        customer_name?: string
+      }
+      message: string
+    }>(`/establishments/${establishmentCode}/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        order: orderPayload
+      }),
+    })
   }
 }

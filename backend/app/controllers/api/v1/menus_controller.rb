@@ -32,16 +32,33 @@ module Api
 
       def show
         @menu = @establishment.menus.find(params[:id])
-        render json: @menu.as_json(
-          include: {
-            menu_items: {
-              include: {
-                dish: { only: [:id, :name, :description] },
-                drink: { only: [:id, :name, :description] }
-              }
-            }
+        
+        menu_items_with_portions = @menu.menu_items.map do |menu_item|
+          item_data = {
+            id: menu_item.id,
+            dish: menu_item.dish ? {
+              id: menu_item.dish.id,
+              name: menu_item.dish.name,
+              description: menu_item.dish.description,
+              portions: menu_item.dish.portions.map { |p| { id: p.id, description: p.description, price: p.price.to_f } }
+            } : nil,
+            drink: menu_item.drink ? {
+              id: menu_item.drink.id,
+              name: menu_item.drink.name,
+              description: menu_item.drink.description,
+              portions: menu_item.drink.portions.map { |p| { id: p.id, description: p.description, price: p.price.to_f } }
+            } : nil
           }
-        )
+          item_data
+        end
+        
+        render json: {
+          id: @menu.id,
+          name: @menu.name,
+          description: @menu.description,
+          price: @menu.price.to_f,
+          menu_items: menu_items_with_portions
+        }
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Cardápio não encontrado' }, status: :not_found
       end
