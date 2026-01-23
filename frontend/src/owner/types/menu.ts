@@ -10,6 +10,31 @@ export interface MenuResponse {
   name: string
   description: string
   price?: number
+  menu_items?: MenuItemWithPortions[]
+}
+
+export interface MenuItemWithPortions {
+  id: number
+  dish: {
+    id: number
+    name: string
+    description: string
+    portions: Array<{
+      id: number
+      description: string
+      price: number
+    }>
+  } | null
+  drink: {
+    id: number
+    name: string
+    description: string
+    portions: Array<{
+      id: number
+      description: string
+      price: number
+    }>
+  } | null
 }
 
 export interface MenuItem {

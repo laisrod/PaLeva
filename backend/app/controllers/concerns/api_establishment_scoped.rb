@@ -9,7 +9,8 @@ module ApiEstablishmentScoped
   private
 
   def set_establishment_by_code
-    @establishment = Establishment.find_by!(code: params[:establishment_code])
+    establishment_code = params[:establishment_code] || params[:code]
+    @establishment = Establishment.find_by!(code: establishment_code)
   rescue ActiveRecord::RecordNotFound
     render json: { error: 'Establishment not found' }, status: :not_found
   end

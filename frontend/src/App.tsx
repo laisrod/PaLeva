@@ -23,8 +23,9 @@ import DrinkPortions from './owner/pages/DrinkPortion/DrinkPortions'
 import CreateDrinkPortion from './owner/pages/DrinkPortion/CreateDrinkPortion'
 import EditDrinkPortion from './owner/pages/DrinkPortion/EditDrinkPortion'
 import Tags from './owner/pages/Tags'
-import Orders from './owner/pages/Orders'
+import Orders from './owner/pages/Orders/Orders'
 import EditWorkingHours from './owner/pages/EditWorkingHours'
+import TestCreateOrder from './owner/pages/TestCreateOrder'
 import './css/shared/App.css'
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
         <Route path="/restaurants" element={<RestaurantsList />} />
         <Route path="/establishments/new" element={<CreateEstablishment />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/establishment/:code/orders" element={<Orders />} />
         <Route path="/menu/:code" element={<Menu />} />
         <Route path="/establishment/:code" element={<Dashboard />} />
         <Route path="/establishment/:code/dishes" element={<Dishes />} />
@@ -57,6 +59,7 @@ function App() {
         <Route path="/establishment/:code/menus/:id/edit" element={<EditMenu />} />
         <Route path="/establishment/:code/tags" element={<Tags />} />
         <Route path="/establishment/:code/working-hours" element={<EditWorkingHours />} />
+        <Route path="/establishment/:code/test-order" element={<TestCreateOrder />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

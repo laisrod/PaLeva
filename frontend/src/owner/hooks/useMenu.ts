@@ -15,6 +15,7 @@ export function useMenu({ menuId, establishmentCode }: UseMenuOptions) {
         description: data.description,
         price: data.price,
       })
+      // menu_items são tratados separadamente pelo useMenuItems
     }
   })
 

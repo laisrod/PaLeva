@@ -51,7 +51,8 @@ Rails.application.routes.draw do
         end
         resources :tags, only: [:index, :create]
         resources :working_hours, only: [:index, :update]
-        resources :orders, param: :code, only: [:index, :show] do
+        resources :orders, param: :code, only: [:index, :show, :create] do
+          resources :items, only: [:create, :update, :destroy], controller: 'order_items'
           member do
             patch :prepare_order, to: 'orders#prepare_order'
             patch :ready_order, to: 'orders#ready_order'
