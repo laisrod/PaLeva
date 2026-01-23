@@ -3,6 +3,7 @@ import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import { useDishes } from '../../hooks/Dish/useDishes'
 import { useDeleteDish } from '../../hooks/Dish/useDeleteDish'
 import Layout from '../../components/Layout'
+import DishCard from './DishCard'
 import '../../../css/owner/pages/Dishes.css'
 
 export default function Dishes() {
@@ -76,54 +77,14 @@ export default function Dishes() {
         {dishes.length > 0 ? (
           <div className="dishes-grid">
             {dishes.map(dish => (
-              <div key={dish.id} className="dish-card">
-                <h3 className="dish-card-title">
-                  <Link to={`/establishment/${code}/dishes/${dish.id}`}>
-                    {dish.name}
-                  </Link>
-                </h3>
-                {dish.description && (
-                  <p className="dish-card-description">{dish.description}</p>
-                )}
-                {dish.tags && dish.tags.length > 0 && (
-                  <div className="dish-tags">
-                    {dish.tags.map(tag => (
-                      <span key={tag.id} className="dish-tag">
-                        {tag.name}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <div className="dish-card-actions">
-                  {isOwner && (
-                    <>
-                      <Link
-                        to={`/establishment/${code}/dishes/${dish.id}/edit`}
-                        className="dish-card-btn dish-card-btn-primary"
-                      >
-                        Editar
-                      </Link>
-                      <button
-                        className="dish-card-btn dish-card-btn-danger"
-                        onClick={async () => {
-                          if (window.confirm('Tem certeza que deseja remover este prato?')) {
-                            await deleteDish(dish.id)
-                          }
-                        }}
-                        disabled={deleting}
-                      >
-                        {deleting ? 'Removendo...' : 'Remover'}
-                      </button>
-                    </>
-                  )}
-                  <Link
-                    to={`/establishment/${code}/dishes/${dish.id}/portions`}
-                    className="dish-card-btn dish-card-btn-secondary"
-                  >
-                    Porções
-                  </Link>
-                </div>
-              </div>
+              <DishCard
+                key={dish.id}
+                dish={dish}
+                establishmentCode={code || ''}
+                isOwner={isOwner}
+                onDelete={deleteDish}
+                deleting={deleting}
+              />
             ))}
           </div>
         ) : (
