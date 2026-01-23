@@ -2,8 +2,16 @@ import { BaseApiService } from './base'
 import { Drink, DrinkData } from '../types/drink'
 
 export class DrinksApi extends BaseApiService {
-  async getDrinks(establishmentCode: string) {
-    return this.request<Drink[]>(`/establishments/${establishmentCode}/drinks`)
+  async getDrinks(establishmentCode: string, tagIds?: number[]) {
+    let endpoint = `/establishments/${establishmentCode}/drinks`
+    
+    if (tagIds && tagIds.length > 0) {
+      const params = new URLSearchParams()
+      tagIds.forEach(id => params.append('tag_ids[]', id.toString()))
+      endpoint += `?${params.toString()}`
+    }
+    
+    return this.request<Drink[]>(endpoint)
   }
 
   async createDrink(establishmentCode: string, drinkData: DrinkData) {
@@ -21,6 +29,12 @@ export class DrinksApi extends BaseApiService {
     
     if (drinkData.photo) {
       formData.append('drink[photo]', drinkData.photo)
+    }
+
+    if (drinkData.tag_ids && drinkData.tag_ids.length > 0) {
+      drinkData.tag_ids.forEach((tagId: number) => {
+        formData.append('drink[tag_ids][]', tagId.toString())
+      })
     }
 
     return this.requestFormData<{
@@ -48,6 +62,12 @@ export class DrinksApi extends BaseApiService {
     
     if (drinkData.photo) {
       formData.append('drink[photo]', drinkData.photo)
+    }
+
+    if (drinkData.tag_ids && drinkData.tag_ids.length > 0) {
+      drinkData.tag_ids.forEach((tagId: number) => {
+        formData.append('drink[tag_ids][]', tagId.toString())
+      })
     }
 
     return this.requestFormData<{

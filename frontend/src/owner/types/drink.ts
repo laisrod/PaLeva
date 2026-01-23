@@ -1,3 +1,8 @@
+export interface Tag {
+  id: number
+  name: string
+}
+
 export interface Drink {
   id: number
   name: string
@@ -5,6 +10,7 @@ export interface Drink {
   calories?: number
   alcoholic?: boolean
   photo_url?: string
+  tags?: Tag[]
 }
 
 export interface CreateDrinkFormData {
@@ -13,6 +19,8 @@ export interface CreateDrinkFormData {
   alcoholic: boolean
   calories: string
   photo: File | null
+  selectedTags: number[]
+  newTagName: string
 }
 
 export interface DrinkData {
@@ -21,6 +29,7 @@ export interface DrinkData {
   alcoholic: boolean
   calories?: number
   photo?: File
+  tag_ids?: number[]
 }
 
 export interface UseCreateDrinkOptions {

@@ -9,7 +9,7 @@ export default function Drinks() {
   const { code } = useParams<{ code: string }>()
   useRequireAuth()
   
-  const { drinks, loading, error, refetch } = useDrinks(code)
+  const { drinks, tags, selectedTags, loading, error, toggleTag, refetch } = useDrinks(code)
   const { deleteDrink, loading: deleting } = useDeleteDrink({ 
     establishmentCode: code,
     onSuccess: () => {
@@ -51,6 +51,27 @@ export default function Drinks() {
             </Link>
           </div>
         </div>
+
+        {tags.length > 0 && (
+          <div className="filters-card">
+            <h3 className="filters-title">Filtrar por Características</h3>
+            <div className="filter-tags">
+              {tags.map(tag => (
+                <div key={tag.id} className="filter-tag">
+                  <input
+                    type="checkbox"
+                    id={`tag_${tag.id}`}
+                    checked={selectedTags.includes(tag.id)}
+                    onChange={() => toggleTag(tag.id)}
+                  />
+                  <label htmlFor={`tag_${tag.id}`}>
+                    {tag.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="alert alert-danger mb-4">

@@ -10,4 +10,6 @@ class Drink < ApplicationRecord
 
   validates :name, :description, presence: true
   has_many :portions, dependent: :destroy
+  has_many :drink_tags
+  has_many :tags, through: :drink_tags, dependent: :destroy
 end
