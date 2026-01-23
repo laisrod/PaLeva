@@ -19,8 +19,14 @@ export class BaseApiService {
     const token = this.getAuthToken()
     
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
       ...(options.headers as Record<string, string> || {}),
+    }
+
+    // Só adiciona Content-Type se houver body ou se não foi especificado
+    if (options.body || (!options.headers || !(options.headers as Record<string, string>)['Content-Type'])) {
+      if (!(options.headers as Record<string, string>)?.['Content-Type']) {
+        headers['Content-Type'] = 'application/json'
+      }
     }
 
     if (token) {
@@ -71,7 +77,8 @@ export class BaseApiService {
         }
       }
 
-      return { data }
+      
+      return { data: Array.isArray(data) ? data : data }
     } catch (error) {
       if (error instanceof TypeError && error.message === 'Failed to fetch') {
         return {

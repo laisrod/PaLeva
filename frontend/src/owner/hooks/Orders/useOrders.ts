@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ownerApi } from '../services/api'
-import { Order } from '../../shared/types/order'
-import { useApiData } from './useApiData'
-import { getErrorMessage } from './errorHandler'
+import { ownerApi } from '../../services/api'
+import { Order } from '../../../shared/types/order'
+import { useApiData } from '../useApiData'
+import { getErrorMessage } from '../errorHandler'
 
 type OrderAction = 'prepare' | 'ready' | 'cancel'
 
