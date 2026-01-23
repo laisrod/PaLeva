@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ownerApi } from '../../services/api'
 import { useDrink } from './useDrink'
+import { useTags } from '../useTags'
 import { getErrorMessage } from '../errorHandler'
 import { CreateDrinkFormData, DrinkData } from '../../types/drink'
 
@@ -14,6 +15,7 @@ interface UseEditDrinkOptions {
 export function useEditDrink({ drinkId, establishmentCode, onSuccess }: UseEditDrinkOptions) {
   const navigate = useNavigate()
   const { drink, loading: loadingDrink, error: drinkError } = useDrink({ drinkId, establishmentCode })
+  const { tags, loading: loadingTags, refetch: refetchTags } = useTags(establishmentCode)
   
   const [formData, setFormData] = useState<CreateDrinkFormData>({
     name: '',
@@ -21,6 +23,8 @@ export function useEditDrink({ drinkId, establishmentCode, onSuccess }: UseEditD
     alcoholic: false,
     calories: '',
     photo: null,
+    selectedTags: [],
+    newTagName: '',
   })
   
   const [errors, setErrors] = useState<string[]>([])
@@ -34,6 +38,8 @@ export function useEditDrink({ drinkId, establishmentCode, onSuccess }: UseEditD
         alcoholic: drink.alcoholic || false,
         calories: drink.calories?.toString() || '',
         photo: null,
+        selectedTags: drink.tags?.map(tag => tag.id) || [],
+        newTagName: '',
       })
     }
     
@@ -75,6 +81,37 @@ export function useEditDrink({ drinkId, establishmentCode, onSuccess }: UseEditD
     }))
   }, [])
 
+  const handleTagToggle = useCallback((tagId: number) => {
+    setFormData((previousData) => {
+      const isSelected = previousData.selectedTags.includes(tagId)
+      return {
+        ...previousData,
+        selectedTags: isSelected
+          ? previousData.selectedTags.filter(id => id !== tagId)
+          : [...previousData.selectedTags, tagId]
+      }
+    })
+  }, [])
+
+  const handleCreateTag = useCallback(async () => {
+    if (!formData.newTagName.trim() || !establishmentCode) {
+      return
+    }
+
+    try {
+      const response = await ownerApi.createTag(establishmentCode, formData.newTagName.trim())
+      if (response.data) {
+        await refetchTags()
+        setFormData(prev => ({
+          ...prev,
+          newTagName: ''
+        }))
+      }
+    } catch (err) {
+      console.error('Erro ao criar característica:', err)
+    }
+  }, [formData.newTagName, establishmentCode, refetchTags])
+
   const validateForm = useCallback((): boolean => {
     const validationErrors: string[] = []
 
@@ -103,6 +140,10 @@ export function useEditDrink({ drinkId, establishmentCode, onSuccess }: UseEditD
 
     if (formData.photo) {
       drinkData.photo = formData.photo
+    }
+
+    if (formData.selectedTags.length > 0) {
+      drinkData.tag_ids = formData.selectedTags
     }
 
     return drinkData
@@ -149,11 +190,15 @@ export function useEditDrink({ drinkId, establishmentCode, onSuccess }: UseEditD
 
   return {
     formData,
+    tags,
     errors,
     loading: loading || loadingDrink,
     loadingDrink,
+    loadingTags,
     handleChange,
     handleFileChange,
+    handleTagToggle,
+    handleCreateTag,
     handleSubmit,
     setFormData,
     setErrors,

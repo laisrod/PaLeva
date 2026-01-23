@@ -10,10 +10,14 @@ export default function CreateDrink() {
 
   const {
     formData,
+    tags,
     errors,
     loading,
+    loadingTags,
     handleChange,
     handleFileChange,
+    handleTagToggle,
+    handleCreateTag,
     handleSubmit,
   } = useCreateDrink({ establishmentCode: code })
 
@@ -110,6 +114,53 @@ export default function CreateDrink() {
               />
               {formData.photo && (
                 <p className="file-name">{formData.photo.name}</p>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label>Características</label>
+              {loadingTags ? (
+                <p>Carregando características...</p>
+              ) : (
+                <>
+                  <div className="tags-grid">
+                    {tags.map((tag) => (
+                      <label key={tag.id} className="tag-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={formData.selectedTags.includes(tag.id)}
+                          onChange={() => handleTagToggle(tag.id)}
+                          disabled={loading}
+                        />
+                        <span>{tag.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <div className="new-tag-section">
+                    <input
+                      type="text"
+                      name="newTagName"
+                      value={formData.newTagName}
+                      onChange={handleChange}
+                      placeholder="Nova característica"
+                      disabled={loading}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault()
+                          handleCreateTag()
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCreateTag}
+                      className="btn-add-tag"
+                      disabled={loading || !formData.newTagName.trim()}
+                    >
+                      Adicionar
+                    </button>
+                  </div>
+                </>
               )}
             </div>
 

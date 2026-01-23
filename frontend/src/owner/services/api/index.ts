@@ -107,8 +107,8 @@ class OwnerApiService extends BaseApiService {
     return this.portions.deletePortion(establishmentCode, dishId, portionId)
   }
 
-  getDrinks(establishmentCode: string) {
-    return this.drinks.getDrinks(establishmentCode)
+  getDrinks(establishmentCode: string, tagIds?: number[]) {
+    return this.drinks.getDrinks(establishmentCode, tagIds)
   }
 
   getDrink(establishmentCode: string, drinkId: number) {

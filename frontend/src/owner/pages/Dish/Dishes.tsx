@@ -36,20 +36,12 @@ export default function Dishes() {
           <h1 className="dishes-title">Pratos</h1>
           <div className="dishes-actions">
             {isOwner && (
-              <>
-                <Link
-                  to={`/establishment/${code}/tags/new`}
-                  className="dishes-btn dishes-btn-outline"
-                >
-                  ➕ Característica
-                </Link>
-                <Link
-                  to={`/establishment/${code}/dishes/new`}
-                  className="dishes-btn dishes-btn-primary"
-                >
-                  ➕ Novo Prato
-                </Link>
-              </>
+              <Link
+                to={`/establishment/${code}/dishes/new`}
+                className="dishes-btn dishes-btn-primary"
+              >
+                ➕ Novo Prato
+              </Link>
             )}
             <Link
               to={`/establishment/${code}`}

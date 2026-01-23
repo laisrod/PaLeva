@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_22_201813) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_23_002257) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -67,6 +67,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_22_201813) do
     t.datetime "updated_at", null: false
     t.boolean "status", default: true, null: false
     t.index ["establishment_id"], name: "index_dishes_on_establishment_id"
+  end
+
+  create_table "drink_tags", force: :cascade do |t|
+    t.integer "drink_id", null: false
+    t.integer "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["drink_id"], name: "index_drink_tags_on_drink_id"
+    t.index ["tag_id"], name: "index_drink_tags_on_tag_id"
   end
 
   create_table "drinks", force: :cascade do |t|
@@ -215,6 +224,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_22_201813) do
   add_foreign_key "dish_tags", "dishes"
   add_foreign_key "dish_tags", "tags"
   add_foreign_key "dishes", "establishments"
+  add_foreign_key "drink_tags", "drinks"
+  add_foreign_key "drink_tags", "tags"
   add_foreign_key "drinks", "establishments"
   add_foreign_key "employee_invitations", "establishments"
   add_foreign_key "menu_items", "dishes"
