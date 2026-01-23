@@ -3,9 +3,10 @@ import { MenusApi } from './menus'
 import { TagsApi } from './tags'
 import { DishesApi } from './dishes'
 import { DrinksApi } from './drinks'
-import { OrdersApi } from './orders'
+import { OrdersApi } from './Order/orders'
 import { WorkingHoursApi } from './workingHours'
 import { PortionsApi } from './portions'
+import { OrderItemsApi } from './Order/orderItems'
 import { BaseApiService } from './base'
 import { Portion } from '../types/portion'
 
@@ -18,6 +19,7 @@ class OwnerApiService extends BaseApiService {
   orders: OrdersApi
   workingHours: WorkingHoursApi
   portions: PortionsApi
+  orderItems: OrderItemsApi
 
   constructor() {
     super()
@@ -29,6 +31,7 @@ class OwnerApiService extends BaseApiService {
     this.orders = new OrdersApi()
     this.workingHours = new WorkingHoursApi()
     this.portions = new PortionsApi()
+    this.orderItems = new OrderItemsApi()
   }
 
   getEstablishment(code: string) {
@@ -173,6 +176,24 @@ class OwnerApiService extends BaseApiService {
 
   getOrders(establishmentCode: string) {
     return this.orders.getOrders(establishmentCode)
+  }
+
+  createOrder(establishmentCode: string, orderData?: { customer_name?: string }) {
+    return this.orders.createOrder(establishmentCode, orderData)
+  }
+
+  addOrderItem(
+    establishmentCode: string,
+    orderCode: string,
+    options: {
+      menuItemId?: number
+      dishId?: number
+      drinkId?: number
+      portionId: number
+      quantity?: number
+    }
+  ) {
+    return this.orderItems.addItem(establishmentCode, orderCode, options)
   }
 
   getOrder(establishmentCode: string, orderCode: string) {

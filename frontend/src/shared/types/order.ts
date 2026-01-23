@@ -40,7 +40,8 @@ export interface MenuItem {
 
 export interface Portion {
   id: number
-  name: string
+  name?: string
+  description?: string
   price: number
 }
 

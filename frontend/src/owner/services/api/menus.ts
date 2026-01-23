@@ -15,6 +15,30 @@ export class MenusApi extends BaseApiService {
       id: number
       name: string
       description: string
+      price?: number
+      menu_items?: Array<{
+        id: number
+        dish: {
+          id: number
+          name: string
+          description: string
+          portions: Array<{
+            id: number
+            description: string
+            price: number
+          }>
+        } | null
+        drink: {
+          id: number
+          name: string
+          description: string
+          portions: Array<{
+            id: number
+            description: string
+            price: number
+          }>
+        } | null
+      }>
     }>(`/establishments/${establishmentCode}/menus/${menuId}`)
   }
 
