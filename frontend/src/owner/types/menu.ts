@@ -2,12 +2,14 @@ export interface Menu {
   id: number
   name: string
   description: string
+  price?: number
 }
 
 export interface MenuResponse {
   id: number
   name: string
   description: string
+  price?: number
 }
 
 export interface MenuItem {
@@ -33,11 +35,13 @@ export interface CreateMenuFormData {
 export interface EditMenuFormData {
   name: string
   description: string
+  price: string
 }
 
 export interface MenuData {
   name: string
   description: string
+  price?: number
 }
 
 export interface UseCreateMenuOptions {

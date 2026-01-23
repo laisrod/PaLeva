@@ -12,6 +12,7 @@ export function useEditMenu({ menuId, establishmentCode, onSuccess }: UseEditMen
   const [formData, setFormData] = useState<EditMenuFormData>({
     name: '',
     description: '',
+    price: '',
   })
   
   const [errors, setErrors] = useState<string[]>([])
@@ -22,6 +23,7 @@ export function useEditMenu({ menuId, establishmentCode, onSuccess }: UseEditMen
       setFormData({
         name: menu.name,
         description: menu.description,
+        price: menu.price?.toString() || '',
       })
     }
     
@@ -62,10 +64,16 @@ export function useEditMenu({ menuId, establishmentCode, onSuccess }: UseEditMen
   }, [formData.name, formData.description])
 
   const prepareMenuData = useCallback(() => {
-    return {
+    const menuData: MenuData = {
       name: formData.name.trim(),
       description: formData.description.trim(),
     }
+
+    if (formData.price && formData.price.trim()) {
+      menuData.price = parseFloat(formData.price)
+    }
+
+    return menuData
   }, [formData])
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {

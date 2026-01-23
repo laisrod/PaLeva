@@ -6,7 +6,7 @@ module Api
 
       def index
         @menus = @establishment.menus
-        render json: @menus.as_json(only: [:id, :name, :description])
+        render json: @menus.as_json(only: [:id, :name, :description, :price])
       end
 
       def create
@@ -14,7 +14,7 @@ module Api
 
         if @menu.save
           render json: {
-            menu: @menu.as_json(only: [:id, :name, :description]),
+            menu: @menu.as_json(only: [:id, :name, :description, :price]),
             message: 'Cardápio criado com sucesso'
           }, status: :created
         else
@@ -51,7 +51,7 @@ module Api
 
         if @menu.update(menu_params)
           render json: {
-            menu: @menu.as_json(only: [:id, :name, :description]),
+            menu: @menu.as_json(only: [:id, :name, :description, :price]),
             message: 'Cardápio atualizado com sucesso'
           }, status: :ok
         else
@@ -95,7 +95,7 @@ module Api
       end
 
       def menu_params
-        params.require(:menu).permit(:name, :description)
+        params.require(:menu).permit(:name, :description, :price)
       end
     end
   end
