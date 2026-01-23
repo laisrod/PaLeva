@@ -11,6 +11,8 @@ export interface Drink {
   alcoholic?: boolean
   photo_url?: string
   tags?: Tag[]
+  min_price?: number
+  max_price?: number
 }
 
 export interface CreateDrinkFormData {

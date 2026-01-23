@@ -3,6 +3,7 @@ import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import { useDrinks } from '../../hooks/Drink/useDrinks'
 import { useDeleteDrink } from '../../hooks/Drink/useDeleteDrink'
 import Layout from '../../components/Layout'
+import DrinkCard from './DrinkCard'
 import '../../../css/owner/pages/Drinks.css'
 
 export default function Drinks() {
@@ -80,47 +81,16 @@ export default function Drinks() {
         )}
 
         {drinks.length > 0 ? (
-          <div className="drinks-grid">
+          <div className="dishes-grid">
             {drinks.map(drink => (
-              <div key={drink.id} className="drink-card">
-                <h3 className="drink-card-title">
-                  <Link to={`/establishment/${code}/drinks/${drink.id}`}>
-                    {drink.name}
-                  </Link>
-                </h3>
-                {drink.description && (
-                  <p className="drink-card-description">{drink.description}</p>
-                )}
-                <div className="drink-card-actions">
-                  {isOwner && (
-                    <>
-                  <Link
-                    to={`/establishment/${code}/drinks/${drink.id}/edit`}
-                    className="drink-card-btn drink-card-btn-primary"
-                  >
-                    Editar
-                  </Link>
-                  <button
-                    className="drink-card-btn drink-card-btn-danger"
-                    onClick={async () => {
-                      if (window.confirm('Tem certeza que deseja remover esta bebida?')) {
-                        await deleteDrink(drink.id)
-                      }
-                    }}
-                    disabled={deleting}
-                  >
-                    {deleting ? 'Removendo...' : 'Remover'}
-                  </button>
-                    </>
-                  )}
-                  <Link
-                    to={`/establishment/${code}/drinks/${drink.id}/portions`}
-                    className="drink-card-btn drink-card-btn-secondary"
-                  >
-                    Porções
-                  </Link>
-                </div>
-              </div>
+              <DrinkCard
+                key={drink.id}
+                drink={drink}
+                establishmentCode={code || ''}
+                isOwner={isOwner}
+                onDelete={deleteDrink}
+                deleting={deleting}
+              />
             ))}
           </div>
         ) : (
