@@ -6,8 +6,10 @@ import { DrinksApi } from './drinks'
 import { OrdersApi } from './orders'
 import { WorkingHoursApi } from './workingHours'
 import { PortionsApi } from './portions'
+import { BaseApiService } from './base'
+import { Portion } from '../types/portion'
 
-class OwnerApiService {
+class OwnerApiService extends BaseApiService {
   establishments: EstablishmentsApi
   menus: MenusApi
   tags: TagsApi
@@ -18,6 +20,7 @@ class OwnerApiService {
   portions: PortionsApi
 
   constructor() {
+    super()
     this.establishments = new EstablishmentsApi()
     this.menus = new MenusApi()
     this.tags = new TagsApi()
@@ -108,8 +111,64 @@ class OwnerApiService {
     return this.drinks.getDrinks(establishmentCode)
   }
 
+  getDrink(establishmentCode: string, drinkId: number) {
+    return this.drinks.getDrink(establishmentCode, drinkId)
+  }
+
   createDrink(establishmentCode: string, drinkData: any) {
     return this.drinks.createDrink(establishmentCode, drinkData)
+  }
+
+  updateDrink(establishmentCode: string, drinkId: number, drinkData: any) {
+    return this.drinks.updateDrink(establishmentCode, drinkId, drinkData)
+  }
+
+  deleteDrink(establishmentCode: string, drinkId: number) {
+    return this.drinks.deleteDrink(establishmentCode, drinkId)
+  }
+
+  getDrinkPortions(establishmentCode: string, drinkId: number) {
+    return this.request<Portion[]>(`/establishments/${establishmentCode}/drinks/${drinkId}/portions`)
+  }
+
+  getDrinkPortion(establishmentCode: string, drinkId: number, portionId: number) {
+    return this.request<Portion>(`/establishments/${establishmentCode}/drinks/${drinkId}/portions/${portionId}`)
+  }
+
+  createDrinkPortion(establishmentCode: string, drinkId: number, portionData: any) {
+    return this.request<{
+      portion: Portion
+      message: string
+    }>(`/establishments/${establishmentCode}/drinks/${drinkId}/portions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        portion: portionData
+      }),
+    })
+  }
+
+  updateDrinkPortion(establishmentCode: string, drinkId: number, portionId: number, portionData: any) {
+    return this.request<{
+      portion: Portion
+      message: string
+    }>(`/establishments/${establishmentCode}/drinks/${drinkId}/portions/${portionId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        portion: portionData
+      }),
+    })
+  }
+
+  deleteDrinkPortion(establishmentCode: string, drinkId: number, portionId: number) {
+    return this.request<{ message: string }>(`/establishments/${establishmentCode}/drinks/${drinkId}/portions/${portionId}`, {
+      method: 'DELETE',
+    })
   }
 
   getOrders(establishmentCode: string) {

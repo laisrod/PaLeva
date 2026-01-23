@@ -17,10 +17,6 @@ export default function Dishes() {
     }
   })
 
-  const handleFilter = (e: React.FormEvent) => {
-    e.preventDefault()
-  }
-
   const isOwner = true // TODO: Verificar se o usuário é dono
 
   if (loading) {
@@ -67,7 +63,6 @@ export default function Dishes() {
         {tags.length > 0 && (
           <div className="filters-card">
             <h3 className="filters-title">Filtrar por Características</h3>
-            <form onSubmit={handleFilter} className="filters-form">
                   <div className="filter-tags">
                 {tags.map(tag => (
                   <div key={tag.id} className="filter-tag">
@@ -83,10 +78,6 @@ export default function Dishes() {
                   </div>
                 ))}
               </div>
-              <button type="submit" className="dishes-btn dishes-btn-primary">
-                Filtrar
-              </button>
-            </form>
           </div>
         )}
 

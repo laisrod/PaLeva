@@ -6,9 +6,23 @@ module Api
 
       def index
         @dishes = @establishment.dishes
-      
-        simple_dishes = @dishes.map { |d| { id: d.id, name: d.name } }
-        render json: simple_dishes, status: :ok
+        
+        if params[:tag_ids].present?
+          tag_ids = Array(params[:tag_ids]).map(&:to_i)
+          @dishes = @dishes.joins(:tags)
+                          .where(tags: { id: tag_ids })
+                          .distinct
+        end
+        
+        dishes_with_tags = @dishes.map { |d| 
+          {
+            id: d.id,
+            name: d.name,
+            description: d.description,
+            tags: d.tags.map { |tag| { id: tag.id, name: tag.name } }
+          }
+        }
+        render json: dishes_with_tags, status: :ok
       end
 
       def show

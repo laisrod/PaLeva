@@ -1,11 +1,11 @@
 import { useParams, Link } from 'react-router-dom'
 import Layout from '../../components/Layout'
-import { useEditPortion } from '../../hooks/Portion/useEditPortion'
+import { useCreateDishPortion } from '../../hooks/DishPortion/useCreateDishPortion'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import '../../../css/owner/pages/CreateDish.css'
 
-export default function EditPortion() {
-  const { code, id, portionId } = useParams<{ code: string; id: string; portionId: string }>()
+export default function CreateDishPortion() {
+  const { code, id } = useParams<{ code: string; id: string }>()
   useRequireAuth()
 
   const dishId = id ? parseInt(id) : undefined
@@ -13,33 +13,19 @@ export default function EditPortion() {
     formData,
     errors,
     loading,
-    loadingPortion,
     handleChange,
     handleSubmit,
-  } = useEditPortion({ 
+  } = useCreateDishPortion({ 
     establishmentCode: code,
-    dishId: dishId,
-    portionId: portionId ? parseInt(portionId) : undefined
+    dishId: dishId
   })
-
-  if (loadingPortion) {
-    return (
-      <Layout>
-        <div className="create-dish-container">
-          <div className="create-dish-card">
-            <p>Carregando...</p>
-          </div>
-        </div>
-      </Layout>
-    )
-  }
 
   return (
     <Layout>
       <div className="create-dish-container">
         <div className="create-dish-card">
           <div className="dish-header">
-            <h1>Editar Porção</h1>
+            <h1>Cadastrar Porção</h1>
             <Link
               to={`/establishment/${code}/dishes/${id}/portions`}
               className="btn-back"
@@ -50,7 +36,7 @@ export default function EditPortion() {
 
           {errors.length > 0 && (
             <div className="error-message">
-              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram a atualização:</h3>
+              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram o cadastro:</h3>
               <ul>
                 {errors.map((error, index) => (
                   <li key={index}>{error}</li>
@@ -98,7 +84,7 @@ export default function EditPortion() {
                 Cancelar
               </Link>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Salvando...' : 'Salvar Alterações'}
+                {loading ? 'Salvando...' : 'Enviar'}
               </button>
             </div>
           </form>

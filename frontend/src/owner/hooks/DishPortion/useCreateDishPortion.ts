@@ -1,13 +1,11 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ownerApi } from '../../services/api'
-import { usePortion } from './usePortion'
 import { getErrorMessage } from '../errorHandler'
-import { CreatePortionFormData, PortionData, UseEditPortionOptions } from '../../types/portion'
+import { CreatePortionFormData, PortionData, UseCreatePortionOptions } from '../../types/portion'
 
-export function useEditPortion({ establishmentCode, dishId, portionId, onSuccess }: UseEditPortionOptions) {
+export function useCreateDishPortion({ establishmentCode, dishId, onSuccess }: UseCreatePortionOptions) {
   const navigate = useNavigate()
-  const { portion, loading: loadingPortion, error: portionError } = usePortion({ portionId, establishmentCode, dishId })
   
   const [formData, setFormData] = useState<CreatePortionFormData>({
     description: '',
@@ -16,19 +14,6 @@ export function useEditPortion({ establishmentCode, dishId, portionId, onSuccess
   
   const [errors, setErrors] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    if (portion) {
-      setFormData({
-        description: portion.description || '',
-        price: portion.price?.toString() || '',
-      })
-    }
-    
-    if (portionError) {
-      setErrors([portionError])
-    }
-  }, [portion, portionError])
 
   const handleChange = useCallback((
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -78,13 +63,8 @@ export function useEditPortion({ establishmentCode, dishId, portionId, onSuccess
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors([])
-  
+
     if (!validateForm()) {
-      return
-    }
-  
-    if (!portionId) {
-      setErrors(['ID da porção não encontrado'])
       return
     }
 
@@ -92,33 +72,32 @@ export function useEditPortion({ establishmentCode, dishId, portionId, onSuccess
       setErrors(['Código do estabelecimento ou ID do prato não encontrado'])
       return
     }
-  
+
     setLoading(true)
-  
+
     try {
       const portionData = preparePortionData()
-      const response = await ownerApi.updatePortion(establishmentCode, dishId, portionId, portionData)
+      const response = await ownerApi.createPortion(establishmentCode, dishId, portionData)
 
       if (response.error || response.errors) {
         const errorMessage = getErrorMessage(response)
-        const errorToShow = errorMessage || 'Erro ao atualizar porção'
+        const errorToShow = errorMessage || 'Erro ao criar porção'
         setErrors([errorToShow])
       } else if (response.data) {
         onSuccess?.()
         navigate(`/establishment/${establishmentCode}/dishes/${dishId}/portions`)
       }
     } catch (err) {
-      setErrors(['Erro ao atualizar porção. Tente novamente.'])
+      setErrors(['Erro ao criar porção. Tente novamente.'])
     } finally {
       setLoading(false)
     }
-  }, [validateForm, preparePortionData, portionId, establishmentCode, dishId, navigate, onSuccess])
+  }, [validateForm, preparePortionData, establishmentCode, dishId, navigate, onSuccess])
 
   return {
     formData,
     errors,
-    loading: loading || loadingPortion,
-    loadingPortion,
+    loading,
     handleChange,
     handleSubmit,
     setFormData,

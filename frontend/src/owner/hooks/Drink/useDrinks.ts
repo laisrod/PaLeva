@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ownerApi } from '../services/api'
-import { useApiData } from './useApiData'
-import { Drink } from '../types/drink'
+import { ownerApi } from '../../services/api'
+import { useApiData } from '../useApiData'
+import { Drink } from '../../types/drink'
 
 export function useDrinks(establishmentCode: string | undefined) {
   const [drinks, setDrinks] = useState<Drink[]>([])
@@ -23,7 +23,7 @@ export function useDrinks(establishmentCode: string | undefined) {
     if (establishmentCode) {
       loadDrinks()
     }
-  }, [establishmentCode])
+  }, [establishmentCode, loadDrinks])
 
   return {
     drinks,

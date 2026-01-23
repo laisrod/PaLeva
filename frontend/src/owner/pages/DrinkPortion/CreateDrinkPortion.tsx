@@ -1,23 +1,23 @@
 import { useParams, Link } from 'react-router-dom'
 import Layout from '../../components/Layout'
-import { useCreatePortion } from '../../hooks/Portion/useCreatePortion'
+import { useCreateDrinkPortion } from '../../hooks/DrinkPortion/useCreateDrinkPortion'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import '../../../css/owner/pages/CreateDish.css'
 
-export default function CreatePortion() {
+export default function CreateDrinkPortion() {
   const { code, id } = useParams<{ code: string; id: string }>()
   useRequireAuth()
 
-  const dishId = id ? parseInt(id) : undefined
+  const drinkId = id ? parseInt(id) : undefined
   const {
     formData,
     errors,
     loading,
     handleChange,
     handleSubmit,
-  } = useCreatePortion({ 
+  } = useCreateDrinkPortion({ 
     establishmentCode: code,
-    dishId: dishId
+    drinkId: drinkId
   })
 
   return (
@@ -25,9 +25,9 @@ export default function CreatePortion() {
       <div className="create-dish-container">
         <div className="create-dish-card">
           <div className="dish-header">
-            <h1>Cadastrar Porção</h1>
+            <h1>Nova Porção</h1>
             <Link
-              to={`/establishment/${code}/dishes/${id}/portions`}
+              to={`/establishment/${code}/drinks/${id}/portions`}
               className="btn-back"
             >
               ← Voltar
@@ -54,7 +54,7 @@ export default function CreatePortion() {
                 type="text"
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Ex: Pequeno, Médio, Grande"
+                placeholder="Ex: 300ml, 500ml, 1L"
                 required
                 disabled={loading}
               />
@@ -70,7 +70,7 @@ export default function CreatePortion() {
                 min="0"
                 value={formData.price}
                 onChange={handleChange}
-                placeholder="Ex: 25.50"
+                placeholder="Ex: 5.50"
                 required
                 disabled={loading}
               />
@@ -78,13 +78,13 @@ export default function CreatePortion() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/dishes/${id}/portions`}
+                to={`/establishment/${code}/drinks/${id}/portions`}
                 className="btn-secondary"
               >
                 Cancelar
               </Link>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Salvando...' : 'Enviar'}
+                {loading ? 'Salvando...' : 'Criar Porção'}
               </button>
             </div>
           </form>
