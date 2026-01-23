@@ -40,13 +40,13 @@ export function useDishes(establishmentCode: string | undefined) {
     if (establishmentCode) {
       loadTags()
     }
-  }, [establishmentCode])
+  }, [establishmentCode, loadTags])
 
   useEffect(() => {
     if (establishmentCode) {
       loadDishes()
     }
-  }, [establishmentCode, selectedTags])
+  }, [establishmentCode, selectedTags, loadDishes])
 
   const toggleTag = useCallback((tagId: number) => {
     setSelectedTags((previousSelectedTags) => {

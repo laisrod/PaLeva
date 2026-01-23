@@ -6,12 +6,30 @@ module Api
 
       def index
         @drinks = @establishment.drinks
-        render json: @drinks.as_json
+        
+        drinks_data = @drinks.map { |d| 
+          {
+            id: d.id,
+            name: d.name,
+            description: d.description,
+            alcoholic: d.alcoholic,
+            calories: d.calories,
+            photo_url: d.photo.attached? ? url_for(d.photo) : nil
+          }
+        }
+        render json: drinks_data, status: :ok
       end
 
       def show
         @drink = @establishment.drinks.find(params[:id])
-        render json: @drink.as_json
+        render json: {
+          id: @drink.id,
+          name: @drink.name,
+          description: @drink.description,
+          alcoholic: @drink.alcoholic,
+          calories: @drink.calories,
+          photo_url: @drink.photo.attached? ? url_for(@drink.photo) : nil
+        }
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Bebida não encontrada' }, status: :not_found
       end
@@ -19,15 +37,8 @@ module Api
       def create
         @drink = @establishment.drinks.new(drink_params)
       
-        # Anexa a foto SE ela foi enviada no request
-        photo_file = params.dig(:drink, :photo)  # ou params[:drink][:photo]
-        if photo_file.present?
-          @drink.photo.attach(photo_file)
-        end
-      
         if @drink.save
-          # Gera a URL da foto (só se anexada)
-          photo_url = @drink.photo.attached? ? rails_blob_url(@drink.photo) : nil
+          photo_url = @drink.photo.attached? ? url_for(@drink.photo) : nil
       
           render json: {
             drink: {
@@ -36,16 +47,46 @@ module Api
               description: @drink.description,
               alcoholic: @drink.alcoholic,
               calories: @drink.calories,
-              # adicione outros campos que quiser
-              photo_url: photo_url   # isso o frontend pode usar para <img src={drink.photo_url} />
+              photo_url: photo_url
             },
             message: 'Bebida criada com sucesso'
           }, status: :created
         else
           render json: {
-            errors: @drink.errors.full_messages
+            status: :unprocessable_entity,
+            error: @drink.errors.full_messages
           }, status: :unprocessable_entity
         end
+      end
+
+      def update
+        @drink = @establishment.drinks.find(params[:id])
+        if @drink.update(drink_params)
+          updated_drink = {
+            id: @drink.id,
+            name: @drink.name,
+            description: @drink.description,
+            alcoholic: @drink.alcoholic,
+            calories: @drink.calories,
+            photo_url: @drink.photo.attached? ? url_for(@drink.photo) : nil
+          }
+          render json: { drink: updated_drink, message: 'Bebida atualizada!' }, status: :ok
+        else
+          render json: { status: :unprocessable_entity, error: @drink.errors.full_messages }, status: :unprocessable_entity
+        end
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: 'Bebida não encontrada' }, status: :not_found
+      end
+
+      def destroy
+        @drink = @establishment.drinks.find(params[:id])
+        if @drink.destroy
+          render json: { message: 'Bebida removida com sucesso!' }, status: :ok
+        else
+          render json: { error: 'Erro ao remover bebida' }, status: :unprocessable_entity
+        end
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: 'Bebida não encontrada' }, status: :not_found
       end
 
       private
@@ -57,7 +98,7 @@ module Api
       end
 
       def drink_params
-        params.require(:drink).permit(:name, :description, :alcoholic, :calories)
+        params.require(:drink).permit(:name, :description, :alcoholic, :calories, :photo)
       end
     end
   end

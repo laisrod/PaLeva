@@ -1,14 +1,21 @@
 import { useParams, Link } from 'react-router-dom'
-import { useRequireAuth } from '../../shared/hooks/useRequireAuth'
-import { useDrinks } from '../hooks/useDrinks'
-import Layout from '../components/Layout'
-import '../../css/owner/pages/Drinks.css'
+import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useDrinks } from '../../hooks/Drink/useDrinks'
+import { useDeleteDrink } from '../../hooks/Drink/useDeleteDrink'
+import Layout from '../../components/Layout'
+import '../../../css/owner/pages/Drinks.css'
 
 export default function Drinks() {
   const { code } = useParams<{ code: string }>()
   useRequireAuth()
   
-  const { drinks, loading, error } = useDrinks(code)
+  const { drinks, loading, error, refetch } = useDrinks(code)
+  const { deleteDrink, loading: deleting } = useDeleteDrink({ 
+    establishmentCode: code,
+    onSuccess: () => {
+      refetch()
+    }
+  })
 
   const isOwner = true // TODO: Verificar se o usuário é dono
 
@@ -66,26 +73,27 @@ export default function Drinks() {
                 <div className="drink-card-actions">
                   {isOwner && (
                     <>
-                      <Link
-                        to={`/establishment/${code}/drinks/${drink.id}/edit`}
-                        className="drink-card-btn drink-card-btn-primary"
-                      >
-                        Editar
-                      </Link>
-                      <button
-                        className="drink-card-btn drink-card-btn-danger"
-                        onClick={() => {
-                          if (window.confirm('Tem certeza que deseja remover esta bebida?')) {
-                            // TODO: Implementar remoção
-                          }
-                        }}
-                      >
-                        Remover
-                      </button>
+                  <Link
+                    to={`/establishment/${code}/drinks/${drink.id}/edit`}
+                    className="drink-card-btn drink-card-btn-primary"
+                  >
+                    Editar
+                  </Link>
+                  <button
+                    className="drink-card-btn drink-card-btn-danger"
+                    onClick={async () => {
+                      if (window.confirm('Tem certeza que deseja remover esta bebida?')) {
+                        await deleteDrink(drink.id)
+                      }
+                    }}
+                    disabled={deleting}
+                  >
+                    {deleting ? 'Removendo...' : 'Remover'}
+                  </button>
                     </>
                   )}
                   <Link
-                    to={`/establishment/${code}/drinks/${drink.id}/portions/new`}
+                    to={`/establishment/${code}/drinks/${drink.id}/portions`}
                     className="drink-card-btn drink-card-btn-secondary"
                   >
                     Porções

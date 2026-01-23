@@ -2,9 +2,15 @@ import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ownerApi } from '../../services/api'
 import { getErrorMessage } from '../errorHandler'
-import { CreatePortionFormData, PortionData, UseCreatePortionOptions } from '../../types/portion'
+import { CreatePortionFormData, PortionData } from '../../types/portion'
 
-export function useCreatePortion({ establishmentCode, dishId, onSuccess }: UseCreatePortionOptions) {
+interface UseCreateDrinkPortionOptions {
+  establishmentCode: string | undefined
+  drinkId: number | undefined
+  onSuccess?: () => void
+}
+
+export function useCreateDrinkPortion({ establishmentCode, drinkId, onSuccess }: UseCreateDrinkPortionOptions) {
   const navigate = useNavigate()
   
   const [formData, setFormData] = useState<CreatePortionFormData>({
@@ -68,8 +74,8 @@ export function useCreatePortion({ establishmentCode, dishId, onSuccess }: UseCr
       return
     }
 
-    if (!establishmentCode || !dishId) {
-      setErrors(['Código do estabelecimento ou ID do prato não encontrado'])
+    if (!establishmentCode || !drinkId) {
+      setErrors(['Código do estabelecimento ou ID da bebida não encontrado'])
       return
     }
 
@@ -77,7 +83,7 @@ export function useCreatePortion({ establishmentCode, dishId, onSuccess }: UseCr
 
     try {
       const portionData = preparePortionData()
-      const response = await ownerApi.createPortion(establishmentCode, dishId, portionData)
+      const response = await ownerApi.createDrinkPortion(establishmentCode, drinkId, portionData)
 
       if (response.error || response.errors) {
         const errorMessage = getErrorMessage(response)
@@ -85,14 +91,14 @@ export function useCreatePortion({ establishmentCode, dishId, onSuccess }: UseCr
         setErrors([errorToShow])
       } else if (response.data) {
         onSuccess?.()
-        navigate(`/establishment/${establishmentCode}/dishes/${dishId}/portions`)
+        navigate(`/establishment/${establishmentCode}/drinks/${drinkId}/portions`)
       }
     } catch (err) {
       setErrors(['Erro ao criar porção. Tente novamente.'])
     } finally {
       setLoading(false)
     }
-  }, [validateForm, preparePortionData, establishmentCode, dishId, navigate, onSuccess])
+  }, [validateForm, preparePortionData, establishmentCode, drinkId, navigate, onSuccess])
 
   return {
     formData,

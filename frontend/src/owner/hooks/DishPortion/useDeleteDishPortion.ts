@@ -2,13 +2,13 @@ import { useState, useCallback } from 'react'
 import { ownerApi } from '../../services/api'
 import { getErrorMessage } from '../errorHandler'
 
-interface UseDeletePortionOptions {
+interface UseDeleteDishPortionOptions {
   establishmentCode: string | undefined
   dishId: number | undefined
   onSuccess?: () => void
 }
 
-export function useDeletePortion({ establishmentCode, dishId, onSuccess }: UseDeletePortionOptions) {
+export function useDeleteDishPortion({ establishmentCode, dishId, onSuccess }: UseDeleteDishPortionOptions) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 

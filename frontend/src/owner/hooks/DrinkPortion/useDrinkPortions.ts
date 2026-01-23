@@ -3,7 +3,7 @@ import { ownerApi } from '../../services/api'
 import { useApiData } from '../useApiData'
 import { Portion } from '../../types/portion'
 
-export function usePortions(establishmentCode: string | undefined, dishId: number | undefined) {
+export function useDrinkPortions(establishmentCode: string | undefined, drinkId: number | undefined) {
   const [portions, setPortions] = useState<Portion[]>([])
   
   const { loading, error, executeRequest } = useApiData<Portion[]>({
@@ -14,18 +14,18 @@ export function usePortions(establishmentCode: string | undefined, dishId: numbe
   })
 
   const loadPortions = useCallback(async () => {
-    if (!establishmentCode || !dishId) {
+    if (!establishmentCode || !drinkId) {
       return
     }
     
-    await executeRequest(() => ownerApi.getPortions(establishmentCode, dishId))
-  }, [establishmentCode, dishId, executeRequest])
+    await executeRequest(() => ownerApi.getDrinkPortions(establishmentCode, drinkId))
+  }, [establishmentCode, drinkId, executeRequest])
 
   useEffect(() => {
-    if (establishmentCode && dishId) {
+    if (establishmentCode && drinkId) {
       loadPortions()
     }
-  }, [establishmentCode, dishId, loadPortions])
+  }, [establishmentCode, drinkId, loadPortions])
 
   return { 
     portions, 

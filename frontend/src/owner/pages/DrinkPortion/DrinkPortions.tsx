@@ -1,19 +1,19 @@
 import { useParams, Link } from 'react-router-dom'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import { usePortions } from '../../hooks/Portion/usePortions'
-import { useDeletePortion } from '../../hooks/Portion/useDeletePortion'
+import { useDrinkPortions } from '../../hooks/DrinkPortion/useDrinkPortions'
+import { useDeleteDrinkPortion } from '../../hooks/DrinkPortion/useDeleteDrinkPortion'
 import Layout from '../../components/Layout'
 import '../../../css/owner/pages/Dishes.css'
 
-export default function Portions() {
+export default function DrinkPortions() {
   const { code, id } = useParams<{ code: string; id: string }>()
   useRequireAuth()
   
-  const dishId = id ? parseInt(id) : undefined
-  const { portions, loading, error, refetch } = usePortions(code, dishId)
-  const { deletePortion, loading: deleting } = useDeletePortion({ 
+  const drinkId = id ? parseInt(id) : undefined
+  const { portions, loading, error, refetch } = useDrinkPortions(code, drinkId)
+  const { deletePortion, loading: deleting } = useDeleteDrinkPortion({ 
     establishmentCode: code,
-    dishId: dishId,
+    drinkId: drinkId,
     onSuccess: () => {
       refetch()
     }
@@ -39,14 +39,14 @@ export default function Portions() {
           <div className="dishes-actions">
             {isOwner && (
               <Link
-                to={`/establishment/${code}/dishes/${id}/portions/new`}
+                to={`/establishment/${code}/drinks/${id}/portions/new`}
                 className="dishes-btn dishes-btn-primary"
               >
                 ➕ Nova Porção
               </Link>
             )}
             <Link
-              to={`/establishment/${code}/dishes`}
+              to={`/establishment/${code}/drinks`}
               className="dishes-btn dishes-btn-secondary"
             >
               ← Voltar
@@ -72,7 +72,7 @@ export default function Portions() {
                   {isOwner && (
                     <>
                       <Link
-                        to={`/establishment/${code}/dishes/${id}/portions/${portion.id}/edit`}
+                        to={`/establishment/${code}/drinks/${id}/portions/${portion.id}/edit`}
                         className="dish-card-btn dish-card-btn-primary"
                       >
                         Editar
@@ -99,7 +99,7 @@ export default function Portions() {
             <p>Nenhuma porção cadastrada</p>
             {isOwner && (
               <Link
-                to={`/establishment/${code}/dishes/${id}/portions/new`}
+                to={`/establishment/${code}/drinks/${id}/portions/new`}
                 className="dishes-btn dishes-btn-primary mt-3"
               >
                 ➕ Criar Primeira Porção

@@ -4,6 +4,7 @@ export interface Drink {
   description?: string
   calories?: number
   alcoholic?: boolean
+  photo_url?: string
 }
 
 export interface CreateDrinkFormData {
@@ -23,6 +24,12 @@ export interface DrinkData {
 }
 
 export interface UseCreateDrinkOptions {
+  establishmentCode: string | undefined
+  onSuccess?: () => void
+}
+
+export interface UseEditDrinkOptions {
+  drinkId: number | undefined
   establishmentCode: string | undefined
   onSuccess?: () => void
 }

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
   root to: 'establishments#index'
-
+  
   resources :establishments do
     get 'search', on: :collection
     resources :working_hours, only: %i[edit update]
@@ -46,7 +46,9 @@ Rails.application.routes.draw do
         resources :dishes, only: [:index, :show, :create, :update, :destroy] do
           resources :portions, only: [:index, :show, :create, :update, :destroy]
         end
-        resources :drinks, only: [:index, :show, :create]
+        resources :drinks, only: [:index, :show, :create, :update, :destroy] do
+          resources :portions, only: [:index, :show, :create, :update, :destroy], controller: 'drinks_portions'
+        end
         resources :tags, only: [:index, :create]
         resources :working_hours, only: [:index, :update]
         resources :orders, param: :code, only: [:index, :show] do
