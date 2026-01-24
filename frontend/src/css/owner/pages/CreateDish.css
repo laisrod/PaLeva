@@ -267,6 +267,98 @@
   transform: translateY(0);
 }
 
+.portions-list {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 16px;
+  background-color: #f8f9fa;
+}
+
+.portion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: white;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  border: 1px solid #e5e5e5;
+}
+
+.portion-item:last-child {
+  margin-bottom: 12px;
+}
+
+.portion-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.portion-description {
+  font-weight: 500;
+  color: #212529;
+}
+
+.portion-price {
+  font-weight: 600;
+  color: #dc3545;
+  font-size: 1.1rem;
+}
+
+.btn-manage-portions {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #dc3545;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-manage-portions:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+  color: white;
+}
+
+.portions-empty {
+  text-align: center;
+  padding: 24px;
+  border: 1px dashed #ced4da;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
+
+.portions-empty p {
+  margin: 0 0 16px 0;
+  color: #6c757d;
+}
+
+.btn-add-portion {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #dc3545;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.btn-add-portion:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+  color: white;
+}
+
 @media (max-width: 768px) {
   .create-dish-container {
     padding: 10px;
