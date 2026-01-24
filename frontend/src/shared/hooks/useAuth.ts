@@ -112,7 +112,9 @@ export function useAuth() {
       return { success: true, user: userData }
     }
     
-    return { success: false, error: response.error }
+    // Retornar erro com mensagem padrão se não houver mensagem específica
+    const errorMessage = response.error || response.message || 'Email ou senha inválidos'
+    return { success: false, error: errorMessage }
   }, [])
 
   /**

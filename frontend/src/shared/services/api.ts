@@ -101,6 +101,14 @@ class ApiService {
       localStorage.setItem('auth_token', response.data.token)
     }
 
+    // Se houver erro e não houver data, garantir que o erro seja retornado
+    if (!response.data && !response.error) {
+      return {
+        ...response,
+        error: 'Email ou senha inválidos'
+      }
+    }
+
     return response
   }
 
