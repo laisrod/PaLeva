@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import Layout from '../../components/Layout'
 import { useEditDish } from '../../hooks/Dish/useEditDish'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useDishPortions } from '../../hooks/DishPortion/useDishPortions'
 import '../../../css/owner/pages/CreateDish.css'
 
 export default function EditDish() {
@@ -25,6 +26,9 @@ export default function EditDish() {
     dishId: id ? parseInt(id) : undefined,
     establishmentCode: code 
   })
+
+  const dishId = id ? parseInt(id) : undefined
+  const { portions, loading: loadingPortions } = useDishPortions(code, dishId)
 
   if (loadingDish) {
     return (
@@ -104,6 +108,40 @@ export default function EditDish() {
                 min="0"
                 disabled={loading}
               />
+            </div>
+
+            <div className="form-group">
+              <label>Preços (Porções)</label>
+              {loadingPortions ? (
+                <p>Carregando porções...</p>
+              ) : portions.length > 0 ? (
+                <div className="portions-list">
+                  {portions.map(portion => (
+                    <div key={portion.id} className="portion-item">
+                      <div className="portion-info">
+                        <span className="portion-description">{portion.description}</span>
+                        <span className="portion-price">R$ {portion.price.toFixed(2).replace('.', ',')}</span>
+                      </div>
+                    </div>
+                  ))}
+                  <Link
+                    to={`/establishment/${code}/dishes/${id}/portions`}
+                    className="btn-manage-portions"
+                  >
+                    Gerenciar Porções →
+                  </Link>
+                </div>
+              ) : (
+                <div className="portions-empty">
+                  <p>Nenhuma porção cadastrada</p>
+                  <Link
+                    to={`/establishment/${code}/dishes/${id}/portions/new`}
+                    className="btn-add-portion"
+                  >
+                    ➕ Adicionar Porção
+                  </Link>
+                </div>
+              )}
             </div>
 
             <div className="form-group">

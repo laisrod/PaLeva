@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import Layout from '../../components/Layout'
 import { useEditDrink } from '../../hooks/Drink/useEditDrink'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useDrinkPortions } from '../../hooks/DrinkPortion/useDrinkPortions'
 import '../../../css/owner/pages/CreateDish.css'
 
 export default function EditDrink() {
@@ -24,6 +25,9 @@ export default function EditDrink() {
     drinkId: id ? parseInt(id) : undefined,
     establishmentCode: code 
   })
+
+  const drinkId = id ? parseInt(id) : undefined
+  const { portions, loading: loadingPortions } = useDrinkPortions(code, drinkId)
 
   if (loadingDrink) {
     return (
@@ -116,6 +120,40 @@ export default function EditDrink() {
                 min="0"
                 disabled={loading}
               />
+            </div>
+
+            <div className="form-group">
+              <label>Preços (Porções)</label>
+              {loadingPortions ? (
+                <p>Carregando porções...</p>
+              ) : portions.length > 0 ? (
+                <div className="portions-list">
+                  {portions.map(portion => (
+                    <div key={portion.id} className="portion-item">
+                      <div className="portion-info">
+                        <span className="portion-description">{portion.description}</span>
+                        <span className="portion-price">R$ {portion.price.toFixed(2).replace('.', ',')}</span>
+                      </div>
+                    </div>
+                  ))}
+                  <Link
+                    to={`/establishment/${code}/drinks/${id}/portions`}
+                    className="btn-manage-portions"
+                  >
+                    Gerenciar Porções →
+                  </Link>
+                </div>
+              ) : (
+                <div className="portions-empty">
+                  <p>Nenhuma porção cadastrada</p>
+                  <Link
+                    to={`/establishment/${code}/drinks/${id}/portions/new`}
+                    className="btn-add-portion"
+                  >
+                    ➕ Adicionar Porção
+                  </Link>
+                </div>
+              )}
             </div>
 
             <div className="form-group">

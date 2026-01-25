@@ -453,30 +453,86 @@ export default function Orders() {
                   border: '1px solid #ddd'
                 }}>
                   <h3>Itens do Pedido</h3>
-                  {currentOrder.order_menu_items.map((item) => (
-                    <div key={item.id} style={{
-                      padding: '10px',
-                      borderBottom: '1px solid #eee',
+                  {currentOrder.order_menu_items.map((item) => {
+                    const portionPrice = item.portion?.price || 0
+                    const itemTotal = portionPrice * item.quantity
+                    
+                    return (
+                      <div key={item.id} style={{
+                        padding: '10px',
+                        borderBottom: '1px solid #eee',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}>
+                        <div>
+                          <p style={{ margin: 0, fontWeight: 'bold' }}>
+                            {item.menu_item?.name || `Item #${item.menu_item_id}`}
+                          </p>
+                          <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
+                            {item.portion?.description || `Porção #${item.portion_id}`}
+                          </p>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <p style={{ margin: 0 }}>Qtd: {item.quantity}</p>
+                          <p style={{ margin: '5px 0 0 0', fontWeight: 'bold' }}>
+                            R$ {itemTotal.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                  
+                  {/* Resumo dos Totais */}
+                  <div style={{
+                    marginTop: '15px',
+                    paddingTop: '15px',
+                    borderTop: '2px solid #ddd'
+                  }}>
+                    <div style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      alignItems: 'center'
+                      marginBottom: '8px',
+                      fontSize: '14px',
+                      color: '#666'
                     }}>
-                      <div>
-                        <p style={{ margin: 0, fontWeight: 'bold' }}>
-                          {item.menu_item?.name || `Item #${item.menu_item_id}`}
-                        </p>
-                        <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
-                          {(item.portion as any)?.description || (item.portion as any)?.name || `Porção #${item.portion_id}`}
-                        </p>
-                      </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <p style={{ margin: 0 }}>Qtd: {item.quantity}</p>
-                        <p style={{ margin: '5px 0 0 0', fontWeight: 'bold' }}>
-                          R$ {((item.portion?.price || 0) * item.quantity).toFixed(2)}
-                        </p>
-                      </div>
+                      <span>Subtotal:</span>
+                      <span>R$ {totals.subtotal.toFixed(2)}</span>
                     </div>
-                  ))}
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: '8px',
+                      fontSize: '14px',
+                      color: '#666'
+                    }}>
+                      <span>Taxa de Serviço (5%):</span>
+                      <span>R$ {totals.serviceFee.toFixed(2)}</span>
+                    </div>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: '8px',
+                      fontSize: '14px',
+                      color: '#666'
+                    }}>
+                      <span>Imposto (10%):</span>
+                      <span>R$ {totals.tax.toFixed(2)}</span>
+                    </div>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginTop: '12px',
+                      paddingTop: '12px',
+                      borderTop: '1px solid #ddd',
+                      fontSize: '18px',
+                      fontWeight: 'bold',
+                      color: '#dc3545'
+                    }}>
+                      <span>Total:</span>
+                      <span>R$ {totals.total.toFixed(2)}</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

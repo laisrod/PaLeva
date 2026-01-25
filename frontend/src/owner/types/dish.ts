@@ -7,6 +7,8 @@ export interface Dish {
   calories?: number
   photo_url?: string
   tags?: Tag[]
+  min_price?: number
+  max_price?: number
 }
 
 export interface CreateDishFormData {
