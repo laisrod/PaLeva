@@ -129,6 +129,17 @@
   transition: all var(--transition-base);
 }
 
+.order-action-btn-primary {
+  background: var(--color-white);
+  color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.order-action-btn-primary:hover {
+  background: #3b82f6;
+  color: var(--color-white);
+}
+
 .order-action-btn-warning {
   background: var(--color-white);
   color: #f59e0b;

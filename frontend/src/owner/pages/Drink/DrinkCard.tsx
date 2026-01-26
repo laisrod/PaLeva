@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Drink } from '../../types/drink'
 import { useCurrentOrder } from '../../hooks/Orders/useCurrentOrder'
@@ -16,6 +16,8 @@ interface DrinkCardProps {
 export default function DrinkCard({ drink, establishmentCode, isOwner, onDelete, deleting }: DrinkCardProps) {
   const [showPortionModal, setShowPortionModal] = useState(false)
   const [selectedPortionId, setSelectedPortionId] = useState<number | null>(null)
+  const [pendingAdd, setPendingAdd] = useState<{ portionId: number; quantity: number } | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const { 
     currentOrder, 
@@ -32,35 +34,60 @@ export default function DrinkCard({ drink, establishmentCode, isOwner, onDelete,
     establishmentCode,
     orderCode: currentOrder?.code,
     onSuccess: () => {
-      if (currentOrder) {
-        loadOrder(currentOrder.code)
-      }
       setShowPortionModal(false)
       setSelectedPortionId(null)
+      setPendingAdd(null)
+      // Mostrar mensagem de sucesso
+      setSuccessMessage('Item adicionado ao pedido!')
+      setTimeout(() => setSuccessMessage(null), 2000)
     }
   })
 
-  const handleAddToOrder = async () => {
-    let orderToUse = currentOrder
-    if (!orderToUse) {
-      const newOrder = await createNewOrder()
-      if (!newOrder) {
-        alert('Erro ao criar pedido. Tente novamente.')
-        return
-      }
-      await new Promise(resolve => setTimeout(resolve, 500))
-      return
+  // Tentar adicionar item pendente quando o pedido for criado
+  useEffect(() => {
+    if (currentOrder && pendingAdd && !addingItem) {
+      addItem({ 
+        drinkId: drink.id, 
+        portionId: pendingAdd.portionId, 
+        quantity: pendingAdd.quantity 
+      })
     }
+  }, [currentOrder, pendingAdd, addingItem, drink.id, addItem])
 
+  const handleAddToOrder = async () => {
+    // Se ainda não temos porções carregadas, aguardar
     if (portions.length === 0 && loadingPortions) {
       return
     }
 
+    // Se não houver porções, mostrar mensagem
     if (portions.length === 0) {
       alert('Esta bebida não possui porções cadastradas. Por favor, adicione porções primeiro.')
       return
     }
 
+    // Se não houver pedido atual, criar um novo
+    if (!currentOrder) {
+      // Se houver apenas uma porção, definir como pendente e criar pedido
+      if (portions.length === 1) {
+        setPendingAdd({ portionId: portions[0].id, quantity: 1 })
+      } else {
+        // Se houver múltiplas porções, mostrar modal primeiro
+        setShowPortionModal(true)
+        return
+      }
+      
+      const newOrder = await createNewOrder()
+      if (!newOrder) {
+        alert('Erro ao criar pedido. Tente novamente.')
+        setPendingAdd(null)
+        return
+      }
+      // O useEffect vai adicionar o item automaticamente quando o pedido for criado
+      return
+    }
+
+    // Se houver apenas uma porção, adicionar diretamente
     if (portions.length === 1) {
       await addItem({ 
         drinkId: drink.id, 
@@ -70,6 +97,7 @@ export default function DrinkCard({ drink, establishmentCode, isOwner, onDelete,
       return
     }
 
+    // Se houver múltiplas porções, mostrar modal
     if (portions.length > 1) {
       setShowPortionModal(true)
       return
@@ -79,6 +107,19 @@ export default function DrinkCard({ drink, establishmentCode, isOwner, onDelete,
   const handleConfirmAddToOrder = async () => {
     if (!selectedPortionId) {
       alert('Por favor, selecione uma porção')
+      return
+    }
+
+    // Se não houver pedido atual, criar um novo
+    if (!currentOrder) {
+      setPendingAdd({ portionId: selectedPortionId, quantity: 1 })
+      const newOrder = await createNewOrder()
+      if (!newOrder) {
+        alert('Erro ao criar pedido. Tente novamente.')
+        setPendingAdd(null)
+        return
+      }
+      // O useEffect vai adicionar o item automaticamente quando o pedido for criado
       return
     }
 
@@ -144,6 +185,19 @@ export default function DrinkCard({ drink, establishmentCode, isOwner, onDelete,
           </div>
 
           <div className="dish-card-footer">
+            {successMessage && (
+              <div style={{
+                padding: '8px',
+                marginBottom: '8px',
+                backgroundColor: '#d4edda',
+                color: '#155724',
+                borderRadius: '4px',
+                fontSize: '14px',
+                textAlign: 'center'
+              }}>
+                {successMessage}
+              </div>
+            )}
             <button
               className="dish-card-add-btn"
               onClick={handleAddToOrder}
