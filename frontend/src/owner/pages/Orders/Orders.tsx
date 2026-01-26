@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import { useOrders } from '../../hooks/Orders/useOrders'
@@ -14,6 +15,7 @@ import { useDrinkPortions } from '../../hooks/DrinkPortion/useDrinkPortions'
 import MenuItemsList from '../../components/MenuItemsList'
 import Layout from '../../components/Layout'
 import { getStatusBadge } from '../../utils/orderStatus'
+import { ownerApi } from '../../services/api'
 import '../../../css/owner/pages/Orders.css'
 
 export default function Orders() {
@@ -21,8 +23,6 @@ export default function Orders() {
   const { code } = useParams<{ code: string }>()
   const { user } = useAuth()
   const establishmentCode = code || user?.establishment?.code || localStorage.getItem('establishment_code') || undefined
-  
-  const { orders, loading: loadingOrders, error: ordersError, changeStatus } = useOrders(establishmentCode)
   
   const { 
     currentOrder, 
@@ -53,6 +53,19 @@ export default function Orders() {
     handleSelectMenuItem,
   } = useOrderForm()
 
+  const orderFormRef = useRef<HTMLDivElement>(null)
+
+  const { orders, loading: loadingOrders, error: ordersError, changeStatus, deleteOrder, refetch: refetchOrders } = useOrders(establishmentCode, {
+    onMissingContactInfo: async (orderCode: string) => {
+      // Carregar o pedido no formulário quando faltar informações de contato
+      await loadOrder(orderCode)
+      // Scroll para o formulário após carregar
+      setTimeout(() => {
+        orderFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+  })
+
   const { menus, loading: loadingMenus } = useMenus(establishmentCode)
   const { menuItems, loading: loadingMenuItems } = useMenuItems({
     menuId: selectedMenuId,
@@ -78,8 +91,56 @@ export default function Orders() {
   }
 
   const handleClearOrderAndForm = () => {
-    clearOrder()
     handleClearOrder()
+    clearOrder()
+  }
+
+  const [customerInfo, setCustomerInfo] = useState({
+    customer_name: '',
+    customer_email: '',
+    customer_phone: '',
+    customer_cpf: ''
+  })
+  const [updatingOrder, setUpdatingOrder] = useState(false)
+
+  // Inicializar informações do cliente quando o pedido carregar
+  useEffect(() => {
+    if (currentOrder) {
+      setCustomerInfo({
+        customer_name: currentOrder.customer_name || '',
+        customer_email: currentOrder.customer_email || '',
+        customer_phone: currentOrder.customer_phone || '',
+        customer_cpf: currentOrder.customer_cpf || ''
+      })
+    }
+  }, [currentOrder])
+
+  const handleUpdateCustomerInfo = async () => {
+    if (!currentOrder || !establishmentCode) return
+
+    if (!customerInfo.customer_email && !customerInfo.customer_phone) {
+      alert('É necessário informar pelo menos um email ou telefone')
+      return
+    }
+
+    setUpdatingOrder(true)
+    try {
+      const response = await ownerApi.updateOrder(establishmentCode, currentOrder.code, customerInfo)
+      if (response.error) {
+        alert(response.error)
+      } else {
+        // Recarregar a lista de pedidos para refletir as atualizações
+        await refetchOrders()
+        // Limpar o pedido atual para voltar à lista
+        clearOrder()
+        handleClearOrder()
+        alert('Informações do cliente atualizadas!')
+      }
+    } catch (err) {
+      alert('Erro ao atualizar informações do cliente')
+    } finally {
+      setUpdatingOrder(false)
+    }
   }
 
   if (loadingOrders && (!orders || orders.length === 0)) {
@@ -117,6 +178,7 @@ export default function Orders() {
             )}
             {currentOrder && (
               <button
+                type="button"
                 onClick={handleClearOrderAndForm}
                 style={{
                   padding: '10px 20px',
@@ -137,7 +199,7 @@ export default function Orders() {
 
         {/* Seção de Criar Pedido */}
         {currentOrder && (
-          <div style={{
+          <div ref={orderFormRef} style={{
             padding: '20px',
             backgroundColor: '#f9f9f9',
             borderRadius: '8px',
@@ -172,6 +234,109 @@ export default function Orders() {
               <p><strong>Taxa de Serviço (5%):</strong> R$ {totals.serviceFee.toFixed(2)}</p>
               <p><strong>Imposto (10%):</strong> R$ {totals.tax.toFixed(2)}</p>
               <p><strong>Total:</strong> R$ {totals.total.toFixed(2)}</p>
+            </div>
+
+            <div style={{
+              padding: '15px',
+              backgroundColor: '#fff',
+              borderRadius: '5px',
+              marginBottom: '20px',
+              border: '1px solid #ddd'
+            }}>
+              <h3>Informações do Cliente</h3>
+              <div style={{ marginBottom: '10px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                  Nome:
+                </label>
+                <input
+                  type="text"
+                  value={customerInfo.customer_name}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_name: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '8px',
+                    borderRadius: '5px',
+                    border: '1px solid #ddd',
+                    fontSize: '14px'
+                  }}
+                  placeholder="Nome do cliente"
+                />
+              </div>
+              <div style={{ marginBottom: '10px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                  Email: <span style={{ color: '#999', fontSize: '12px' }}>(opcional)</span>
+                </label>
+                <input
+                  type="email"
+                  value={customerInfo.customer_email}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_email: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '8px',
+                    borderRadius: '5px',
+                    border: '1px solid #ddd',
+                    fontSize: '14px'
+                  }}
+                  placeholder="email@exemplo.com"
+                />
+              </div>
+              <div style={{ marginBottom: '10px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                  Telefone: <span style={{ color: '#999', fontSize: '12px' }}>(opcional)</span>
+                </label>
+                <input
+                  type="tel"
+                  value={customerInfo.customer_phone}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_phone: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '8px',
+                    borderRadius: '5px',
+                    border: '1px solid #ddd',
+                    fontSize: '14px'
+                  }}
+                  placeholder="(00) 00000-0000"
+                />
+              </div>
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                  CPF: <span style={{ color: '#999', fontSize: '12px' }}>(opcional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={customerInfo.customer_cpf}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_cpf: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '8px',
+                    borderRadius: '5px',
+                    border: '1px solid #ddd',
+                    fontSize: '14px'
+                  }}
+                  placeholder="000.000.000-00"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleUpdateCustomerInfo}
+                disabled={updatingOrder}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: updatingOrder ? 'not-allowed' : 'pointer',
+                  fontSize: '14px'
+                }}
+              >
+                {updatingOrder ? 'Salvando...' : 'Salvar Informações'}
+              </button>
+              {(!customerInfo.customer_email && !customerInfo.customer_phone) && (
+                <p style={{ marginTop: '10px', color: '#dc3545', fontSize: '12px' }}>
+                  ⚠️ É necessário informar pelo menos um email ou telefone para confirmar o pedido
+                </p>
+              )}
             </div>
 
             <div style={{
@@ -591,35 +756,103 @@ export default function Orders() {
                         <td>R$ {(Number(order.total_price) || 0).toFixed(2)}</td>
                         <td>
                           <div className="order-actions">
-                            {order.status === 'pending' && (
-                              <button
-                                onClick={() => changeStatus(order.code, 'prepare')}
-                                className="order-action-btn order-action-btn-warning"
-                              >
-                                Iniciar Preparo
-                              </button>
-                            )}
-                            {order.status === 'preparing' && (
-                              <button
-                                onClick={() => changeStatus(order.code, 'ready')}
-                                className="order-action-btn order-action-btn-success"
-                              >
-                                Marcar como Pronto
-                              </button>
-                            )}
-                            {!['delivered', 'cancelled'].includes(order.status) && (
+                            {/* draft: Botão "Confirmar" → pending */}
+                            {(order.status === 'draft' || !order.status) && (
                               <button
                                 onClick={() => {
-                                  const reason = prompt('Motivo do cancelamento:')
-                                  if (reason) {
-                                    changeStatus(order.code, 'cancel')
+                                  if (window.confirm('Deseja confirmar este pedido? Ele entrará no fluxo de produção.')) {
+                                    changeStatus(order.code, 'confirm')
                                   }
                                 }}
-                                className="order-action-btn order-action-btn-danger"
+                                className="order-action-btn order-action-btn-primary"
                               >
-                                Cancelar
+                                Confirmar
                               </button>
                             )}
+                            
+                            {/* pending: Botão "Iniciar preparo" → preparing e "Cancelar" */}
+                            {order.status === 'pending' && (
+                              <>
+                                <button
+                                  onClick={() => changeStatus(order.code, 'prepare')}
+                                  className="order-action-btn order-action-btn-warning"
+                                >
+                                  Iniciar Preparo
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    const reason = prompt('Motivo do cancelamento:')
+                                    if (reason !== null) {
+                                      changeStatus(order.code, 'cancel')
+                                    }
+                                  }}
+                                  className="order-action-btn order-action-btn-danger"
+                                >
+                                  Cancelar
+                                </button>
+                              </>
+                            )}
+                            
+                            {/* preparing: Botão "Pronto para entrega/retirada" → ready e "Cancelar" */}
+                            {order.status === 'preparing' && (
+                              <>
+                                <button
+                                  onClick={() => changeStatus(order.code, 'ready')}
+                                  className="order-action-btn order-action-btn-success"
+                                >
+                                  Pronto para entrega/retirada
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    const reason = prompt('Motivo do cancelamento:')
+                                    if (reason !== null) {
+                                      changeStatus(order.code, 'cancel')
+                                    }
+                                  }}
+                                  className="order-action-btn order-action-btn-danger"
+                                >
+                                  Cancelar
+                                </button>
+                              </>
+                            )}
+                            
+                            {/* ready: Botão "Marcar como entregue" → delivered e "Cancelar" (se ainda não saiu) */}
+                            {order.status === 'ready' && (
+                              <>
+                                <button
+                                  onClick={() => changeStatus(order.code, 'deliver')}
+                                  className="order-action-btn order-action-btn-success"
+                                >
+                                  Marcar como entregue
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    const reason = prompt('Motivo do cancelamento:')
+                                    if (reason !== null) {
+                                      changeStatus(order.code, 'cancel')
+                                    }
+                                  }}
+                                  className="order-action-btn order-action-btn-danger"
+                                >
+                                  Cancelar
+                                </button>
+                              </>
+                            )}
+                            
+                            {/* delivered e cancelled: Nenhum botão (finalizado) */}
+                            
+                            {/* Botão de deletar - disponível para todos os status */}
+                            <button
+                              onClick={() => {
+                                if (window.confirm('Tem certeza que deseja deletar este pedido? Esta ação não pode ser desfeita.')) {
+                                  deleteOrder(order.code)
+                                }
+                              }}
+                              className="order-action-btn order-action-btn-danger"
+                              style={{ marginLeft: '10px' }}
+                            >
+                              Deletar
+                            </button>
                           </div>
                         </td>
                       </tr>

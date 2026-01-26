@@ -56,9 +56,12 @@ export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCu
 
   // Limpar pedido atual
   const clearOrder = useCallback(() => {
+    if (establishmentCode) {
+      localStorage.removeItem(`current_order_${establishmentCode}`)
+    }
     setCurrentOrder(null)
     setError(null)
-  }, [])
+  }, [establishmentCode])
 
   // Calcular totais do pedido
   const calculateTotals = useCallback(() => {
@@ -95,15 +98,22 @@ export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCu
     }
   }, [autoCreate, currentOrder, loading, creatingOrder, establishmentCode, createNewOrder])
 
-  // Carregar pedido do localStorage ao montar (se existir)
+  // Carregar pedido do localStorage apenas uma vez ao montar o componente
+  const [hasInitialized, setHasInitialized] = useState(false)
   useEffect(() => {
-    if (establishmentCode && !currentOrder) {
+    if (establishmentCode && !hasInitialized) {
       const savedOrderCode = localStorage.getItem(`current_order_${establishmentCode}`)
       if (savedOrderCode) {
         loadOrder(savedOrderCode)
       }
+      setHasInitialized(true)
     }
-  }, [establishmentCode, currentOrder, loadOrder])
+  }, [establishmentCode, hasInitialized, loadOrder])
+  
+  // Resetar flag quando establishmentCode mudar
+  useEffect(() => {
+    setHasInitialized(false)
+  }, [establishmentCode])
 
   // Salvar código do pedido no localStorage quando mudar
   useEffect(() => {
