@@ -2,9 +2,9 @@ import { useParams, Link } from 'react-router-dom'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import { useDishes } from '../../hooks/Dish/useDishes'
 import { useDeleteDish } from '../../hooks/Dish/useDeleteDish'
-import Layout from '../../components/Layout/Layout'
+import Layout from '../Layout/Layout'
 import DishCard from './DishCard'
-import '../../../css/owner/pages/Dishes.css'
+import '../../../css/owner/Dishes.css'
 
 export default function Dishes() {
   const { code } = useParams<{ code: string }>()

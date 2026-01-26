@@ -1,43 +1,33 @@
 import { useParams, Link } from 'react-router-dom'
-import Layout from '../components/Layout'
-import { useEditMenu } from '../hooks/useEditMenu'
-import '../../css/owner/pages/CreateMenu.css'
+import Layout from '../Layout/Layout'
+import { useCreateDishPortion } from '../../hooks/DishPortion/useCreateDishPortion'
+import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import '../../../css/owner/CreateDish.css'
 
-export default function EditMenu() {
+export default function CreateDishPortion() {
   const { code, id } = useParams<{ code: string; id: string }>()
+  useRequireAuth()
 
+  const dishId = id ? parseInt(id) : undefined
   const {
     formData,
     errors,
     loading,
-    loadingMenu,
     handleChange,
     handleSubmit,
-  } = useEditMenu({ 
-    menuId: id ? parseInt(id) : undefined,
-    establishmentCode: code 
+  } = useCreateDishPortion({ 
+    establishmentCode: code,
+    dishId: dishId
   })
-
-  if (loadingMenu) {
-    return (
-      <Layout>
-        <div className="create-menu-container">
-          <div className="create-menu-card">
-            <p>Carregando...</p>
-          </div>
-        </div>
-      </Layout>
-    )
-  }
 
   return (
     <Layout>
-      <div className="create-menu-container">
-        <div className="create-menu-card">
-          <div className="menu-header">
-            <h1>Editar Cardápio</h1>
+      <div className="create-dish-container">
+        <div className="create-dish-card">
+          <div className="dish-header">
+            <h1>Cadastrar Porção</h1>
             <Link
-              to={`/establishment/${code}/menus`}
+              to={`/establishment/${code}/dishes/${id}/portions`}
               className="btn-back"
             >
               ← Voltar
@@ -46,7 +36,7 @@ export default function EditMenu() {
 
           {errors.length > 0 && (
             <div className="error-message">
-              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram a atualização:</h3>
+              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram o cadastro:</h3>
               <ul>
                 {errors.map((error, index) => (
                   <li key={index}>{error}</li>
@@ -57,35 +47,21 @@ export default function EditMenu() {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="name">Nome *</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Ex: Cardápio Principal"
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-group">
               <label htmlFor="description">Descrição *</label>
-              <textarea
+              <input
                 id="description"
                 name="description"
+                type="text"
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Descreva o cardápio..."
-                rows={4}
+                placeholder="Ex: Pequeno, Médio, Grande"
                 required
                 disabled={loading}
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="price">Preço</label>
+              <label htmlFor="price">Preço *</label>
               <input
                 id="price"
                 name="price"
@@ -95,19 +71,20 @@ export default function EditMenu() {
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="Ex: 25.50"
+                required
                 disabled={loading}
               />
             </div>
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/menus`}
+                to={`/establishment/${code}/dishes/${id}/portions`}
                 className="btn-secondary"
               >
                 Cancelar
               </Link>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Salvando...' : 'Salvar Alterações'}
+                {loading ? 'Salvando...' : 'Enviar'}
               </button>
             </div>
           </form>
@@ -116,4 +93,3 @@ export default function EditMenu() {
     </Layout>
   )
 }
-

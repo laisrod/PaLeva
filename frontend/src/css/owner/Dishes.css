@@ -1,4 +1,4 @@
-@import '../../shared/variables.css';
+@import '../shared/variables.css';
 
 .dishes-container {
   max-width: 1200px;

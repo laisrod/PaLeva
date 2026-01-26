@@ -1,18 +1,20 @@
 import { useParams, Link } from 'react-router-dom'
-import Layout from '../../components/Layout/Layout'
-import { useCreateDish } from '../../hooks/Dish/useCreateDish'
-import { useAuthCheck } from '../../hooks/useAuthCheck'
-import '../../../css/owner/pages/CreateDish.css'
+import Layout from '../Layout/Layout'
+import { useEditDish } from '../../hooks/Dish/useEditDish'
+import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useDishPortions } from '../../hooks/DishPortion/useDishPortions'
+import '../../../css/owner/CreateDish.css'
 
-export default function CreateDish() {
-  const { code } = useParams<{ code: string }>()
-  useAuthCheck()
+export default function EditDish() {
+  const { code, id } = useParams<{ code: string; id: string }>()
+  useRequireAuth()
 
   const {
     formData,
     tags,
     errors,
     loading,
+    loadingDish,
     loadingTags,
     handleChange,
     handleFileChange,
@@ -20,14 +22,32 @@ export default function CreateDish() {
     handleCreateTag,
     handleSubmit,
     setFormData,
-  } = useCreateDish({ establishmentCode: code })
+  } = useEditDish({ 
+    dishId: id ? parseInt(id) : undefined,
+    establishmentCode: code 
+  })
+
+  const dishId = id ? parseInt(id) : undefined
+  const { portions, loading: loadingPortions } = useDishPortions(code, dishId)
+
+  if (loadingDish) {
+    return (
+      <Layout>
+        <div className="create-dish-container">
+          <div className="create-dish-card">
+            <p>Carregando...</p>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
 
   return (
     <Layout>
       <div className="create-dish-container">
         <div className="create-dish-card">
           <div className="dish-header">
-            <h1>Cadastrar Prato</h1>
+            <h1>Editar Prato</h1>
             <Link
               to={`/establishment/${code}/dishes`}
               className="btn-back"
@@ -38,7 +58,7 @@ export default function CreateDish() {
 
           {errors.length > 0 && (
             <div className="error-message">
-              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram o cadastro:</h3>
+              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram a atualização:</h3>
               <ul>
                 {errors.map((error, index) => (
                   <li key={index}>{error}</li>
@@ -88,6 +108,40 @@ export default function CreateDish() {
                 min="0"
                 disabled={loading}
               />
+            </div>
+
+            <div className="form-group">
+              <label>Preços (Porções)</label>
+              {loadingPortions ? (
+                <p>Carregando porções...</p>
+              ) : portions.length > 0 ? (
+                <div className="portions-list">
+                  {portions.map(portion => (
+                    <div key={portion.id} className="portion-item">
+                      <div className="portion-info">
+                        <span className="portion-description">{portion.description}</span>
+                        <span className="portion-price">R$ {portion.price.toFixed(2).replace('.', ',')}</span>
+                      </div>
+                    </div>
+                  ))}
+                  <Link
+                    to={`/establishment/${code}/dishes/${id}/portions`}
+                    className="btn-manage-portions"
+                  >
+                    Gerenciar Porções →
+                  </Link>
+                </div>
+              ) : (
+                <div className="portions-empty">
+                  <p>Nenhuma porção cadastrada</p>
+                  <Link
+                    to={`/establishment/${code}/dishes/${id}/portions/new`}
+                    className="btn-add-portion"
+                  >
+                    ➕ Adicionar Porção
+                  </Link>
+                </div>
+              )}
             </div>
 
             <div className="form-group">
@@ -160,7 +214,7 @@ export default function CreateDish() {
                 Cancelar
               </Link>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Salvando...' : 'Enviar'}
+                {loading ? 'Salvando...' : 'Salvar Alterações'}
               </button>
             </div>
           </form>
@@ -169,4 +223,3 @@ export default function CreateDish() {
     </Layout>
   )
 }
-

@@ -2,9 +2,9 @@ import { useParams, Link } from 'react-router-dom'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import { useDrinks } from '../../hooks/Drink/useDrinks'
 import { useDeleteDrink } from '../../hooks/Drink/useDeleteDrink'
-import Layout from '../../components/Layout/Layout'
+import Layout from '../Layout/Layout'
 import DrinkCard from './DrinkCard'
-import '../../../css/owner/pages/Drinks.css'
+import '../../../css/owner/Drinks.css'
 
 export default function Drinks() {
   const { code } = useParams<{ code: string }>()

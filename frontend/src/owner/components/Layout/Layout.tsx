@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../../shared/hooks/useAuth'
-import '../../css/owner/components/Layout.css'
+import { useAuth } from '../../../shared/hooks/useAuth'
+import '../../../css/owner/Layout.css'
 
 interface LayoutProps {
   children: React.ReactNode

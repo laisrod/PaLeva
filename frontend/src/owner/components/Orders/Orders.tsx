@@ -12,11 +12,11 @@ import { useDishes } from '../../hooks/Dish/useDishes'
 import { useDrinks } from '../../hooks/Drink/useDrinks'
 import { useDishPortions } from '../../hooks/DishPortion/useDishPortions'
 import { useDrinkPortions } from '../../hooks/DrinkPortion/useDrinkPortions'
-import MenuItemsList from '../../components/Menu/MenuItemsList'
-import Layout from '../../components/Layout/Layout'
+import MenuItemsList from '../Menu/MenuItemsList'
+import Layout from '../Layout/Layout'
 import { getStatusBadge } from '../../utils/orderStatus'
 import { ownerApi } from '../../services/api'
-import '../../../css/owner/pages/Orders.css'
+import '../../../css/owner/Orders.css'
 
 export default function Orders() {
   useRequireAuth()

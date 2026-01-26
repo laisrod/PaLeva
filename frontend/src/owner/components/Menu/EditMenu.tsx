@@ -1,27 +1,41 @@
 import { useParams, Link } from 'react-router-dom'
-import Layout from '../components/Layout'
-import { useCreateMenu } from '../hooks/useCreateMenu'
-import { useAuthCheck } from '../hooks/useAuthCheck'
-import '../../css/owner/pages/CreateMenu.css'
+import Layout from '../Layout/Layout'
+import { useEditMenu } from '../../hooks/useEditMenu'
+import '../../../css/owner/CreateMenu.css'
 
-export default function CreateMenu() {
-  const { code } = useParams<{ code: string }>()
-  useAuthCheck()
+export default function EditMenu() {
+  const { code, id } = useParams<{ code: string; id: string }>()
 
   const {
     formData,
     errors,
     loading,
+    loadingMenu,
     handleChange,
     handleSubmit,
-  } = useCreateMenu({ establishmentCode: code })
+  } = useEditMenu({ 
+    menuId: id ? parseInt(id) : undefined,
+    establishmentCode: code 
+  })
+
+  if (loadingMenu) {
+    return (
+      <Layout>
+        <div className="create-menu-container">
+          <div className="create-menu-card">
+            <p>Carregando...</p>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
 
   return (
     <Layout>
       <div className="create-menu-container">
         <div className="create-menu-card">
           <div className="menu-header">
-            <h1>Novo Cardápio</h1>
+            <h1>Editar Cardápio</h1>
             <Link
               to={`/establishment/${code}/menus`}
               className="btn-back"
@@ -32,7 +46,7 @@ export default function CreateMenu() {
 
           {errors.length > 0 && (
             <div className="error-message">
-              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram o cadastro:</h3>
+              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram a atualização:</h3>
               <ul>
                 {errors.map((error, index) => (
                   <li key={index}>{error}</li>
@@ -70,6 +84,21 @@ export default function CreateMenu() {
               />
             </div>
 
+            <div className="form-group">
+              <label htmlFor="price">Preço</label>
+              <input
+                id="price"
+                name="price"
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="Ex: 25.50"
+                disabled={loading}
+              />
+            </div>
+
             <div className="form-actions">
               <Link
                 to={`/establishment/${code}/menus`}
@@ -78,7 +107,7 @@ export default function CreateMenu() {
                 Cancelar
               </Link>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Salvando...' : 'Salvar Cardápio'}
+                {loading ? 'Salvando...' : 'Salvar Alterações'}
               </button>
             </div>
           </form>

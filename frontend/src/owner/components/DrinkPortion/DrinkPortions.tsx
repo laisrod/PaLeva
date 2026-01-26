@@ -2,8 +2,8 @@ import { useParams, Link } from 'react-router-dom'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import { useDrinkPortions } from '../../hooks/DrinkPortion/useDrinkPortions'
 import { useDeleteDrinkPortion } from '../../hooks/DrinkPortion/useDeleteDrinkPortion'
-import Layout from '../../components/Layout/Layout'
-import '../../../css/owner/pages/Dishes.css'
+import Layout from '../Layout/Layout'
+import '../../../css/owner/Dishes.css'
 
 export default function DrinkPortions() {
   const { code, id } = useParams<{ code: string; id: string }>()
