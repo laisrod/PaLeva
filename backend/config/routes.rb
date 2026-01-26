@@ -51,11 +51,13 @@ Rails.application.routes.draw do
         end
         resources :tags, only: [:index, :create]
         resources :working_hours, only: [:index, :update]
-        resources :orders, param: :code, only: [:index, :show, :create] do
+        resources :orders, param: :code, only: [:index, :show, :create, :update, :destroy] do
           resources :items, only: [:create, :update, :destroy], controller: 'order_items'
           member do
+            patch :confirm, to: 'orders#confirm'
             patch :prepare_order, to: 'orders#prepare_order'
             patch :ready_order, to: 'orders#ready_order'
+            patch :deliver, to: 'orders#deliver'
             patch :cancelled, to: 'orders#cancel'
           end
         end

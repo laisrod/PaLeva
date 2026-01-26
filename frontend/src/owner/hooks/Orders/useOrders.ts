@@ -4,9 +4,13 @@ import { Order } from '../../../shared/types/order'
 import { useApiData } from '../useApiData'
 import { getErrorMessage } from '../errorHandler'
 
-type OrderAction = 'prepare' | 'ready' | 'cancel'
+type OrderAction = 'confirm' | 'prepare' | 'ready' | 'deliver' | 'cancel'
 
-export function useOrders(establishmentCode: string | undefined) {
+interface UseOrdersOptions {
+  onMissingContactInfo?: (orderCode: string) => void
+}
+
+export function useOrders(establishmentCode: string | undefined, options?: UseOrdersOptions) {
   const [orders, setOrders] = useState<Order[]>([])
   
   const { loading, error, executeRequest } = useApiData<Order[]>({
@@ -39,10 +43,14 @@ export function useOrders(establishmentCode: string | undefined) {
     try {
       let response
 
-      if (action === 'prepare') {
+      if (action === 'confirm') {
+        response = await ownerApi.confirmOrder(establishmentCode, orderCode)
+      } else if (action === 'prepare') {
         response = await ownerApi.prepareOrder(establishmentCode, orderCode)
       } else if (action === 'ready') {
         response = await ownerApi.readyOrder(establishmentCode, orderCode)
+      } else if (action === 'deliver') {
+        response = await ownerApi.deliverOrder(establishmentCode, orderCode)
       } else if (action === 'cancel') {
         response = await ownerApi.cancelOrder(establishmentCode, orderCode)
       }
@@ -54,12 +62,41 @@ export function useOrders(establishmentCode: string | undefined) {
       const errorMessage = getErrorMessage(response)
       
       if (errorMessage) {
-        alert(errorMessage)
+        // Verificar se é erro de falta de email/telefone
+        if (errorMessage.includes('telefone ou email') || errorMessage.includes('email ou telefone')) {
+          // Chamar callback para carregar o pedido no formulário
+          if (options?.onMissingContactInfo) {
+            options.onMissingContactInfo(orderCode)
+          } else {
+            alert(errorMessage)
+          }
+        } else {
+          alert(errorMessage)
+        }
       } else {
         loadOrders()
       }
     } catch (err) {
       alert('Erro ao atualizar pedido')
+    }
+  }, [establishmentCode, loadOrders, options])
+
+  const deleteOrder = useCallback(async (orderCode: string) => {
+    if (!establishmentCode) {
+      return
+    }
+
+    try {
+      const response = await ownerApi.deleteOrder(establishmentCode, orderCode)
+      const errorMessage = getErrorMessage(response)
+      
+      if (errorMessage) {
+        alert(errorMessage)
+      } else {
+        loadOrders()
+      }
+    } catch (err) {
+      alert('Erro ao deletar pedido')
     }
   }, [establishmentCode, loadOrders])
 
@@ -68,6 +105,7 @@ export function useOrders(establishmentCode: string | undefined) {
     loading,
     error,
     changeStatus,
+    deleteOrder,
     refetch: loadOrders
   }
 }

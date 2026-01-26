@@ -200,6 +200,23 @@ class OwnerApiService extends BaseApiService {
     return this.orders.getOrder(establishmentCode, orderCode)
   }
 
+  updateOrder(
+    establishmentCode: string,
+    orderCode: string,
+    orderData: {
+      customer_name?: string
+      customer_email?: string
+      customer_phone?: string
+      customer_cpf?: string
+    }
+  ) {
+    return this.orders.updateOrder(establishmentCode, orderCode, orderData)
+  }
+
+  confirmOrder(establishmentCode: string, orderCode: string) {
+    return this.orders.confirmOrder(establishmentCode, orderCode)
+  }
+
   prepareOrder(establishmentCode: string, orderCode: string) {
     return this.orders.prepareOrder(establishmentCode, orderCode)
   }
@@ -208,8 +225,16 @@ class OwnerApiService extends BaseApiService {
     return this.orders.readyOrder(establishmentCode, orderCode)
   }
 
+  deliverOrder(establishmentCode: string, orderCode: string) {
+    return this.orders.deliverOrder(establishmentCode, orderCode)
+  }
+
   cancelOrder(establishmentCode: string, orderCode: string, reason?: string) {
     return this.orders.cancelOrder(establishmentCode, orderCode, reason)
+  }
+
+  deleteOrder(establishmentCode: string, orderCode: string) {
+    return this.orders.deleteOrder(establishmentCode, orderCode)
   }
 
   getWorkingHours(establishmentCode: string) {
