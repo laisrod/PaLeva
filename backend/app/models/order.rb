@@ -7,10 +7,10 @@ class Order < ApplicationRecord
   has_many :menu_items, through: :order_menu_items
   
   before_save :reset_timestamps
-  before_save :update_total_price
+  before_save :update_total_price, unless: :destroyed?
 
-  validate :validate_contact_info, on: :update
-  before_validation :should_validate_cpf?, if: -> { customer_cpf.present? }
+  validate :validate_contact_info, on: :update, if: :should_validate_contact_info?
+  validate :validate_cpf, if: -> { customer_cpf.present? }
 
   enum status: {
     draft: "draft",
@@ -41,7 +41,18 @@ class Order < ApplicationRecord
   end
 
   def update_total_price
-    self.total_price = order_menu_items.sum { |order_item| order_item.portion.price * order_item.quantity }
+    self.total_price = order_menu_items.sum do |order_item|
+      begin
+        if order_item.portion&.price
+          order_item.portion.price * (order_item.quantity || 0)
+        else
+          0
+        end
+      rescue => e
+        Rails.logger.error "Erro ao calcular preço do item #{order_item.id}: #{e.message}"
+        0
+      end
+    end
   end
 
   private
@@ -53,13 +64,20 @@ class Order < ApplicationRecord
     end
   end
 
+  def should_validate_contact_info?
+    # Validar apenas quando o status está mudando de 'draft' para outro status
+    status_changed? && status_was == 'draft' && status != 'draft'
+  end
+
   def validate_contact_info
     if customer_email.blank? && customer_phone.blank?
-      errors.add(:base, 'É necessário informar um telefone ou email')
+      errors.add(:base, 'É necessário informar um telefone ou email para confirmar o pedido')
     end
   end
 
-  def should_validate_cpf?
-    errors.add(:customer_cpf, "inválido") unless CPF.valid?(customer_cpf)
+  def validate_cpf
+    if customer_cpf.present? && !CPF.valid?(customer_cpf)
+      errors.add(:customer_cpf, "inválido")
+    end
   end
 end

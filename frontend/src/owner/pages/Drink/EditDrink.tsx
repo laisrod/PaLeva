@@ -21,6 +21,7 @@ export default function EditDrink() {
     handleTagToggle,
     handleCreateTag,
     handleSubmit,
+    drink,
   } = useEditDrink({ 
     drinkId: id ? parseInt(id) : undefined,
     establishmentCode: code 
@@ -167,7 +168,28 @@ export default function EditDrink() {
                 disabled={loading}
               />
               {formData.photo && (
-                <p className="file-name">{formData.photo.name}</p>
+                <div className="photo-preview">
+                  <p className="file-name">Nova foto: {formData.photo.name}</p>
+                  <img 
+                    src={URL.createObjectURL(formData.photo)} 
+                    alt="Preview" 
+                    style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px', borderRadius: '8px' }}
+                  />
+                </div>
+              )}
+              {!formData.photo && drink?.photo_url && (
+                <div className="current-photo">
+                  <p>Foto atual:</p>
+                  <img 
+                    key={`${drink.id}-${drink.photo_url}`}
+                    src={drink.photo_url} 
+                    alt={drink.name} 
+                    style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px', borderRadius: '8px' }}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none'
+                    }}
+                  />
+                </div>
               )}
             </div>
 

@@ -28,9 +28,16 @@ export function useDrink({ drinkId, establishmentCode }: UseDrinkOptions) {
     }
   }, [drinkId, establishmentCode, loadDrink])
 
+  const refetch = useCallback(async () => {
+    if (drinkId && establishmentCode) {
+      await loadDrink(drinkId, establishmentCode)
+    }
+  }, [drinkId, establishmentCode, loadDrink])
+
   return { 
     drink, 
     loading, 
-    error 
+    error,
+    refetch
   }
 }

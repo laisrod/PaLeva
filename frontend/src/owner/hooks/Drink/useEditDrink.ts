@@ -14,7 +14,7 @@ interface UseEditDrinkOptions {
 
 export function useEditDrink({ drinkId, establishmentCode, onSuccess }: UseEditDrinkOptions) {
   const navigate = useNavigate()
-  const { drink, loading: loadingDrink, error: drinkError } = useDrink({ drinkId, establishmentCode })
+  const { drink, loading: loadingDrink, error: drinkError, refetch: refetchDrink } = useDrink({ drinkId, establishmentCode })
   const { tags, loading: loadingTags, refetch: refetchTags } = useTags(establishmentCode)
   
   const [formData, setFormData] = useState<CreateDrinkFormData>({
@@ -178,6 +178,12 @@ export function useEditDrink({ drinkId, establishmentCode, onSuccess }: UseEditD
         const errorToShow = errorMessage || 'Erro ao atualizar bebida'
         setErrors([errorToShow])
       } else if (response.data) {
+        // Limpar o campo de foto do formulário
+        setFormData(prev => ({ ...prev, photo: null }))
+        // Aguardar um pouco para garantir que o backend processou a foto
+        await new Promise(resolve => setTimeout(resolve, 500))
+        // Recarregar o drink para mostrar a nova foto
+        await refetchDrink()
         onSuccess?.()
         navigate(`/establishment/${establishmentCode}/drinks`)
       }
@@ -202,5 +208,6 @@ export function useEditDrink({ drinkId, establishmentCode, onSuccess }: UseEditD
     handleSubmit,
     setFormData,
     setErrors,
+    drink,
   }
 }
