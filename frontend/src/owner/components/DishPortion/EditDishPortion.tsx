@@ -1,8 +1,8 @@
 import { useParams, Link } from 'react-router-dom'
-import Layout from '../../components/Layout'
+import Layout from '../Layout/Layout'
 import { useEditDishPortion } from '../../hooks/DishPortion/useEditDishPortion'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import '../../../css/owner/pages/CreateDish.css'
+import '../../../css/owner/CreateDish.css'
 
 export default function EditDishPortion() {
   const { code, id, portionId } = useParams<{ code: string; id: string; portionId: string }>()

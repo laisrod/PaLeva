@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { useWorkingHours } from '../hooks/useWorkingHours'
-import Layout from '../components/Layout'
-import '../../css/owner/pages/EditWorkingHours.css'
+import { useWorkingHours } from '../../hooks/useWorkingHours'
+import Layout from '../Layout/Layout'
+import '../../../css/owner/EditWorkingHours.css'
 
 export default function EditWorkingHours() {
   const { code } = useParams<{ code: string }>()

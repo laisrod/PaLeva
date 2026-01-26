@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useRequireAuth } from '../../shared/hooks/useRequireAuth'
-import { useCurrentOrder } from '../hooks/Orders/useCurrentOrder'
-import { useAddOrderItem } from '../hooks/Orders/useAddOrderItem'
-import { useMenus } from '../hooks/useMenus'
-import { useMenuItems } from '../hooks/useMenuItems'
-import MenuItemsList from '../components/Menu/MenuItemsList'
-import Layout from '../components/Layout/Layout'
+import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useCurrentOrder } from '../../hooks/Orders/useCurrentOrder'
+import { useAddOrderItem } from '../../hooks/Orders/useAddOrderItem'
+import { useMenus } from '../../hooks/useMenus'
+import { useMenuItems } from '../../hooks/useMenuItems'
+import MenuItemsList from '../Menu/MenuItemsList'
+import Layout from '../Layout/Layout'
 
 export default function TestCreateOrder() {
   const { code } = useParams<{ code: string }>()

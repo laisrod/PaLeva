@@ -1,11 +1,12 @@
 import { useParams, Link } from 'react-router-dom'
-import Layout from '../../components/Layout'
-import { useCreateDrink } from '../../hooks/Drink/useCreateDrink'
+import Layout from '../Layout/Layout'
+import { useEditDrink } from '../../hooks/Drink/useEditDrink'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import '../../../css/owner/pages/CreateDish.css'
+import { useDrinkPortions } from '../../hooks/DrinkPortion/useDrinkPortions'
+import '../../../css/owner/CreateDish.css'
 
-export default function CreateDrink() {
-  const { code } = useParams<{ code: string }>()
+export default function EditDrink() {
+  const { code, id } = useParams<{ code: string; id: string }>()
   useRequireAuth()
 
   const {
@@ -13,20 +14,40 @@ export default function CreateDrink() {
     tags,
     errors,
     loading,
+    loadingDrink,
     loadingTags,
     handleChange,
     handleFileChange,
     handleTagToggle,
     handleCreateTag,
     handleSubmit,
-  } = useCreateDrink({ establishmentCode: code })
+    drink,
+  } = useEditDrink({ 
+    drinkId: id ? parseInt(id) : undefined,
+    establishmentCode: code 
+  })
+
+  const drinkId = id ? parseInt(id) : undefined
+  const { portions, loading: loadingPortions } = useDrinkPortions(code, drinkId)
+
+  if (loadingDrink) {
+    return (
+      <Layout>
+        <div className="create-dish-container">
+          <div className="create-dish-card">
+            <p>Carregando...</p>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
 
   return (
     <Layout>
       <div className="create-dish-container">
         <div className="create-dish-card">
           <div className="dish-header">
-            <h1>Nova Bebida</h1>
+            <h1>Editar Bebida</h1>
             <Link
               to={`/establishment/${code}/drinks`}
               className="btn-back"
@@ -37,7 +58,7 @@ export default function CreateDrink() {
 
           {errors.length > 0 && (
             <div className="error-message">
-              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram o cadastro:</h3>
+              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram a atualização:</h3>
               <ul>
                 {errors.map((error, index) => (
                   <li key={index}>{error}</li>
@@ -103,6 +124,40 @@ export default function CreateDrink() {
             </div>
 
             <div className="form-group">
+              <label>Preços (Porções)</label>
+              {loadingPortions ? (
+                <p>Carregando porções...</p>
+              ) : portions.length > 0 ? (
+                <div className="portions-list">
+                  {portions.map(portion => (
+                    <div key={portion.id} className="portion-item">
+                      <div className="portion-info">
+                        <span className="portion-description">{portion.description}</span>
+                        <span className="portion-price">R$ {portion.price.toFixed(2).replace('.', ',')}</span>
+                      </div>
+                    </div>
+                  ))}
+                  <Link
+                    to={`/establishment/${code}/drinks/${id}/portions`}
+                    className="btn-manage-portions"
+                  >
+                    Gerenciar Porções →
+                  </Link>
+                </div>
+              ) : (
+                <div className="portions-empty">
+                  <p>Nenhuma porção cadastrada</p>
+                  <Link
+                    to={`/establishment/${code}/drinks/${id}/portions/new`}
+                    className="btn-add-portion"
+                  >
+                    ➕ Adicionar Porção
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <div className="form-group">
               <label htmlFor="photo">Foto</label>
               <input
                 id="photo"
@@ -113,7 +168,28 @@ export default function CreateDrink() {
                 disabled={loading}
               />
               {formData.photo && (
-                <p className="file-name">{formData.photo.name}</p>
+                <div className="photo-preview">
+                  <p className="file-name">Nova foto: {formData.photo.name}</p>
+                  <img 
+                    src={URL.createObjectURL(formData.photo)} 
+                    alt="Preview" 
+                    style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px', borderRadius: '8px' }}
+                  />
+                </div>
+              )}
+              {!formData.photo && drink?.photo_url && (
+                <div className="current-photo">
+                  <p>Foto atual:</p>
+                  <img 
+                    key={`${drink.id}-${drink.photo_url}`}
+                    src={drink.photo_url} 
+                    alt={drink.name} 
+                    style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px', borderRadius: '8px' }}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none'
+                    }}
+                  />
+                </div>
               )}
             </div>
 
@@ -124,7 +200,7 @@ export default function CreateDrink() {
               ) : (
                 <>
                   <div className="tags-grid">
-                    {tags.map((tag) => (
+                    {tags.map((tag: { id: number; name: string }) => (
                       <label key={tag.id} className="tag-checkbox">
                         <input
                           type="checkbox"
@@ -172,7 +248,7 @@ export default function CreateDrink() {
                 Cancelar
               </Link>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Salvando...' : 'Criar Bebida'}
+                {loading ? 'Salvando...' : 'Salvar Alterações'}
               </button>
             </div>
           </form>
@@ -181,4 +257,3 @@ export default function CreateDrink() {
     </Layout>
   )
 }
-

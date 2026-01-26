@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import Layout from '../../components/Layout'
+import Layout from '../../components/Layout/Layout'
 import { useEditDrink } from '../../hooks/Drink/useEditDrink'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import { useDrinkPortions } from '../../hooks/DrinkPortion/useDrinkPortions'

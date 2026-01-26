@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
-import { useEstablishment } from '../hooks/useEstablishment'
-import Layout from '../components/Layout'
-import '../../css/owner/pages/Dashboard.css'
+import { useEstablishment } from '../../hooks/useEstablishment'
+import Layout from '../Layout/Layout'
+import '../../../css/owner/Dashboard.css'
 
 export default function Dashboard() {
   const { code } = useParams<{ code: string }>()

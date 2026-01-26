@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import { useDishPortions } from '../../hooks/DishPortion/useDishPortions'
 import { useDeleteDishPortion } from '../../hooks/DishPortion/useDeleteDishPortion'
-import Layout from '../../components/Layout'
+import Layout from '../../components/Layout/Layout'
 import '../../../css/owner/pages/Dishes.css'
 
 export default function DishPortions() {

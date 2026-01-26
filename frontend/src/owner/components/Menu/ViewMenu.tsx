@@ -1,8 +1,8 @@
 import { useParams, Link } from 'react-router-dom'
-import { useMenu } from '../hooks/useMenu'
-import Layout from '../components/Layout'
-import { MenuItem } from '../types/menu'
-import '../../css/owner/pages/ViewMenu.css'
+import { useMenu } from '../../hooks/useMenu'
+import Layout from '../Layout/Layout'
+import { MenuItem } from '../../types/menu'
+import '../../../css/owner/ViewMenu.css'
 
 export default function ViewMenu() {
   const { code, id } = useParams<{ code: string; id: string }>()

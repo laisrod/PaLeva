@@ -1,8 +1,8 @@
 import { useParams, Link } from 'react-router-dom'
-import { useRequireAuth } from '../../shared/hooks/useRequireAuth'
-import { useTags } from '../hooks/useTags'
-import Layout from '../components/Layout'
-import '../../css/owner/pages/Tags.css'
+import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useTags } from '../../hooks/useTags'
+import Layout from '../Layout/Layout'
+import '../../../css/owner/Tags.css'
 
 export default function Tags() {
   const { code } = useParams<{ code: string }>()

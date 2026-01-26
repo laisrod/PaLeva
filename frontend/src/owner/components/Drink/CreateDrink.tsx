@@ -1,12 +1,11 @@
 import { useParams, Link } from 'react-router-dom'
-import Layout from '../../components/Layout'
-import { useEditDish } from '../../hooks/Dish/useEditDish'
+import Layout from '../Layout/Layout'
+import { useCreateDrink } from '../../hooks/Drink/useCreateDrink'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import { useDishPortions } from '../../hooks/DishPortion/useDishPortions'
-import '../../../css/owner/pages/CreateDish.css'
+import '../../../css/owner/CreateDish.css'
 
-export default function EditDish() {
-  const { code, id } = useParams<{ code: string; id: string }>()
+export default function CreateDrink() {
+  const { code } = useParams<{ code: string }>()
   useRequireAuth()
 
   const {
@@ -14,42 +13,22 @@ export default function EditDish() {
     tags,
     errors,
     loading,
-    loadingDish,
     loadingTags,
     handleChange,
     handleFileChange,
     handleTagToggle,
     handleCreateTag,
     handleSubmit,
-    setFormData,
-  } = useEditDish({ 
-    dishId: id ? parseInt(id) : undefined,
-    establishmentCode: code 
-  })
-
-  const dishId = id ? parseInt(id) : undefined
-  const { portions, loading: loadingPortions } = useDishPortions(code, dishId)
-
-  if (loadingDish) {
-    return (
-      <Layout>
-        <div className="create-dish-container">
-          <div className="create-dish-card">
-            <p>Carregando...</p>
-          </div>
-        </div>
-      </Layout>
-    )
-  }
+  } = useCreateDrink({ establishmentCode: code })
 
   return (
     <Layout>
       <div className="create-dish-container">
         <div className="create-dish-card">
           <div className="dish-header">
-            <h1>Editar Prato</h1>
+            <h1>Nova Bebida</h1>
             <Link
-              to={`/establishment/${code}/dishes`}
+              to={`/establishment/${code}/drinks`}
               className="btn-back"
             >
               ← Voltar
@@ -58,7 +37,7 @@ export default function EditDish() {
 
           {errors.length > 0 && (
             <div className="error-message">
-              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram a atualização:</h3>
+              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram o cadastro:</h3>
               <ul>
                 {errors.map((error, index) => (
                   <li key={index}>{error}</li>
@@ -76,7 +55,7 @@ export default function EditDish() {
                 type="text"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Ex: Pizza Margherita"
+                placeholder="Ex: Coca-Cola"
                 required
                 disabled={loading}
               />
@@ -89,11 +68,24 @@ export default function EditDish() {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Descreva o prato..."
+                placeholder="Descreva a bebida..."
                 rows={4}
                 required
                 disabled={loading}
               />
+            </div>
+
+            <div className="form-group">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  name="alcoholic"
+                  checked={formData.alcoholic}
+                  onChange={handleChange}
+                  disabled={loading}
+                />
+                <span>Alcoólica?</span>
+              </label>
             </div>
 
             <div className="form-group">
@@ -104,44 +96,10 @@ export default function EditDish() {
                 type="number"
                 value={formData.calories}
                 onChange={handleChange}
-                placeholder="Ex: 350"
+                placeholder="Ex: 150"
                 min="0"
                 disabled={loading}
               />
-            </div>
-
-            <div className="form-group">
-              <label>Preços (Porções)</label>
-              {loadingPortions ? (
-                <p>Carregando porções...</p>
-              ) : portions.length > 0 ? (
-                <div className="portions-list">
-                  {portions.map(portion => (
-                    <div key={portion.id} className="portion-item">
-                      <div className="portion-info">
-                        <span className="portion-description">{portion.description}</span>
-                        <span className="portion-price">R$ {portion.price.toFixed(2).replace('.', ',')}</span>
-                      </div>
-                    </div>
-                  ))}
-                  <Link
-                    to={`/establishment/${code}/dishes/${id}/portions`}
-                    className="btn-manage-portions"
-                  >
-                    Gerenciar Porções →
-                  </Link>
-                </div>
-              ) : (
-                <div className="portions-empty">
-                  <p>Nenhuma porção cadastrada</p>
-                  <Link
-                    to={`/establishment/${code}/dishes/${id}/portions/new`}
-                    className="btn-add-portion"
-                  >
-                    ➕ Adicionar Porção
-                  </Link>
-                </div>
-              )}
             </div>
 
             <div className="form-group">
@@ -208,13 +166,13 @@ export default function EditDish() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/dishes`}
+                to={`/establishment/${code}/drinks`}
                 className="btn-secondary"
               >
                 Cancelar
               </Link>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Salvando...' : 'Salvar Alterações'}
+                {loading ? 'Salvando...' : 'Criar Bebida'}
               </button>
             </div>
           </form>
@@ -223,3 +181,4 @@ export default function EditDish() {
     </Layout>
   )
 }
+

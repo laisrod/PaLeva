@@ -1,33 +1,48 @@
 import { useParams, Link } from 'react-router-dom'
-import Layout from '../../components/Layout/Layout'
-import { useCreateDishPortion } from '../../hooks/DishPortion/useCreateDishPortion'
+import Layout from '../Layout/Layout'
+import { useEditDrinkPortion } from '../../hooks/DrinkPortion/useEditDrinkPortion'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import '../../../css/owner/pages/CreateDish.css'
+import '../../../css/owner/CreateDish.css'
 
-export default function CreateDishPortion() {
-  const { code, id } = useParams<{ code: string; id: string }>()
+export default function EditDrinkPortion() {
+  const { code, id, portionId } = useParams<{ code: string; id: string; portionId: string }>()
   useRequireAuth()
 
-  const dishId = id ? parseInt(id) : undefined
+  const drinkId = id ? parseInt(id) : undefined
+  const portion = portionId ? parseInt(portionId) : undefined
   const {
     formData,
     errors,
     loading,
+    loadingPortion,
     handleChange,
     handleSubmit,
-  } = useCreateDishPortion({ 
+  } = useEditDrinkPortion({ 
     establishmentCode: code,
-    dishId: dishId
+    drinkId: drinkId,
+    portionId: portion
   })
+
+  if (loadingPortion) {
+    return (
+      <Layout>
+        <div className="create-dish-container">
+          <div className="create-dish-card">
+            <p>Carregando...</p>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
 
   return (
     <Layout>
       <div className="create-dish-container">
         <div className="create-dish-card">
           <div className="dish-header">
-            <h1>Cadastrar Porção</h1>
+            <h1>Editar Porção</h1>
             <Link
-              to={`/establishment/${code}/dishes/${id}/portions`}
+              to={`/establishment/${code}/drinks/${id}/portions`}
               className="btn-back"
             >
               ← Voltar
@@ -36,7 +51,7 @@ export default function CreateDishPortion() {
 
           {errors.length > 0 && (
             <div className="error-message">
-              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram o cadastro:</h3>
+              <h3>{errors.length === 1 ? 'Erro' : `${errors.length} erros`} impediram a atualização:</h3>
               <ul>
                 {errors.map((error, index) => (
                   <li key={index}>{error}</li>
@@ -54,7 +69,7 @@ export default function CreateDishPortion() {
                 type="text"
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Ex: Pequeno, Médio, Grande"
+                placeholder="Ex: 300ml, 500ml, 1L"
                 required
                 disabled={loading}
               />
@@ -70,7 +85,7 @@ export default function CreateDishPortion() {
                 min="0"
                 value={formData.price}
                 onChange={handleChange}
-                placeholder="Ex: 25.50"
+                placeholder="Ex: 5.50"
                 required
                 disabled={loading}
               />
@@ -78,13 +93,13 @@ export default function CreateDishPortion() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/dishes/${id}/portions`}
+                to={`/establishment/${code}/drinks/${id}/portions`}
                 className="btn-secondary"
               >
                 Cancelar
               </Link>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Salvando...' : 'Enviar'}
+                {loading ? 'Salvando...' : 'Salvar Alterações'}
               </button>
             </div>
           </form>

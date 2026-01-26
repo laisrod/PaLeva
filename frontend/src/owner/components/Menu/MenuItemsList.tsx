@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MenuItemWithPortions } from '../types/menu'
+import { MenuItemWithPortions } from '../../types/menu'
 
 interface MenuItemsListProps {
   menuItems: MenuItemWithPortions[]

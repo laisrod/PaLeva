@@ -1,33 +1,29 @@
 import { useParams, Link } from 'react-router-dom'
-import Layout from '../../components/Layout'
-import { useCreateDrinkPortion } from '../../hooks/DrinkPortion/useCreateDrinkPortion'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import '../../../css/owner/pages/CreateDish.css'
+import Layout from '../Layout/Layout'
+import { useCreateMenu } from '../../hooks/useCreateMenu'
+import { useAuthCheck } from '../../hooks/useAuthCheck'
+import '../../../css/owner/CreateMenu.css'
 
-export default function CreateDrinkPortion() {
-  const { code, id } = useParams<{ code: string; id: string }>()
-  useRequireAuth()
+export default function CreateMenu() {
+  const { code } = useParams<{ code: string }>()
+  useAuthCheck()
 
-  const drinkId = id ? parseInt(id) : undefined
   const {
     formData,
     errors,
     loading,
     handleChange,
     handleSubmit,
-  } = useCreateDrinkPortion({ 
-    establishmentCode: code,
-    drinkId: drinkId
-  })
+  } = useCreateMenu({ establishmentCode: code })
 
   return (
     <Layout>
-      <div className="create-dish-container">
-        <div className="create-dish-card">
-          <div className="dish-header">
-            <h1>Nova Porção</h1>
+      <div className="create-menu-container">
+        <div className="create-menu-card">
+          <div className="menu-header">
+            <h1>Novo Cardápio</h1>
             <Link
-              to={`/establishment/${code}/drinks/${id}/portions`}
+              to={`/establishment/${code}/menus`}
               className="btn-back"
             >
               ← Voltar
@@ -47,30 +43,28 @@ export default function CreateDrinkPortion() {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="description">Descrição *</label>
+              <label htmlFor="name">Nome *</label>
               <input
-                id="description"
-                name="description"
+                id="name"
+                name="name"
                 type="text"
-                value={formData.description}
+                value={formData.name}
                 onChange={handleChange}
-                placeholder="Ex: 300ml, 500ml, 1L"
+                placeholder="Ex: Cardápio Principal"
                 required
                 disabled={loading}
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="price">Preço *</label>
-              <input
-                id="price"
-                name="price"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.price}
+              <label htmlFor="description">Descrição *</label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
                 onChange={handleChange}
-                placeholder="Ex: 5.50"
+                placeholder="Descreva o cardápio..."
+                rows={4}
                 required
                 disabled={loading}
               />
@@ -78,13 +72,13 @@ export default function CreateDrinkPortion() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/drinks/${id}/portions`}
+                to={`/establishment/${code}/menus`}
                 className="btn-secondary"
               >
                 Cancelar
               </Link>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Salvando...' : 'Criar Porção'}
+                {loading ? 'Salvando...' : 'Salvar Cardápio'}
               </button>
             </div>
           </form>
@@ -93,3 +87,4 @@ export default function CreateDrinkPortion() {
     </Layout>
   )
 }
+

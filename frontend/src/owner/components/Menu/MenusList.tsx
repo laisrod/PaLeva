@@ -1,8 +1,8 @@
 import { useParams, Link } from 'react-router-dom'
-import { useRequireAuth } from '../../shared/hooks/useRequireAuth'
-import { useMenus } from '../hooks/useMenus'
-import Layout from '../components/Layout'
-import '../../css/owner/pages/MenusList.css'
+import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useMenus } from '../../hooks/useMenus'
+import Layout from '../Layout/Layout'
+import '../../../css/owner/MenusList.css'
 
 export default function MenusList() {
   const { code } = useParams<{ code: string }>()
