@@ -102,6 +102,7 @@ export default function Orders() {
     customer_cpf: ''
   })
   const [updatingOrder, setUpdatingOrder] = useState(false)
+  const [showCustomerModal, setShowCustomerModal] = useState(false)
 
   // Inicializar informações do cliente quando o pedido carregar
   useEffect(() => {
@@ -138,6 +139,60 @@ export default function Orders() {
       }
     } catch (err) {
       alert('Erro ao atualizar informações do cliente')
+    } finally {
+      setUpdatingOrder(false)
+    }
+  }
+
+  const handleSaveOrder = () => {
+    if (!currentOrder || !establishmentCode) return
+
+    // Verificar se há itens no pedido
+    if (!currentOrder.order_menu_items || currentOrder.order_menu_items.length === 0) {
+      alert('Adicione pelo menos um item ao pedido antes de salvar')
+      return
+    }
+
+    // Abrir modal de informações do cliente
+    setShowCustomerModal(true)
+  }
+
+  const handleConfirmSaveOrder = async () => {
+    if (!currentOrder || !establishmentCode) return
+
+    // Verificar se tem email ou telefone
+    if (!customerInfo.customer_email && !customerInfo.customer_phone) {
+      alert('É necessário informar pelo menos um email ou telefone para salvar o pedido')
+      return
+    }
+
+    setUpdatingOrder(true)
+    try {
+      // Primeiro, atualizar as informações do cliente
+      const updateResponse = await ownerApi.updateOrder(establishmentCode, currentOrder.code, customerInfo)
+      if (updateResponse.error) {
+        alert(updateResponse.error)
+        return
+      }
+
+      // Se o pedido estiver em draft, confirmar (mudar para pending)
+      if (currentOrder.status === 'draft' || !currentOrder.status) {
+        await changeStatus(currentOrder.code, 'confirm')
+        // Aguardar um pouco para o status ser atualizado
+        await new Promise(resolve => setTimeout(resolve, 500))
+      }
+
+      // Fechar o modal
+      setShowCustomerModal(false)
+
+      // Recarregar a lista de pedidos
+      await refetchOrders()
+      // Limpar o pedido atual para voltar à lista
+      clearOrder()
+      handleClearOrder()
+      alert('Pedido salvo com sucesso!')
+    } catch (err) {
+      alert('Erro ao salvar pedido')
     } finally {
       setUpdatingOrder(false)
     }
@@ -236,108 +291,6 @@ export default function Orders() {
               <p><strong>Total:</strong> R$ {totals.total.toFixed(2)}</p>
             </div>
 
-            <div style={{
-              padding: '15px',
-              backgroundColor: '#fff',
-              borderRadius: '5px',
-              marginBottom: '20px',
-              border: '1px solid #ddd'
-            }}>
-              <h3>Informações do Cliente</h3>
-              <div style={{ marginBottom: '10px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                  Nome:
-                </label>
-                <input
-                  type="text"
-                  value={customerInfo.customer_name}
-                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_name: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    borderRadius: '5px',
-                    border: '1px solid #ddd',
-                    fontSize: '14px'
-                  }}
-                  placeholder="Nome do cliente"
-                />
-              </div>
-              <div style={{ marginBottom: '10px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                  Email: <span style={{ color: '#999', fontSize: '12px' }}>(opcional)</span>
-                </label>
-                <input
-                  type="email"
-                  value={customerInfo.customer_email}
-                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_email: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    borderRadius: '5px',
-                    border: '1px solid #ddd',
-                    fontSize: '14px'
-                  }}
-                  placeholder="email@exemplo.com"
-                />
-              </div>
-              <div style={{ marginBottom: '10px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                  Telefone: <span style={{ color: '#999', fontSize: '12px' }}>(opcional)</span>
-                </label>
-                <input
-                  type="tel"
-                  value={customerInfo.customer_phone}
-                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_phone: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    borderRadius: '5px',
-                    border: '1px solid #ddd',
-                    fontSize: '14px'
-                  }}
-                  placeholder="(00) 00000-0000"
-                />
-              </div>
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                  CPF: <span style={{ color: '#999', fontSize: '12px' }}>(opcional)</span>
-                </label>
-                <input
-                  type="text"
-                  value={customerInfo.customer_cpf}
-                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_cpf: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    borderRadius: '5px',
-                    border: '1px solid #ddd',
-                    fontSize: '14px'
-                  }}
-                  placeholder="000.000.000-00"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={handleUpdateCustomerInfo}
-                disabled={updatingOrder}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '5px',
-                  cursor: updatingOrder ? 'not-allowed' : 'pointer',
-                  fontSize: '14px'
-                }}
-              >
-                {updatingOrder ? 'Salvando...' : 'Salvar Informações'}
-              </button>
-              {(!customerInfo.customer_email && !customerInfo.customer_phone) && (
-                <p style={{ marginTop: '10px', color: '#dc3545', fontSize: '12px' }}>
-                  ⚠️ É necessário informar pelo menos um email ou telefone para confirmar o pedido
-                </p>
-              )}
-            </div>
 
             <div style={{
               padding: '15px',
@@ -700,6 +653,213 @@ export default function Orders() {
                   </div>
                 </div>
               )}
+
+              {/* Botão de Salvar Pedido */}
+              <div style={{
+                marginTop: '30px',
+                paddingTop: '20px',
+                borderTop: '2px solid #ddd',
+                textAlign: 'center'
+              }}>
+                <button
+                  type="button"
+                  onClick={handleSaveOrder}
+                  disabled={updatingOrder || !currentOrder || (currentOrder.order_menu_items && currentOrder.order_menu_items.length === 0)}
+                  style={{
+                    padding: '15px 40px',
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    backgroundColor: updatingOrder || !currentOrder || (currentOrder.order_menu_items && currentOrder.order_menu_items.length === 0) ? '#6c757d' : '#28a745',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: updatingOrder || !currentOrder || (currentOrder.order_menu_items && currentOrder.order_menu_items.length === 0) ? 'not-allowed' : 'pointer',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!updatingOrder && currentOrder && currentOrder.order_menu_items && currentOrder.order_menu_items.length > 0) {
+                      e.currentTarget.style.backgroundColor = '#218838'
+                      e.currentTarget.style.transform = 'scale(1.05)'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!updatingOrder && currentOrder && currentOrder.order_menu_items && currentOrder.order_menu_items.length > 0) {
+                      e.currentTarget.style.backgroundColor = '#28a745'
+                      e.currentTarget.style.transform = 'scale(1)'
+                    }
+                  }}
+                >
+                  {updatingOrder ? 'Salvando...' : '💾 Salvar Pedido'}
+                </button>
+                {(!customerInfo.customer_email && !customerInfo.customer_phone) && (
+                  <p style={{ marginTop: '15px', color: '#dc3545', fontSize: '14px' }}>
+                    É necessário informar pelo menos um email ou telefone para salvar o pedido
+                  </p>
+                )}
+                {currentOrder && currentOrder.order_menu_items && currentOrder.order_menu_items.length === 0 && (
+                  <p style={{ marginTop: '15px', color: '#dc3545', fontSize: '14px' }}>
+                    Adicione pelo menos um item ao pedido antes de salvar
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de Informações do Cliente */}
+        {showCustomerModal && (
+          <div 
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000
+            }}
+            onClick={() => setShowCustomerModal(false)}
+          >
+            <div 
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: '8px',
+                padding: '30px',
+                maxWidth: '500px',
+                width: '90%',
+                maxHeight: '90vh',
+                overflow: 'auto',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 style={{ marginTop: 0, marginBottom: '20px' }}>Informações do Cliente</h2>
+              
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                  Nome:
+                </label>
+                <input
+                  type="text"
+                  value={customerInfo.customer_name}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_name: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    border: '1px solid #ddd',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                  placeholder="Nome do cliente"
+                />
+              </div>
+
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                  Email: <span style={{ color: '#999', fontSize: '12px' }}>(opcional)</span>
+                </label>
+                <input
+                  type="email"
+                  value={customerInfo.customer_email}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_email: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    border: '1px solid #ddd',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                  placeholder="email@exemplo.com"
+                />
+              </div>
+
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                  Telefone: <span style={{ color: '#999', fontSize: '12px' }}>(opcional)</span>
+                </label>
+                <input
+                  type="tel"
+                  value={customerInfo.customer_phone}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_phone: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    border: '1px solid #ddd',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                  placeholder="(00) 00000-0000"
+                />
+              </div>
+
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                  CPF: <span style={{ color: '#999', fontSize: '12px' }}>(opcional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={customerInfo.customer_cpf}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, customer_cpf: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    border: '1px solid #ddd',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                  placeholder="000.000.000-00"
+                />
+              </div>
+
+              {(!customerInfo.customer_email && !customerInfo.customer_phone) && (
+                <p style={{ marginBottom: '15px', color: '#dc3545', fontSize: '14px' }}>
+                  É necessário informar pelo menos um email ou telefone para salvar o pedido
+                </p>
+              )}
+
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowCustomerModal(false)}
+                  disabled={updatingOrder}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: '#6c757d',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: updatingOrder ? 'not-allowed' : 'pointer',
+                    fontSize: '14px'
+                  }}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmSaveOrder}
+                  disabled={updatingOrder || (!customerInfo.customer_email && !customerInfo.customer_phone)}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: updatingOrder || (!customerInfo.customer_email && !customerInfo.customer_phone) ? '#6c757d' : '#28a745',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: updatingOrder || (!customerInfo.customer_email && !customerInfo.customer_phone) ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  {updatingOrder ? 'Salvando...' : 'Salvar Pedido'}
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -862,6 +1022,30 @@ export default function Orders() {
               </table>
             </div>
           )}
+          
+          {/* Botão para criar novo pedido */}
+          <div style={{ 
+            padding: '20px', 
+            textAlign: 'center', 
+            borderTop: '1px solid #ddd' 
+          }}>
+            <button
+              onClick={handleCreateOrder}
+              disabled={loadingCurrentOrder}
+              style={{
+                padding: '12px 24px',
+                fontSize: '16px',
+                backgroundColor: '#007bff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: loadingCurrentOrder ? 'not-allowed' : 'pointer',
+                fontWeight: '500'
+              }}
+            >
+              {loadingCurrentOrder ? 'Criando...' : 'Novo Pedido'}
+            </button>
+          </div>
           </div>
         )}
       </div>
