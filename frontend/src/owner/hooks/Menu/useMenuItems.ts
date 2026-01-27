@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ownerApi } from '../services/api'
-import { useApiData } from './useApiData'
-import { MenuItemWithPortions, MenuResponse } from '../types/menu'
+import { ownerApi } from '../../services/api'
+import { useApiData } from '../Api/useApiData'
+import { MenuItemWithPortions, MenuResponse } from '../../types/menu'
 
 interface UseMenuItemsOptions {
   menuId: number | undefined

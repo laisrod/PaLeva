@@ -12,6 +12,7 @@ export interface User {
     id: number
     code: string
     name: string
+    phone_number?: string
   }
 }
 

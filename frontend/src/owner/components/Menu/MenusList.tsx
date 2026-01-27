@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import { useMenus } from '../../hooks/useMenus'
+import { useMenus } from '../../hooks/Menu/useMenus'
 import Layout from '../Layout/Layout'
 import '../../../css/owner/MenusList.css'
 

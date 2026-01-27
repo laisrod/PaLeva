@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import { useCurrentOrder } from '../../hooks/Orders/useCurrentOrder'
 import { useAddOrderItem } from '../../hooks/Orders/useAddOrderItem'
-import { useMenus } from '../../hooks/useMenus'
-import { useMenuItems } from '../../hooks/useMenuItems'
+import { useMenus } from '../../hooks/Menu/useMenus'
+import { useMenuItems } from '../../hooks/Menu/useMenuItems'
 import MenuItemsList from '../Menu/MenuItemsList'
 import Layout from '../Layout/Layout'
 
@@ -50,7 +50,7 @@ export default function TestCreateOrder() {
   }
 
   const handleSelectItem = async (menuItemId: number, portionId: number, quantity: number) => {
-    await addItem(menuItemId, portionId, quantity)
+    await addItem({ menuItemId, portionId, quantity })
   }
 
   return (

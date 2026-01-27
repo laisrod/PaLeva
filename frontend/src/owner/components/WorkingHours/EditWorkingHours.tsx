@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { useWorkingHours } from '../../hooks/useWorkingHours'
+import { useWorkingHours } from '../../hooks/WorkingHours/useWorkingHours'
 import Layout from '../Layout/Layout'
 import '../../../css/owner/EditWorkingHours.css'
 

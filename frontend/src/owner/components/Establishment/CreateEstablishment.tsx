@@ -1,6 +1,6 @@
 import '../../../css/owner/CreateEstablishment.css'
-import { useCreateEstablishment } from '../../hooks/useCreateEstablishment'
-import { useRequireNewEstablishment } from '../../hooks/useRequireNewEstablishment'
+import { useCreateEstablishment } from '../../hooks/Establishment/useCreateEstablishment'
+import { useRequireNewEstablishment } from '../../hooks/Establishment/useRequireNewEstablishment'
 
 export default function CreateEstablishment() {
   const { loading: authLoading } = useRequireNewEstablishment()

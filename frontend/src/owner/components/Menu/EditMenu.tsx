@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useEditMenu } from '../../hooks/useEditMenu'
+import { useEditMenu } from '../../hooks/Menu/useEditMenu'
 import '../../../css/owner/CreateMenu.css'
 
 export default function EditMenu() {

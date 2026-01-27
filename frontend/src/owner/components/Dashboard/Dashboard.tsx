@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
-import { useEstablishment } from '../../hooks/useEstablishment'
+import { useEstablishment } from '../../hooks/Establishment/useEstablishment'
 import Layout from '../Layout/Layout'
 import '../../../css/owner/Dashboard.css'
 

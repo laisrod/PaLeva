@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../../shared/hooks/useAuth'
+import { useAuth } from '../../../shared/hooks/useAuth'
 
 export function useRequireNewEstablishment() {
   const navigate = useNavigate()
