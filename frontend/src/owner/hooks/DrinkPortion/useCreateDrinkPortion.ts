@@ -2,13 +2,7 @@ import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ownerApi } from '../../services/api'
 import { getErrorMessage } from '../errorHandler'
-import { CreatePortionFormData, PortionData } from '../../types/portion'
-
-interface UseCreateDrinkPortionOptions {
-  establishmentCode: string | undefined
-  drinkId: number | undefined
-  onSuccess?: () => void
-}
+import { CreatePortionFormData, PortionData, UseCreateDrinkPortionOptions } from '../../types/portion'
 
 export function useCreateDrinkPortion({ establishmentCode, drinkId, onSuccess }: UseCreateDrinkPortionOptions) {
   const navigate = useNavigate()

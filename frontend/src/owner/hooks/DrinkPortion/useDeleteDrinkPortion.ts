@@ -1,12 +1,7 @@
 import { useState, useCallback } from 'react'
 import { ownerApi } from '../../services/api'
 import { getErrorMessage } from '../errorHandler'
-
-interface UseDeleteDrinkPortionOptions {
-  establishmentCode: string | undefined
-  drinkId: number | undefined
-  onSuccess?: () => void
-}
+import { UseDeleteDrinkPortionOptions } from '../../types/portion'
 
 export function useDeleteDrinkPortion({ establishmentCode, drinkId, onSuccess }: UseDeleteDrinkPortionOptions) {
   const [loading, setLoading] = useState(false)

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ownerApi } from '../services/api'
-import { useApiData } from './useApiData'
-import { Establishment } from '../types/establishment'
+import { ownerApi } from '../../services/api'
+import { useApiData } from '../Api/useApiData'
+import { Establishment } from '../../types/establishment'
 
 export function useEstablishment(code: string | undefined) {
   const [establishment, setEstablishment] = useState<Establishment | null>(null)
@@ -13,7 +13,10 @@ export function useEstablishment(code: string | undefined) {
 
   const loadEstablishment = useCallback(async (establishmentCode: string) => {
     await executeRequest(
-      () => ownerApi.getEstablishment(establishmentCode),
+      async () => {
+        const response = await ownerApi.getEstablishment(establishmentCode)
+        return response as { data?: Establishment, error?: string | string[], errors?: string[] }
+      },
       'Estabelecimento não encontrado'
     )
   }, [executeRequest])

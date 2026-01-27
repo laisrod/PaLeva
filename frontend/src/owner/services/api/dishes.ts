@@ -1,5 +1,5 @@
 import { BaseApiService } from './base'
-import { Dish, DishData } from '../types/dish'
+import { Dish, DishData } from '../../types/dish'
 
 export class DishesApi extends BaseApiService {
   async getDishes(establishmentCode: string, tagIds?: number[]) {

@@ -1,0 +1,160 @@
+.menu-items-list-container {
+  padding: 20px;
+}
+
+.menu-items-list-title {
+  margin-bottom: 20px;
+}
+
+.menu-items-list-empty {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.menu-items-list-empty-subtitle {
+  font-size: 14px;
+  margin-top: 10px;
+  color: #999;
+}
+
+.menu-items-list-loading {
+  padding: 20px;
+  text-align: center;
+}
+
+.menu-item-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.menu-item-card.selected {
+  background-color: #f0f8ff;
+}
+
+.menu-item-header {
+  padding: 15px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: none;
+}
+
+.menu-item-header.selected {
+  background-color: #e3f2fd;
+  border-bottom: 2px solid #2196f3;
+}
+
+.menu-item-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-item-name {
+  margin: 0;
+  color: #333;
+}
+
+.menu-item-description {
+  margin: 5px 0 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.menu-item-arrow {
+  font-size: 20px;
+  color: #999;
+}
+
+.menu-item-arrow.selected {
+  color: #2196f3;
+}
+
+.menu-item-details {
+  padding: 15px;
+  background-color: #fafafa;
+}
+
+.menu-item-portions-title {
+  margin: 0 0 10px 0;
+  color: #555;
+}
+
+.menu-item-portions-list {
+  margin-bottom: 15px;
+}
+
+.menu-item-portion {
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-item-portion.selected {
+  border-color: #2196f3;
+  background-color: #e3f2fd;
+}
+
+.menu-item-portion-name {
+  font-weight: normal;
+}
+
+.menu-item-portion-name.selected {
+  font-weight: bold;
+}
+
+.menu-item-portion-price {
+  color: #2196f3;
+  font-weight: bold;
+}
+
+.menu-item-portion-empty {
+  color: #999;
+  font-style: italic;
+}
+
+.menu-item-quantity-section {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.menu-item-quantity-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.menu-item-quantity-input {
+  width: 100px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.menu-item-add-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.menu-item-add-button:hover {
+  background-color: #218838;
+}

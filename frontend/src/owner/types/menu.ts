@@ -84,3 +84,14 @@ export interface UseMenuOptions {
   menuId: number | undefined
   establishmentCode: string | undefined
 }
+
+export interface UseMenuItemsOptions {
+  menuId: number | undefined
+  establishmentCode: string | undefined
+}
+
+export interface MenuItemsListProps {
+  menuItems: MenuItemWithPortions[]
+  onSelectItem: (menuItemId: number, portionId: number, quantity: number) => void
+  loading?: boolean
+}

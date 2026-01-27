@@ -1,11 +1,7 @@
 import { useState, useCallback } from 'react'
 import { ownerApi } from '../../services/api'
 import { getErrorMessage } from '../errorHandler'
-
-interface UseCreateOrderOptions {
-  establishmentCode: string | undefined
-  onSuccess?: (order: { id: number; code: string; status: string; total_price: number }) => void
-}
+import { UseCreateOrderOptions } from '../../types/order'
 
 export function useCreateOrder({ establishmentCode, onSuccess }: UseCreateOrderOptions) {
   const [loading, setLoading] = useState(false)

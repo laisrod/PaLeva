@@ -1,5 +1,5 @@
 import { BaseApiService } from '../base'
-import { OrderMenuItem } from '../../shared/types/order'
+import { OrderMenuItem } from '../../../../shared/types/order'
 
 export class OrderItemsApi extends BaseApiService {
   async addItem(

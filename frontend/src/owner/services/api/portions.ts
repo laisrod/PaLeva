@@ -1,5 +1,5 @@
 import { BaseApiService } from './base'
-import { Portion, PortionData } from '../types/portion'
+import { Portion, PortionData } from '../../types/portion'
 
 export class PortionsApi extends BaseApiService {
   async getPortions(establishmentCode: string, dishId: number) {

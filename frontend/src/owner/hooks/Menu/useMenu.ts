@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ownerApi } from '../services/api'
-import { useApiData } from './useApiData'
-import { Menu, MenuResponse, UseMenuOptions } from '../types/menu'
+import { ownerApi } from '../../services/api'
+import { useApiData } from '../Api/useApiData'
+import { Menu, MenuResponse, UseMenuOptions } from '../../types/menu'
 
 export function useMenu({ menuId, establishmentCode }: UseMenuOptions) {
   const [menu, setMenu] = useState<Menu | null>(null)
@@ -15,7 +15,7 @@ export function useMenu({ menuId, establishmentCode }: UseMenuOptions) {
         description: data.description,
         price: data.price,
       })
-      // menu_items são tratados separadamente pelo useMenuItems
+
     }
   })
 

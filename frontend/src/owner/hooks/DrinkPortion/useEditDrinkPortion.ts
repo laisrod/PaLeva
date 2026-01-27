@@ -3,14 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ownerApi } from '../../services/api'
 import { useDrinkPortion } from './useDrinkPortion'
 import { getErrorMessage } from '../errorHandler'
-import { CreatePortionFormData, PortionData } from '../../types/portion'
-
-interface UseEditDrinkPortionOptions {
-  establishmentCode: string | undefined
-  drinkId: number | undefined
-  portionId: number | undefined
-  onSuccess?: () => void
-}
+import { CreatePortionFormData, PortionData, UseEditDrinkPortionOptions } from '../../types/portion'
 
 export function useEditDrinkPortion({ establishmentCode, drinkId, portionId, onSuccess }: UseEditDrinkPortionOptions) {
   const navigate = useNavigate()

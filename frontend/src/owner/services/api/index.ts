@@ -8,7 +8,7 @@ import { WorkingHoursApi } from './workingHours'
 import { PortionsApi } from './portions'
 import { OrderItemsApi } from './Order/orderItems'
 import { BaseApiService } from './base'
-import { Portion } from '../types/portion'
+import { Portion } from '../../types/portion'
 
 class OwnerApiService extends BaseApiService {
   establishments: EstablishmentsApi

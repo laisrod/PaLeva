@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ownerApi } from '../services/api'
-import { useApiData } from './useApiData'
+import { useApiData } from './Api/useApiData'
 import { Tag } from '../types/tag'
 
 export function useTags(establishmentCode: string | undefined) {

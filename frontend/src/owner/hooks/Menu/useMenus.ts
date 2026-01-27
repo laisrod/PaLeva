@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ownerApi } from '../services/api'
-import { useApiData } from './useApiData'
-import { getErrorMessage } from './errorHandler'
-import { Menu } from '../types/menu'
+import { ownerApi } from '../../services/api'
+import { useApiData } from '../Api/useApiData'
+import { getErrorMessage } from '../errorHandler'
+import { Menu } from '../../types/menu'
 
 export function useMenus(establishmentCode: string | undefined) {
   const [menus, setMenus] = useState<Menu[]>([])

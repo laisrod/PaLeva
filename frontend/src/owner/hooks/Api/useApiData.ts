@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { getErrorMessage } from './errorHandler'
+import { getErrorMessage } from '../errorHandler'
 
 interface UseApiDataOptions<T> {
   onSuccess?: (data: T) => void

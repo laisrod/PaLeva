@@ -1,134 +1,22 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Dish } from '../../types/dish'
-import { useCurrentOrder } from '../../hooks/Orders/useCurrentOrder'
-import { useAddOrderItem } from '../../hooks/Orders/useAddOrderItem'
-import { useDishPortions } from '../../hooks/DishPortion/useDishPortions'
-
-interface DishCardProps {
-  dish: Dish
-  establishmentCode: string
-  isOwner: boolean
-  onDelete?: (dishId: number) => Promise<boolean | void>
-  deleting?: boolean
-}
+import { DishCardProps } from '../../types/dish'
+import { useDishCard } from '../../hooks/Dish/useDishCard'
+import '../../../css/owner/Dishes.css'
 
 export default function DishCard({ dish, establishmentCode, isOwner, onDelete, deleting }: DishCardProps) {
-  const [showPortionModal, setShowPortionModal] = useState(false)
-  const [selectedPortionId, setSelectedPortionId] = useState<number | null>(null)
-  const [pendingAdd, setPendingAdd] = useState<{ portionId: number; quantity: number } | null>(null)
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
-
-  const { 
-    currentOrder, 
-    createNewOrder, 
-    loadOrder 
-  } = useCurrentOrder({
-    establishmentCode,
-    autoCreate: false
-  })
-
-  const { portions, loading: loadingPortions } = useDishPortions(establishmentCode, dish.id)
-
-  const { addItem, loading: addingItem, error: addItemError } = useAddOrderItem({
-    establishmentCode,
-    orderCode: currentOrder?.code,
-    onSuccess: () => {
-      setShowPortionModal(false)
-      setSelectedPortionId(null)
-      setPendingAdd(null)
-      // Mostrar mensagem de sucesso
-      setSuccessMessage('Item adicionado ao pedido!')
-      setTimeout(() => setSuccessMessage(null), 2000)
-    }
-  })
-
-  // Tentar adicionar item pendente quando o pedido for criado
-  useEffect(() => {
-    if (currentOrder && pendingAdd && !addingItem) {
-      addItem({ 
-        dishId: dish.id, 
-        portionId: pendingAdd.portionId, 
-        quantity: pendingAdd.quantity 
-      })
-    }
-  }, [currentOrder, pendingAdd, addingItem, dish.id, addItem])
-
-  const handleAddToOrder = async () => {
-    // Se ainda não temos porções carregadas, aguardar
-    if (portions.length === 0 && loadingPortions) {
-      return
-    }
-
-    // Se não houver porções, mostrar mensagem
-    if (portions.length === 0) {
-      alert('Este prato não possui porções cadastradas. Por favor, adicione porções primeiro.')
-      return
-    }
-
-    // Se não houver pedido atual, criar um novo
-    if (!currentOrder) {
-      // Se houver apenas uma porção, definir como pendente e criar pedido
-      if (portions.length === 1) {
-        setPendingAdd({ portionId: portions[0].id, quantity: 1 })
-      } else {
-        // Se houver múltiplas porções, mostrar modal primeiro
-        setShowPortionModal(true)
-        return
-      }
-      
-      const newOrder = await createNewOrder()
-      if (!newOrder) {
-        alert('Erro ao criar pedido. Tente novamente.')
-        setPendingAdd(null)
-        return
-      }
-      // O useEffect vai adicionar o item automaticamente quando o pedido for criado
-      return
-    }
-
-    // Se houver apenas uma porção, adicionar diretamente
-    if (portions.length === 1) {
-      await addItem({ 
-        dishId: dish.id, 
-        portionId: portions[0].id, 
-        quantity: 1 
-      })
-      return
-    }
-
-    // Se houver múltiplas porções, mostrar modal
-    if (portions.length > 1) {
-      setShowPortionModal(true)
-      return
-    }
-  }
-
-  const handleConfirmAddToOrder = async () => {
-    if (!selectedPortionId) {
-      alert('Por favor, selecione uma porção')
-      return
-    }
-
-    // Se não houver pedido atual, criar um novo
-    if (!currentOrder) {
-      setPendingAdd({ portionId: selectedPortionId, quantity: 1 })
-      const newOrder = await createNewOrder()
-      if (!newOrder) {
-        alert('Erro ao criar pedido. Tente novamente.')
-        setPendingAdd(null)
-        return
-      }
-      // O useEffect vai adicionar o item automaticamente quando o pedido for criado
-      return
-    }
-
-    await addItem({ 
-      dishId: dish.id, 
-      portionId: selectedPortionId, 
-      quantity: 1 
-    })
-  }
+  const {
+    showPortionModal,
+    setShowPortionModal,
+    selectedPortionId,
+    setSelectedPortionId,
+    successMessage,
+    portions,
+    loadingPortions,
+    addingItem,
+    addItemError,
+    handleAddToOrder,
+    handleConfirmAddToOrder
+  } = useDishCard({ dish, establishmentCode })
 
   return (
     <>
@@ -180,15 +68,7 @@ export default function DishCard({ dish, establishmentCode, isOwner, onDelete, d
 
           <div className="dish-card-footer">
             {successMessage && (
-              <div style={{
-                padding: '8px',
-                marginBottom: '8px',
-                backgroundColor: '#d4edda',
-                color: '#155724',
-                borderRadius: '4px',
-                fontSize: '14px',
-                textAlign: 'center'
-              }}>
+              <div className="dish-card-success-message">
                 {successMessage}
               </div>
             )}

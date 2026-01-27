@@ -1,25 +1,14 @@
 import { useState, useCallback } from 'react'
 import { ownerApi } from '../../services/api'
 import { getErrorMessage } from '../errorHandler'
-
-interface UseAddOrderItemOptions {
-  establishmentCode: string | undefined
-  orderCode: string | undefined
-  onSuccess?: () => void
-}
+import { UseAddOrderItemOptions, AddOrderItemOptions } from '../../types/order'
 
 export function useAddOrderItem({ establishmentCode, orderCode, onSuccess }: UseAddOrderItemOptions) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const addItem = useCallback(async (
-    options: {
-      menuItemId?: number
-      dishId?: number
-      drinkId?: number
-      portionId: number
-      quantity?: number
-    }
+    options: AddOrderItemOptions
   ) => {
     if (!establishmentCode || !orderCode) {
       setError('Código do estabelecimento ou pedido não encontrado')

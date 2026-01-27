@@ -28,3 +28,28 @@ export interface UseEditPortionOptions {
   portionId: number | undefined
   onSuccess?: () => void
 }
+
+export interface UseCreateDrinkPortionOptions {
+  establishmentCode: string | undefined
+  drinkId: number | undefined
+  onSuccess?: () => void
+}
+
+export interface UseEditDrinkPortionOptions {
+  establishmentCode: string | undefined
+  drinkId: number | undefined
+  portionId: number | undefined
+  onSuccess?: () => void
+}
+
+export interface UseDeleteDrinkPortionOptions {
+  establishmentCode: string | undefined
+  drinkId: number | undefined
+  onSuccess?: () => void
+}
+
+export interface UseDrinkPortionOptions {
+  portionId: number | undefined
+  establishmentCode: string | undefined
+  drinkId: number | undefined
+}
