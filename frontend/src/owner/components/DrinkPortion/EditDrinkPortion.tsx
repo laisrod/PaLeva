@@ -1,27 +1,20 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useEditDrinkPortion } from '../../hooks/DrinkPortion/useEditDrinkPortion'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useEditDrinkPortionPage } from '../../hooks/DrinkPortion/useEditDrinkPortionPage'
 import '../../../css/owner/CreateDish.css'
 
 export default function EditDrinkPortion() {
-  const { code, id, portionId } = useParams<{ code: string; id: string; portionId: string }>()
-  useRequireAuth()
-
-  const drinkId = id ? parseInt(id) : undefined
-  const portion = portionId ? parseInt(portionId) : undefined
   const {
+    establishmentCode,
+    drinkId,
+    portionId,
     formData,
     errors,
     loading,
     loadingPortion,
     handleChange,
     handleSubmit,
-  } = useEditDrinkPortion({ 
-    establishmentCode: code,
-    drinkId: drinkId,
-    portionId: portion
-  })
+  } = useEditDrinkPortionPage()
 
   if (loadingPortion) {
     return (
@@ -42,7 +35,7 @@ export default function EditDrinkPortion() {
           <div className="dish-header">
             <h1>Editar Porção</h1>
             <Link
-              to={`/establishment/${code}/drinks/${id}/portions`}
+              to={`/establishment/${establishmentCode}/drinks/${drinkId}/portions`}
               className="btn-back"
             >
               ← Voltar
@@ -93,7 +86,7 @@ export default function EditDrinkPortion() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/drinks/${id}/portions`}
+                to={`/establishment/${establishmentCode}/drinks/${drinkId}/portions`}
                 className="btn-secondary"
               >
                 Cancelar

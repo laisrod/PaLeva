@@ -1,24 +1,18 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useCreateDrinkPortion } from '../../hooks/DrinkPortion/useCreateDrinkPortion'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useCreateDrinkPortionPage } from '../../hooks/DrinkPortion/useCreateDrinkPortionPage'
 import '../../../css/owner/CreateDish.css'
 
 export default function CreateDrinkPortion() {
-  const { code, id } = useParams<{ code: string; id: string }>()
-  useRequireAuth()
-
-  const drinkId = id ? parseInt(id) : undefined
   const {
+    establishmentCode,
+    drinkId,
     formData,
     errors,
     loading,
     handleChange,
     handleSubmit,
-  } = useCreateDrinkPortion({ 
-    establishmentCode: code,
-    drinkId: drinkId
-  })
+  } = useCreateDrinkPortionPage()
 
   return (
     <Layout>
@@ -27,7 +21,7 @@ export default function CreateDrinkPortion() {
           <div className="dish-header">
             <h1>Nova Porção</h1>
             <Link
-              to={`/establishment/${code}/drinks/${id}/portions`}
+              to={`/establishment/${establishmentCode}/drinks/${drinkId}/portions`}
               className="btn-back"
             >
               ← Voltar
@@ -78,7 +72,7 @@ export default function CreateDrinkPortion() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/drinks/${id}/portions`}
+                to={`/establishment/${establishmentCode}/drinks/${drinkId}/portions`}
                 className="btn-secondary"
               >
                 Cancelar

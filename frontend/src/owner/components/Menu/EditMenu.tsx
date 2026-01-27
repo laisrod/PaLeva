@@ -1,33 +1,23 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useEditMenu } from '../../hooks/useEditMenu'
+import { useEditMenuPage } from '../../hooks/Menu/useEditMenuPage'
+import EditMenuLoading from './EditMenuLoading'
 import '../../../css/owner/CreateMenu.css'
 
 export default function EditMenu() {
-  const { code, id } = useParams<{ code: string; id: string }>()
-
   const {
+    establishmentCode,
+    menuId,
     formData,
     errors,
     loading,
     loadingMenu,
     handleChange,
     handleSubmit,
-  } = useEditMenu({ 
-    menuId: id ? parseInt(id) : undefined,
-    establishmentCode: code 
-  })
+  } = useEditMenuPage()
 
   if (loadingMenu) {
-    return (
-      <Layout>
-        <div className="create-menu-container">
-          <div className="create-menu-card">
-            <p>Carregando...</p>
-          </div>
-        </div>
-      </Layout>
-    )
+    return <EditMenuLoading />
   }
 
   return (
@@ -37,7 +27,7 @@ export default function EditMenu() {
           <div className="menu-header">
             <h1>Editar Cardápio</h1>
             <Link
-              to={`/establishment/${code}/menus`}
+              to={`/establishment/${establishmentCode}/menus`}
               className="btn-back"
             >
               ← Voltar
@@ -101,7 +91,7 @@ export default function EditMenu() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/menus`}
+                to={`/establishment/${establishmentCode}/menus`}
                 className="btn-secondary"
               >
                 Cancelar

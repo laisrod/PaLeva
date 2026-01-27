@@ -1,14 +1,11 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useCreateDish } from '../../hooks/Dish/useCreateDish'
-import { useAuthCheck } from '../../hooks/useAuthCheck'
+import { useCreateDishPage } from '../../hooks/Dish/useCreateDishPage'
 import '../../../css/owner/CreateDish.css'
 
 export default function CreateDish() {
-  const { code } = useParams<{ code: string }>()
-  useAuthCheck()
-
   const {
+    establishmentCode,
     formData,
     tags,
     errors,
@@ -19,8 +16,7 @@ export default function CreateDish() {
     handleTagToggle,
     handleCreateTag,
     handleSubmit,
-    setFormData,
-  } = useCreateDish({ establishmentCode: code })
+  } = useCreateDishPage()
 
   return (
     <Layout>
@@ -29,7 +25,7 @@ export default function CreateDish() {
           <div className="dish-header">
             <h1>Cadastrar Prato</h1>
             <Link
-              to={`/establishment/${code}/dishes`}
+              to={`/establishment/${establishmentCode}/dishes`}
               className="btn-back"
             >
               ← Voltar
@@ -154,7 +150,7 @@ export default function CreateDish() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/dishes`}
+                to={`/establishment/${establishmentCode}/dishes`}
                 className="btn-secondary"
               >
                 Cancelar

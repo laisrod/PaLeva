@@ -1,15 +1,12 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useEditDrink } from '../../hooks/Drink/useEditDrink'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import { useDrinkPortions } from '../../hooks/DrinkPortion/useDrinkPortions'
+import { useEditDrinkPage } from '../../hooks/Drink/useEditDrinkPage'
 import '../../../css/owner/CreateDish.css'
 
 export default function EditDrink() {
-  const { code, id } = useParams<{ code: string; id: string }>()
-  useRequireAuth()
-
   const {
+    establishmentCode,
+    drinkId,
     formData,
     tags,
     errors,
@@ -22,13 +19,9 @@ export default function EditDrink() {
     handleCreateTag,
     handleSubmit,
     drink,
-  } = useEditDrink({ 
-    drinkId: id ? parseInt(id) : undefined,
-    establishmentCode: code 
-  })
-
-  const drinkId = id ? parseInt(id) : undefined
-  const { portions, loading: loadingPortions } = useDrinkPortions(code, drinkId)
+    portions,
+    loadingPortions,
+  } = useEditDrinkPage()
 
   if (loadingDrink) {
     return (
@@ -49,7 +42,7 @@ export default function EditDrink() {
           <div className="dish-header">
             <h1>Editar Bebida</h1>
             <Link
-              to={`/establishment/${code}/drinks`}
+              to={`/establishment/${establishmentCode}/drinks`}
               className="btn-back"
             >
               ← Voltar
@@ -138,7 +131,7 @@ export default function EditDrink() {
                     </div>
                   ))}
                   <Link
-                    to={`/establishment/${code}/drinks/${id}/portions`}
+                    to={`/establishment/${establishmentCode}/drinks/${drinkId}/portions`}
                     className="btn-manage-portions"
                   >
                     Gerenciar Porções →
@@ -148,7 +141,7 @@ export default function EditDrink() {
                 <div className="portions-empty">
                   <p>Nenhuma porção cadastrada</p>
                   <Link
-                    to={`/establishment/${code}/drinks/${id}/portions/new`}
+                    to={`/establishment/${establishmentCode}/drinks/${drinkId}/portions/new`}
                     className="btn-add-portion"
                   >
                     ➕ Adicionar Porção
@@ -173,7 +166,7 @@ export default function EditDrink() {
                   <img 
                     src={URL.createObjectURL(formData.photo)} 
                     alt="Preview" 
-                    style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px', borderRadius: '8px' }}
+                    className="photo-preview-image"
                   />
                 </div>
               )}
@@ -184,7 +177,7 @@ export default function EditDrink() {
                     key={`${drink.id}-${drink.photo_url}`}
                     src={drink.photo_url} 
                     alt={drink.name} 
-                    style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px', borderRadius: '8px' }}
+                    className="current-photo-image"
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none'
                     }}
@@ -242,7 +235,7 @@ export default function EditDrink() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/drinks`}
+                to={`/establishment/${establishmentCode}/drinks`}
                 className="btn-secondary"
               >
                 Cancelar

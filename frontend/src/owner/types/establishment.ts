@@ -1,8 +1,10 @@
 export interface Establishment {
   id: number
   name: string
-  phone_number: string
+  phone_number?: string
   code: string
+  city?: string
+  state?: string
   working_hours?: Array<{
     id: number
     week_day: string

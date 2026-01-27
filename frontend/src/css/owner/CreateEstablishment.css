@@ -130,6 +130,11 @@
   background: #dc3545;
 }
 
+.create-establishment-loading {
+  padding: 20px;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .create-establishment-card {
     padding: 40px 30px;

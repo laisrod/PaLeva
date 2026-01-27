@@ -1,6 +1,8 @@
 import { useParams, Link } from 'react-router-dom'
 import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useAuth } from '../../../shared/hooks/useAuth'
 import { useTags } from '../../hooks/useTags'
+import { useTagsActions } from '../../hooks/Tags/useTagsActions'
 import Layout from '../Layout/Layout'
 import '../../../css/owner/Tags.css'
 
@@ -8,18 +10,9 @@ export default function Tags() {
   const { code } = useParams<{ code: string }>()
   useRequireAuth()
   
-  const { tags, loading, error, deleteTag } = useTags(code)
-
-  const handleDelete = async (tagId: number) => {
-    if (!window.confirm('Tem certeza que deseja excluir esta característica?')) return
-    
-    const success = await deleteTag(tagId)
-    if (!success) {
-      alert('Erro ao excluir característica')
-    }
-  }
-
-  const isOwner = true // TODO: Verificar se o usuário é dono
+  const { isOwner } = useAuth()
+  const { tags, loading, error } = useTags(code)
+  const { handleDeleteTag } = useTagsActions(code)
 
   if (loading) {
     return (
@@ -73,7 +66,7 @@ export default function Tags() {
                         Editar
                       </Link>
                       <button
-                        onClick={() => handleDelete(tag.id)}
+                        onClick={() => handleDeleteTag(tag.id)}
                         className="btn btn-sm btn-danger"
                       >
                         Excluir

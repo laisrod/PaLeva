@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ownerApi } from '../services/api'
-import { useApiData } from './useApiData'
-import { getErrorMessage } from './errorHandler'
-import { WorkingHour, WorkingHourUpdate, UseWorkingHoursOptions } from '../types/workingHours'
+import { ownerApi } from '../../services/api'
+import { useApiData } from '../Api/useApiData'
+import { getErrorMessage } from '../errorHandler'
+import { WorkingHour, WorkingHourUpdate, UseWorkingHoursOptions } from '../../types/workingHours'
 
 const SUCCESS_MESSAGE_DELAY = 1500
 

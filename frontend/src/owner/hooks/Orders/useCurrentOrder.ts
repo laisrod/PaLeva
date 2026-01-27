@@ -2,11 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { ownerApi } from '../../services/api'
 import { Order, OrderMenuItem } from '../../../shared/types/order'
 import { useCreateOrder } from './useCreateOrder'
-
-interface UseCurrentOrderOptions {
-  establishmentCode: string | undefined
-  autoCreate?: boolean // Se true, cria pedido automaticamente quando não há pedido atual
-}
+import { UseCurrentOrderOptions } from '../../types/order'
 
 export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCurrentOrderOptions) {
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null)

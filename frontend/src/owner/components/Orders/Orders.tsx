@@ -6,8 +6,8 @@ import { useAuth } from '../../../shared/hooks/useAuth'
 import { useCurrentOrder } from '../../hooks/Orders/useCurrentOrder'
 import { useAddOrderItem } from '../../hooks/Orders/useAddOrderItem'
 import { useOrderForm } from '../../hooks/Orders/useOrderForm'
-import { useMenus } from '../../hooks/useMenus'
-import { useMenuItems } from '../../hooks/useMenuItems'
+import { useMenus } from '../../hooks/Menu/useMenus'
+import { useMenuItems } from '../../hooks/Menu/useMenuItems'
 import { useDishes } from '../../hooks/Dish/useDishes'
 import { useDrinks } from '../../hooks/Drink/useDrinks'
 import { useDishPortions } from '../../hooks/DishPortion/useDishPortions'
@@ -690,7 +690,7 @@ export default function Orders() {
                     }
                   }}
                 >
-                  {updatingOrder ? 'Salvando...' : '💾 Salvar Pedido'}
+                  {updatingOrder ? 'Salvando...' : 'Salvar Pedido'}
                 </button>
                 {(!customerInfo.customer_email && !customerInfo.customer_phone) && (
                   <p style={{ marginTop: '15px', color: '#dc3545', fontSize: '14px' }}>

@@ -1,23 +1,19 @@
 import '../../../css/owner/CreateEstablishment.css'
-import { useCreateEstablishment } from '../../hooks/useCreateEstablishment'
-import { useRequireNewEstablishment } from '../../hooks/useRequireNewEstablishment'
+import { useCreateEstablishmentPage } from '../../hooks/Establishment/useCreateEstablishmentPage'
+import CreateEstablishmentLoading from './CreateEstablishmentLoading'
 
 export default function CreateEstablishment() {
-  const { loading: authLoading } = useRequireNewEstablishment()
   const {
+    authLoading,
     formData,
     errors,
     loading,
     handleChange,
     handleSubmit,
-  } = useCreateEstablishment()
+  } = useCreateEstablishmentPage()
 
   if (authLoading) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <p>Carregando...</p>
-      </div>
-    )
+    return <CreateEstablishmentLoading />
   }
 
   return (
