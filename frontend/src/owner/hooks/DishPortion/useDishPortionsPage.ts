@@ -4,6 +4,7 @@ import { useAuth } from '../../../shared/hooks/useAuth'
 import { useDishPortions } from './useDishPortions'
 import { useDeleteDishPortion } from './useDeleteDishPortion'
 
+// gerencia params, auth, owner check e hooks de listagem, criação e deleção
 export function useDishPortionsPage() {
   const { code, id } = useParams<{ code: string; id: string }>()
   useRequireAuth()

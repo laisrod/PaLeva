@@ -21,7 +21,7 @@ export default function Home() {
     // PRIORIDADE 1: Proprietário
     if (isOwner) {
       if (establishmentCode) {
-        navigate(`/establishment/${establishmentCode}/menus`)
+        navigate(`/establishment/${establishmentCode}`)
       } else {
         navigate('/establishments/new')
       }
@@ -40,7 +40,7 @@ export default function Home() {
 
     // FALLBACK: Se tiver estabelecimento mas role indefinido, assume proprietário
     if (establishmentCode) {
-      navigate(`/establishment/${establishmentCode}/menus`)
+      navigate(`/establishment/${establishmentCode}`)
     } else {
       navigate('/restaurants')
     }
