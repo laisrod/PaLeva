@@ -5,6 +5,8 @@ export interface Establishment {
   code: string
   city?: string
   state?: string
+  full_address?: string
+  email?: string
   working_hours?: Array<{
     id: number
     week_day: string
@@ -40,4 +42,13 @@ export interface EstablishmentData {
 
 export interface UseCreateEstablishmentOptions {
   onSuccess?: () => void
+}
+
+export interface EditEstablishmentFormData {
+  name: string
+  phone_number: string
+  email: string
+  full_address: string
+  city: string
+  state: string
 }

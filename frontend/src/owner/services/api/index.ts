@@ -42,6 +42,10 @@ class OwnerApiService extends BaseApiService {
     return this.establishments.createEstablishment(establishmentData)
   }
 
+  updateEstablishment(code: string, establishmentData: any) {
+    return this.establishments.updateEstablishment(code, establishmentData)
+  }
+
   getMenus(establishmentCode: string) {
     return this.menus.getMenus(establishmentCode)
   }
