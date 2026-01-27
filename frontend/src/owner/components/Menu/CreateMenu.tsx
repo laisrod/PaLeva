@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useCreateMenu } from '../../hooks/useCreateMenu'
+import { useCreateMenu } from '../../hooks/Menu/useCreateMenu'
 import { useAuthCheck } from '../../hooks/useAuthCheck'
 import '../../../css/owner/CreateMenu.css'
 

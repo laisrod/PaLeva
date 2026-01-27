@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ownerApi } from '../../services/api'
 import { Order } from '../../../shared/types/order'
-import { useApiData } from '../useApiData'
+import { useApiData } from '../Api/useApiData'
 import { getErrorMessage } from '../errorHandler'
 
 type OrderAction = 'confirm' | 'prepare' | 'ready' | 'deliver' | 'cancel'

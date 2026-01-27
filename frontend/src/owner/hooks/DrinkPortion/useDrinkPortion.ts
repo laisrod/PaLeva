@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ownerApi } from '../../services/api'
-import { useApiData } from '../useApiData'
+import { useApiData } from '../Api/useApiData'
 import { Portion } from '../../types/portion'
 
 interface UseDrinkPortionOptions {

@@ -1,5 +1,5 @@
 import { BaseApiService } from './base'
-import { MenuData } from '../types/menu'
+import { MenuData } from '../../types/menu'
 
 export class MenusApi extends BaseApiService {
   async getMenus(establishmentCode: string) {

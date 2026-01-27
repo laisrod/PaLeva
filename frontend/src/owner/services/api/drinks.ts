@@ -1,5 +1,5 @@
 import { BaseApiService } from './base'
-import { Drink, DrinkData } from '../types/drink'
+import { Drink, DrinkData } from '../../types/drink'
 
 export class DrinksApi extends BaseApiService {
   async getDrinks(establishmentCode: string, tagIds?: number[]) {

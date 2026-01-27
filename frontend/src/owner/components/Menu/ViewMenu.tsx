@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { useMenu } from '../../hooks/useMenu'
+import { useMenu } from '../../hooks/Menu/useMenu'
 import Layout from '../Layout/Layout'
 import { MenuItem } from '../../types/menu'
 import '../../../css/owner/ViewMenu.css'

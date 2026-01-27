@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ownerApi } from '../services/api'
+import { ownerApi } from '../../services/api'
 import { useMenu } from './useMenu'
-import { getErrorMessage } from './errorHandler'
-import { EditMenuFormData, MenuData, UseEditMenuOptions } from '../types/menu'
+import { getErrorMessage } from '../errorHandler'
+import { EditMenuFormData, MenuData, UseEditMenuOptions } from '../../types/menu'
 
 export function useEditMenu({ menuId, establishmentCode, onSuccess }: UseEditMenuOptions) {
   const navigate = useNavigate()
