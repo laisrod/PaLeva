@@ -3,7 +3,7 @@ import { MenusApi } from './menus'
 import { TagsApi } from './tags'
 import { DishesApi } from './dishes'
 import { DrinksApi } from './drinks'
-import { OrdersApi } from './Order/orders'
+import { OrdersApi, invalidateOrderCache } from './Order/orders'
 import { WorkingHoursApi } from './workingHours'
 import { PortionsApi } from './portions'
 import { OrderItemsApi } from './Order/orderItems'
@@ -198,6 +198,10 @@ class OwnerApiService extends BaseApiService {
 
   getOrder(establishmentCode: string, orderCode: string) {
     return this.orders.getOrder(establishmentCode, orderCode)
+  }
+
+  invalidateOrderCache(establishmentCode: string, orderCode: string) {
+    invalidateOrderCache(establishmentCode, orderCode)
   }
 
   updateOrder(

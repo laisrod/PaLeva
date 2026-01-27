@@ -3,15 +3,21 @@
 .layout {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  background: var(--color-gray-50);
+  flex-direction: row;
+  background: var(--color-bg-primary);
+  position: relative;
 }
 
-/* Header Superior - Estilo Sushi-Market */
+/* Header Superior - Estilo Food Magic */
 .owner-header {
-  background: var(--color-white);
-  border-bottom: 1px solid var(--color-gray-200);
-  padding: var(--spacing-sm) var(--spacing-lg);
+  position: fixed;
+  top: 0;
+  left: 80px;
+  right: 0;
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  z-index: 99;
 }
 
 .owner-header-content {
@@ -40,76 +46,95 @@
 .owner-header-subtitle p {
   margin: 0;
   font-size: var(--font-size-sm);
-  color: var(--text-primary);
-  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-normal);
 }
 
+/* Sidebar Vertical - Estilo Food Magic */
 .owner-navbar {
-  background: var(--color-white);
-  border-bottom: 2px solid var(--color-gray-200);
-  position: sticky;
+  background: var(--color-bg-primary);
+  width: 80px;
+  min-width: 80px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
   top: 0;
   z-index: 100;
-  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-lg) 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .owner-nav-top {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: var(--spacing-md) var(--spacing-lg);
-  gap: var(--spacing-lg);
-  flex-wrap: wrap;
+  gap: var(--spacing-xl);
+  flex: 1;
+  width: 100%;
+  padding: var(--spacing-lg) 0;
 }
 
 .owner-nav-left {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--spacing-xl);
-  flex: 1;
-  min-width: 0;
+  gap: var(--spacing-lg);
+  width: 100%;
 }
 
 .owner-logo {
   text-decoration: none;
-  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xl);
 }
 
 .logo-text {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
+  color: var(--text-primary);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
 }
 
 .owner-nav-links {
   display: flex;
+  flex-direction: column;
   gap: var(--spacing-md);
   align-items: center;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
 .owner-nav-link {
-  padding: var(--spacing-sm) var(--spacing-md);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
   color: var(--text-secondary);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
-  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-lg);
+  border-radius: var(--border-radius-lg);
   transition: all var(--transition-base);
   position: relative;
-  border: 1px solid transparent;
+  border: none;
 }
 
 .owner-nav-link:hover {
   color: var(--color-primary);
-  background: var(--color-gray-50);
+  background: var(--color-bg-secondary);
 }
 
 .owner-nav-link.active {
   color: var(--color-white);
   background: var(--color-primary);
   font-weight: var(--font-weight-semibold);
-  border-color: var(--color-primary);
 }
 
 .owner-nav-link.active::after {
@@ -118,18 +143,17 @@
 
 .owner-nav-right {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--spacing-lg);
-  flex-shrink: 0;
+  gap: var(--spacing-md);
+  width: 100%;
+  margin-top: auto;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .owner-nav-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--spacing-xs);
-  font-size: var(--font-size-xs);
-  color: var(--text-secondary);
+  display: none;
 }
 
 .owner-nav-time {
@@ -143,31 +167,34 @@
 
 .owner-nav-actions {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: var(--spacing-sm);
+  width: 100%;
 }
 
 .owner-action-btn {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--color-gray-300);
-  background: var(--color-white);
-  color: var(--text-primary);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--border-radius-lg);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   text-decoration: none;
   transition: all var(--transition-base);
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
+  gap: 0;
 }
 
 .owner-action-btn:hover {
-  border-color: var(--color-primary);
   color: var(--color-primary);
-  background: var(--color-gray-50);
+  background: var(--color-bg-secondary);
 }
 
 .owner-icon {
@@ -211,81 +238,109 @@
 
 .owner-main-content {
   flex: 1;
-  padding: var(--spacing-xl) var(--spacing-2xl);
+  padding-top: 100px;
+  padding-left: 100px;
+  padding-right: var(--spacing-2xl);
+  padding-bottom: var(--spacing-xl);
   max-width: 100%;
-  width: 100%;
-  margin: 0;
-  background: var(--color-gray-50);
+  width: calc(100% - 80px);
+  margin-left: 80px;
+  background: var(--color-bg-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Quando há OrderSidebar, adiciona padding à direita */
+.layout:has(.order-sidebar) .owner-main-content {
+  padding-right: 380px; /* Espaço para OrderSidebar (360px + 20px) */
+}
+
+.layout:has(.order-sidebar) .owner-header {
+  right: 360px; /* Espaço para OrderSidebar */
 }
 
 /* Mobile */
 @media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
   .owner-header {
-    padding: var(--spacing-xs) var(--spacing-md);
-  }
-
-  .owner-header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-xs);
-  }
-
-  .owner-header-subtitle {
-    text-align: left;
-  }
-
-  .owner-nav-top {
-    flex-direction: column;
-    align-items: flex-start;
+    position: relative;
+    left: 0;
+    right: 0;
     padding: var(--spacing-md);
   }
 
-  .owner-nav-left {
+  .owner-navbar {
     width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
+    height: auto;
+    position: relative;
+    flex-direction: row;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .owner-nav-top {
+    flex-direction: row;
+    width: 100%;
+    padding: 0;
+  }
+
+  .owner-nav-left {
+    flex-direction: row;
     gap: var(--spacing-md);
   }
 
+  .owner-logo {
+    margin-bottom: 0;
+  }
+
+  .logo-text {
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    transform: none;
+  }
+
   .owner-nav-links {
-    width: 100%;
-    overflow-x: auto;
-    padding-bottom: var(--spacing-xs);
+    flex-direction: row;
     gap: var(--spacing-xs);
   }
 
   .owner-nav-link {
-    font-size: var(--font-size-sm);
+    width: auto;
+    height: auto;
     padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
   }
 
   .owner-nav-right {
-    width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--spacing-md);
-  }
-
-  .owner-nav-info {
-    align-items: flex-start;
-    width: 100%;
+    flex-direction: row;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: var(--spacing-md);
   }
 
   .owner-nav-actions {
-    width: 100%;
     flex-direction: row;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
   }
 
   .owner-action-btn {
-    flex: 1;
-    min-width: 120px;
-    justify-content: center;
+    width: auto;
+    height: auto;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
   }
 
   .owner-main-content {
+    width: 100%;
+    margin-left: 0;
     padding: var(--spacing-md);
+    padding-right: var(--spacing-md);
+    padding-top: var(--spacing-md);
   }
 }
 

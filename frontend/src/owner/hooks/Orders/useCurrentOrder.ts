@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { ownerApi } from '../../services/api'
 import { Order, OrderMenuItem } from '../../../shared/types/order'
 import { useCreateOrder } from './useCreateOrder'
@@ -9,40 +9,74 @@ export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCu
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const currentOrderRef = useRef<Order | null>(null)
+  const loadingRef = useRef(false)
+  const loadOrderRef = useRef<(code: string, silent?: boolean) => Promise<void>>(async () => {})
+
+  const onCreateSuccess = useCallback((order: { code: string }) => {
+    loadOrderRef.current(order.code)
+  }, [])
+
   const { createOrder: createOrderHook, loading: creatingOrder } = useCreateOrder({
     establishmentCode,
-    onSuccess: (order) => {
-      // Quando um pedido é criado, precisamos buscar os detalhes completos
-      loadOrder(order.code)
-    }
+    onSuccess: onCreateSuccess
   })
+  useEffect(() => {
+    currentOrderRef.current = currentOrder
+  }, [currentOrder])
+  useEffect(() => {
+    loadingRef.current = loading
+  }, [loading])
 
-  // Carregar pedido pelo código
-  const loadOrder = useCallback(async (orderCode: string) => {
+  /** Carregar pedido. silent: não altera loading (evita tremor ao dar refresh no mesmo pedido). */
+  const loadOrder = useCallback(async (orderCode: string, silent = false) => {
     if (!establishmentCode) {
       setError('Código do estabelecimento não encontrado')
       return
     }
 
-    setLoading(true)
-    setError(null)
+    if (currentOrderRef.current?.code === orderCode && loadingRef.current) return
+
+    if (!silent) {
+      setLoading(true)
+      setError(null)
+    }
 
     try {
       const response = await ownerApi.getOrder(establishmentCode, orderCode)
-      
+
       if (response.error) {
         setError(response.error as string)
         setCurrentOrder(null)
       } else if (response.data) {
-        setCurrentOrder(response.data)
+        const newOrder = response.data
+        const cur = currentOrderRef.current
+        const curCode = cur?.code
+        const curCount = cur?.order_menu_items?.length ?? 0
+        const newCount = newOrder.order_menu_items?.length ?? 0
+        const curSig = (cur?.order_menu_items ?? [])
+          .map((i: OrderMenuItem) => `${i.id}-${i.quantity}`)
+          .sort()
+          .join(',')
+        const newSig = (newOrder.order_menu_items ?? [])
+          .map((i: OrderMenuItem) => `${i.id}-${i.quantity}`)
+          .sort()
+          .join(',')
+        const changed =
+          curCode !== newOrder.code || curCount !== newCount || curSig !== newSig
+        if (changed) setCurrentOrder(newOrder)
       }
-    } catch (err) {
-      setError('Erro ao carregar pedido')
+    } catch {
+      if (!silent) setError('Erro ao carregar pedido')
       setCurrentOrder(null)
     } finally {
-      setLoading(false)
+      if (!silent) setLoading(false)
     }
   }, [establishmentCode])
+
+  useEffect(() => {
+    loadOrderRef.current = loadOrder
+  }, [loadOrder])
 
   // Criar novo pedido draft
   const createNewOrder = useCallback(async (customerName?: string) => {
@@ -94,30 +128,24 @@ export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCu
     }
   }, [autoCreate, currentOrder, loading, creatingOrder, establishmentCode, createNewOrder])
 
-  // Carregar pedido do localStorage apenas uma vez ao montar o componente
-  const [hasInitialized, setHasInitialized] = useState(false)
+  // Carregar pedido do localStorage só uma vez por establishment ao montar (evita loop)
+  const loadedForEstablishment = useRef<string | null>(null)
   useEffect(() => {
-    if (establishmentCode && !hasInitialized) {
-      const savedOrderCode = localStorage.getItem(`current_order_${establishmentCode}`)
-      if (savedOrderCode) {
-        loadOrder(savedOrderCode)
-      }
-      setHasInitialized(true)
-    }
-  }, [establishmentCode, hasInitialized, loadOrder])
-  
-  // Resetar flag quando establishmentCode mudar
-  useEffect(() => {
-    setHasInitialized(false)
-  }, [establishmentCode])
+    if (!establishmentCode) return
+    if (loadedForEstablishment.current === establishmentCode) return
+    loadedForEstablishment.current = establishmentCode
 
-  // Salvar código do pedido no localStorage quando mudar
+    const saved = localStorage.getItem(`current_order_${establishmentCode}`)
+    if (saved) loadOrder(saved)
+  }, [establishmentCode, loadOrder])
+
+  // Salvar código do pedido no localStorage quando tiver pedido (não remover ao montar com null)
   useEffect(() => {
-    if (currentOrder && establishmentCode) {
+    if (!establishmentCode) return
+    if (currentOrder) {
       localStorage.setItem(`current_order_${establishmentCode}`, currentOrder.code)
-    } else if (!currentOrder && establishmentCode) {
-      localStorage.removeItem(`current_order_${establishmentCode}`)
     }
+    // Só removemos no clearOrder(); não apagar aqui evita perder o pedido ao trocar de tela
   }, [currentOrder, establishmentCode])
 
   const totals = calculateTotals()
@@ -125,6 +153,7 @@ export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCu
   return {
     currentOrder,
     loading: loading || creatingOrder,
+    creatingOrder,
     error,
     createNewOrder,
     loadOrder,

@@ -4,6 +4,7 @@ import DishesFilters from './DishesFilters'
 import DishesList from './DishesList'
 import DishesEmpty from './DishesEmpty'
 import DishesLoading from './DishesLoading'
+import OrderSidebar from '../Orders/OrderSidebar'
 import { useDishesPage } from '../../hooks/Dish/useDishesPage'
 import '../../../css/owner/Dishes.css'
 
@@ -47,6 +48,8 @@ export default function Dishes() {
           <DishesEmpty establishmentCode={establishmentCode} isOwner={isOwner} />
         )}
       </div>
+      
+      <OrderSidebar establishmentCode={establishmentCode} />
     </Layout>
   )
 }

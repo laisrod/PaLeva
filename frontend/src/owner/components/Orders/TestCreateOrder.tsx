@@ -1,102 +1,52 @@
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import { useCurrentOrder } from '../../hooks/Orders/useCurrentOrder'
-import { useAddOrderItem } from '../../hooks/Orders/useAddOrderItem'
-import { useMenus } from '../../hooks/Menu/useMenus'
-import { useMenuItems } from '../../hooks/Menu/useMenuItems'
 import MenuItemsList from '../Menu/MenuItemsList'
 import Layout from '../Layout/Layout'
+import { useTestCreateOrderPage } from '../../hooks/Orders/useTestCreateOrderPage'
+import '../../../css/owner/Orders.css'
 
 export default function TestCreateOrder() {
-  const { code } = useParams<{ code: string }>()
-  useRequireAuth()
-  
-  const { 
-    currentOrder, 
-    loading, 
-    error, 
-    createNewOrder, 
-    clearOrder,
-    loadOrder,
+  const {
+    currentOrder,
+    loading,
+    error,
     totals,
-    itemsCount
-  } = useCurrentOrder({
-    establishmentCode: code,
-    autoCreate: false // Não criar automaticamente, apenas quando clicar no botão
-  })
-
-  const [selectedMenuId, setSelectedMenuId] = useState<number | undefined>(undefined)
-
-  const { menus, loading: loadingMenus } = useMenus(code)
-  const { menuItems, loading: loadingMenuItems } = useMenuItems({
-    menuId: selectedMenuId,
-    establishmentCode: code
-  })
-
-  const { addItem, loading: addingItem, error: addItemError } = useAddOrderItem({
-    establishmentCode: code,
-    orderCode: currentOrder?.code,
-    onSuccess: () => {
-      // Recarregar pedido para atualizar itens
-      if (currentOrder) {
-        loadOrder(currentOrder.code)
-      }
-    }
-  })
-
-  const handleCreateOrder = async () => {
-    await createNewOrder('Cliente Teste')
-  }
-
-  const handleSelectItem = async (menuItemId: number, portionId: number, quantity: number) => {
-    await addItem({ menuItemId, portionId, quantity })
-  }
+    itemsCount,
+    menus,
+    loadingMenus,
+    selectedMenuId,
+    setSelectedMenuId,
+    menuItems,
+    loadingMenuItems,
+    addItemError,
+    addingItem,
+    handleCreateOrder,
+    handleSelectItem,
+    clearOrder,
+  } = useTestCreateOrderPage()
 
   return (
     <Layout>
-      <div style={{ padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
+      <div className="orders-test-container">
         <h1>Teste: Criar Pedido</h1>
         
-        <div style={{ marginBottom: '20px' }}>
+        <div className="orders-test-section">
           <button 
             onClick={handleCreateOrder}
             disabled={loading}
-            style={{
-              padding: '10px 20px',
-              fontSize: '16px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: loading ? 'not-allowed' : 'pointer'
-            }}
+            className="orders-btn orders-btn-primary"
           >
             {loading ? 'Criando...' : 'Criar Pedido Draft'}
           </button>
         </div>
 
         {error && (
-          <div style={{
-            padding: '10px',
-            backgroundColor: '#fee',
-            color: '#c33',
-            borderRadius: '5px',
-            marginBottom: '20px'
-          }}>
+          <div className="orders-error">
             Erro: {error}
           </div>
         )}
 
         {currentOrder && (
           <>
-            <div style={{
-              padding: '15px',
-              backgroundColor: '#efe',
-              borderRadius: '5px',
-              marginTop: '20px',
-              marginBottom: '20px'
-            }}>
+            <div className="orders-test-order-info">
               <h3>Pedido Atual</h3>
               <p><strong>ID:</strong> {currentOrder.id}</p>
               <p><strong>Código:</strong> {currentOrder.code}</p>
@@ -111,31 +61,19 @@ export default function TestCreateOrder() {
               )}
             </div>
 
-            <div style={{
-              padding: '15px',
-              backgroundColor: '#f9f9f9',
-              borderRadius: '5px',
-              marginBottom: '20px'
-            }}>
+            <div className="orders-test-menu-section">
               <h3>Selecionar Cardápio</h3>
               {loadingMenus ? (
                 <p>Carregando cardápios...</p>
               ) : menus.length === 0 ? (
-                <p style={{ color: '#999', fontStyle: 'italic' }}>
+                <p className="orders-empty-text">
                   Nenhum cardápio disponível. Crie um cardápio primeiro.
                 </p>
               ) : (
                 <select
                   value={selectedMenuId || ''}
                   onChange={(e) => setSelectedMenuId(e.target.value ? parseInt(e.target.value) : undefined)}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    border: '1px solid #ddd',
-                    fontSize: '16px',
-                    marginBottom: '15px'
-                  }}
+                  className="orders-select"
                 >
                   <option value="">Selecione um cardápio...</option>
                   {menus.map((menu) => (
@@ -147,14 +85,7 @@ export default function TestCreateOrder() {
               )}
 
               {addItemError && (
-                <div style={{
-                  padding: '10px',
-                  backgroundColor: '#fee',
-                  color: '#c33',
-                  borderRadius: '5px',
-                  marginBottom: '15px',
-                  fontSize: '14px'
-                }}>
+                <div className="orders-error">
                   Erro: {addItemError}
                 </div>
               )}
@@ -169,35 +100,23 @@ export default function TestCreateOrder() {
             </div>
 
             {currentOrder.order_menu_items && currentOrder.order_menu_items.length > 0 && (
-              <div style={{
-                padding: '15px',
-                backgroundColor: '#fff',
-                borderRadius: '5px',
-                marginBottom: '20px',
-                border: '1px solid #ddd'
-              }}>
+              <div className="orders-items-list">
                 <h3>Itens do Pedido</h3>
                 {currentOrder.order_menu_items.map((item) => (
-                  <div key={item.id} style={{
-                    padding: '10px',
-                    borderBottom: '1px solid #eee',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}>
-                    <div>
-                      <p style={{ margin: 0, fontWeight: 'bold' }}>
+                  <div key={item.id} className="orders-item-row">
+                    <div className="orders-item-info">
+                      <p>
                         {item.menu_item?.name || `Item #${item.menu_item_id}`}
                       </p>
-                      <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
+                      <p>
                         {(item.portion as any)?.description || (item.portion as any)?.name || `Porção #${item.portion_id}`}
                       </p>
                     </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <p style={{ margin: 0 }}>
+                    <div className="orders-item-price">
+                      <p>
                         Qtd: {item.quantity}
                       </p>
-                      <p style={{ margin: '5px 0 0 0', fontWeight: 'bold' }}>
+                      <p>
                         R$ {((item.portion?.price || 0) * item.quantity).toFixed(2)}
                       </p>
                     </div>
@@ -208,16 +127,7 @@ export default function TestCreateOrder() {
 
             <button 
               onClick={clearOrder}
-              style={{
-                width: '100%',
-                padding: '10px',
-                backgroundColor: '#dc3545',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                fontSize: '16px'
-              }}
+              className="orders-btn orders-btn-danger orders-btn-full"
             >
               Limpar Pedido
             </button>

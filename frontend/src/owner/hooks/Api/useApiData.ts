@@ -7,10 +7,9 @@ interface UseApiDataOptions<T> {
   defaultErrorMessage?: string
 }
 
-/**
- * Hook genérico para gerenciar estado de requisições API
- * Retorna estados de loading, error e função para executar requisições
- */
+//gerenciar estado de requisições API
+ //Retorna estados de loading, error e função para executar requisições
+ 
 export function useApiData<T>(options: UseApiDataOptions<T> = {}) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')

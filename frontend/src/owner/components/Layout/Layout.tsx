@@ -24,7 +24,7 @@ export default function Layout({ children }: LayoutProps) {
         )}
       </header>
 
-      {/* Navbar Principal */}
+      {/* Sidebar Vertical */}
       <nav className="owner-navbar">
         <div className="owner-nav-top">
           <div className="owner-nav-left">
@@ -37,45 +37,50 @@ export default function Layout({ children }: LayoutProps) {
                 <Link
                   to={`/establishment/${establishmentCode}`}
                   className={`owner-nav-link ${isActive(`/establishment/${establishmentCode}`) && !isActive('/menus') && !isActive('/dishes') && !isActive('/drinks') && !isActive('/orders') ? 'active' : ''}`}
+                  title="Dashboard"
                 >
-                  Dashboard
+                  🏠
                 </Link>
                 <Link
                   to={`/establishment/${establishmentCode}/menus`}
                   className={`owner-nav-link ${isActive('/menus') ? 'active' : ''}`}
+                  title="Cardápios"
                 >
-                  Cardápios
+                  📋
                 </Link>
                 <Link
                   to={`/establishment/${establishmentCode}/dishes`}
                   className={`owner-nav-link ${isActive('/dishes') ? 'active' : ''}`}
+                  title="Pratos"
                 >
-                  Pratos
+                  🍽️
                 </Link>
                 <Link
                   to={`/establishment/${establishmentCode}/drinks`}
                   className={`owner-nav-link ${isActive('/drinks') ? 'active' : ''}`}
+                  title="Bebidas"
                 >
-                  Bebidas
+                  🥤
                 </Link>
                 <Link
                   to={`/establishment/${establishmentCode}/orders`}
                   className={`owner-nav-link ${isActive('/orders') ? 'active' : ''}`}
+                  title="Pedidos"
                 >
-                  Pedidos
+                  📦
+                </Link>
+                <Link
+                  to={`/establishment/${establishmentCode}/working-hours`}
+                  className={`owner-nav-link ${isActive('/working-hours') ? 'active' : ''}`}
+                  title="Horários de Funcionamento"
+                >
+                  🕐
                 </Link>
               </div>
             )}
           </div>
 
           <div className="owner-nav-right">
-            <div className="owner-nav-info">
-              <span className="owner-nav-time">Atendimento: 11:00 às 23:00</span>
-              {user?.establishment?.phone_number && (
-                <span className="owner-nav-phone">{user.establishment.phone_number}</span>
-              )}
-            </div>
-
             <div className="owner-nav-actions">
               {isAuthenticated && user && establishmentCode ? (
                 <>
@@ -84,14 +89,14 @@ export default function Layout({ children }: LayoutProps) {
                     className="owner-action-btn owner-user-btn"
                     title={user.email}
                   >
-                    <span className="owner-icon">👤</span>
-                    Conta
+                    👤
                   </button>
                   <button
                     onClick={handleLogout}
                     className="owner-action-btn owner-logout-btn"
+                    title="Sair"
                   >
-                    Sair
+                    🚪
                   </button>
                 </>
               ) : (
@@ -99,10 +104,11 @@ export default function Layout({ children }: LayoutProps) {
                   <Link
                     to="/login"
                     className="owner-action-btn"
+                    title="Entrar"
                   >
-                    Entrar
+                    🔑
                   </Link>
-                  <Link to="/register" className="owner-action-btn owner-primary-btn">
+                  <Link to="/register" className="owner-action-btn owner-primary-btn" title="Criar conta">
                     Criar conta
                   </Link>
                 </>

@@ -1,3 +1,5 @@
+import type { OrderMenuItem } from '../../shared/types/order'
+
 export type OrderAction = 'confirm' | 'prepare' | 'ready' | 'deliver' | 'cancel'
 
 export interface UseOrdersOptions {
@@ -26,4 +28,13 @@ export interface AddOrderItemOptions {
   drinkId?: number
   portionId: number
   quantity?: number
+}
+
+export interface OrderSidebarProps {
+  establishmentCode?: string
+}
+
+export interface OrderSidebarItemProps {
+  item: OrderMenuItem
+  onRemove: () => void
 }
