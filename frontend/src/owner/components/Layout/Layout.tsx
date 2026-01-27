@@ -1,25 +1,17 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../../../shared/hooks/useAuth'
+import { Link } from 'react-router-dom'
+import { useLayout } from '../../hooks/Layout/useLayout'
+import { LayoutProps } from '../../types/layout'
 import '../../../css/owner/Layout.css'
 
-interface LayoutProps {
-  children: React.ReactNode
-}
-
 export default function Layout({ children }: LayoutProps) {
-  const { isAuthenticated, user, logout } = useAuth()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const establishmentCode = user?.establishment?.code || localStorage.getItem('establishment_code')
-
-  const handleLogout = async () => {
-    await logout()
-    navigate('/login')
-  }
-
-  const isActive = (path: string) => {
-    return location.pathname.includes(path)
-  }
+  const {
+    isAuthenticated,
+    user,
+    establishmentCode,
+    handleLogout,
+    isActive,
+    handleNavigateToProfile
+  } = useLayout()
 
   return (
     <div className="layout">
@@ -88,7 +80,7 @@ export default function Layout({ children }: LayoutProps) {
               {isAuthenticated && user && establishmentCode ? (
                 <>
                   <button
-                    onClick={() => navigate('/profile')}
+                    onClick={handleNavigateToProfile}
                     className="owner-action-btn owner-user-btn"
                     title={user.email}
                   >

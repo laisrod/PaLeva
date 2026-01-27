@@ -690,7 +690,7 @@ export default function Orders() {
                     }
                   }}
                 >
-                  {updatingOrder ? 'Salvando...' : '💾 Salvar Pedido'}
+                  {updatingOrder ? 'Salvando...' : 'Salvar Pedido'}
                 </button>
                 {(!customerInfo.customer_email && !customerInfo.customer_phone) && (
                   <p style={{ marginTop: '15px', color: '#dc3545', fontSize: '14px' }}>

@@ -33,3 +33,35 @@ export interface UseCreateDishOptions {
   establishmentCode: string | undefined
   onSuccess?: () => void
 }
+
+export interface DishesHeaderProps {
+  establishmentCode: string
+  isOwner: boolean
+}
+
+export interface DishesFiltersProps {
+  tags: Tag[]
+  selectedTags: number[]
+  onToggleTag: (tagId: number) => void
+}
+
+export interface DishesEmptyProps {
+  establishmentCode: string
+  isOwner: boolean
+}
+
+export interface DishesListProps {
+  dishes: Dish[]
+  establishmentCode: string
+  isOwner: boolean
+  onDelete: (dishId: number) => Promise<boolean>
+  deleting: boolean
+}
+
+export interface DishCardProps {
+  dish: Dish
+  establishmentCode: string
+  isOwner: boolean
+  onDelete?: (dishId: number) => Promise<boolean | void>
+  deleting?: boolean
+}

@@ -235,6 +235,16 @@
   gap: var(--spacing-sm);
 }
 
+.dish-card-success-message {
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  background-color: #d4edda;
+  color: #155724;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
 .dish-card-add-btn {
   width: 100%;
   padding: var(--spacing-md);
@@ -431,6 +441,10 @@
 
 .mt-3 {
   margin-top: var(--spacing-md);
+}
+
+.mt-4 {
+  margin-top: var(--spacing-lg);
 }
 
 /* Mobile */

@@ -359,6 +359,34 @@
   color: white;
 }
 
+.photo-preview {
+  margin-top: 8px;
+}
+
+.photo-preview-image {
+  max-width: 200px;
+  max-height: 200px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.current-photo {
+  margin-top: 8px;
+}
+
+.current-photo p {
+  margin: 0 0 8px 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.current-photo-image {
+  max-width: 200px;
+  max-height: 200px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
 @media (max-width: 768px) {
   .create-dish-container {
     padding: 10px;

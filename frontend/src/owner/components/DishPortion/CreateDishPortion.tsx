@@ -1,24 +1,18 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useCreateDishPortion } from '../../hooks/DishPortion/useCreateDishPortion'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useCreateDishPortionPage } from '../../hooks/DishPortion/useCreateDishPortionPage'
 import '../../../css/owner/CreateDish.css'
 
 export default function CreateDishPortion() {
-  const { code, id } = useParams<{ code: string; id: string }>()
-  useRequireAuth()
-
-  const dishId = id ? parseInt(id) : undefined
   const {
+    establishmentCode,
+    dishId,
     formData,
     errors,
     loading,
     handleChange,
     handleSubmit,
-  } = useCreateDishPortion({ 
-    establishmentCode: code,
-    dishId: dishId
-  })
+  } = useCreateDishPortionPage()
 
   return (
     <Layout>
@@ -27,7 +21,7 @@ export default function CreateDishPortion() {
           <div className="dish-header">
             <h1>Cadastrar Porção</h1>
             <Link
-              to={`/establishment/${code}/dishes/${id}/portions`}
+              to={`/establishment/${establishmentCode}/dishes/${dishId}/portions`}
               className="btn-back"
             >
               ← Voltar
@@ -78,7 +72,7 @@ export default function CreateDishPortion() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/dishes/${id}/portions`}
+                to={`/establishment/${establishmentCode}/dishes/${dishId}/portions`}
                 className="btn-secondary"
               >
                 Cancelar
