@@ -5,24 +5,25 @@
   width: 100%;
   margin: 0;
   padding: 0;
+  background: var(--color-bg-primary);
 }
 
 .dashboard-header {
   margin-bottom: var(--spacing-xl);
-  text-align: center;
+  text-align: left;
   padding: var(--spacing-lg) 0;
 }
 
 .dashboard-title {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
+  color: var(--text-primary);
   margin: 0 0 var(--spacing-xs) 0;
 }
 
 .dashboard-subtitle {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
   color: var(--text-secondary);
   margin: 0;
 }
@@ -35,12 +36,12 @@
 }
 
 .dashboard-card {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--border-radius-lg);
+  background: var(--color-bg-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-xl);
   padding: var(--spacing-xl) var(--spacing-xl);
   transition: all var(--transition-base);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -48,18 +49,18 @@
 }
 
 .dashboard-card:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   transform: translateY(-4px);
   border-color: var(--color-primary);
 }
 
 .card-title {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
+  color: var(--text-primary);
   margin: 0 0 var(--spacing-lg) 0;
   padding-bottom: var(--spacing-md);
-  border-bottom: 2px solid var(--color-gray-200);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card-content {
@@ -70,7 +71,7 @@
 .card-content p {
   margin: var(--spacing-md) 0;
   color: var(--text-secondary);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   line-height: 1.6;
 }
 
@@ -85,7 +86,7 @@
   flex-wrap: wrap;
   margin-top: auto;
   padding-top: var(--spacing-lg);
-  border-top: 2px solid var(--color-gray-200);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .dashboard-btn {
@@ -117,7 +118,7 @@
 }
 
 .btn-outline-owner {
-  background: var(--color-white);
+  background: transparent;
   color: var(--color-primary);
   border-color: var(--color-primary);
 }
@@ -129,14 +130,14 @@
 }
 
 .btn-secondary-owner {
-  background: var(--color-white);
+  background: var(--color-bg-tertiary);
   color: var(--text-secondary);
-  border-color: var(--color-gray-300);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .btn-secondary-owner:hover {
-  background: var(--color-gray-50);
-  border-color: var(--color-gray-400);
+  background: var(--color-bg-secondary);
+  border-color: var(--color-primary);
   color: var(--text-primary);
 }
 
@@ -151,7 +152,7 @@
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-xs) 0;
-  border-bottom: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .working-hours-item:last-child {
@@ -173,7 +174,7 @@
 }
 
 .working-hours-time.closed {
-  color: var(--color-primary);
+  color: #ef4444;
 }
 
 .alert {

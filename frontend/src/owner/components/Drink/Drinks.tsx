@@ -4,6 +4,7 @@ import DrinksFilters from './DrinksFilters'
 import DrinksList from './DrinksList'
 import DrinksEmpty from './DrinksEmpty'
 import DrinksLoading from './DrinksLoading'
+import OrderSidebar from '../Orders/OrderSidebar'
 import { useDrinksPage } from '../../hooks/Drink/useDrinksPage'
 import '../../../css/owner/Drinks.css'
 
@@ -54,6 +55,8 @@ export default function Drinks() {
           <DrinksEmpty establishmentCode={establishmentCode} isOwner={isOwner} />
         )}
       </div>
+      
+      <OrderSidebar establishmentCode={establishmentCode} />
     </Layout>
   )
 }
