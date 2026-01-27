@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
+import OrderSidebar from '../Orders/OrderSidebar'
 import { useMenusPage } from '../../hooks/Menu/useMenusPage'
 import MenusListLoading from './MenusListLoading'
 import '../../../css/owner/MenusList.css'
@@ -21,23 +22,30 @@ export default function MenusList() {
   return (
     <Layout>
       <div className="menus-list-container">
-        <div className="menus-header">
-          <h1>Cardápios</h1>
-          <div>
-            <Link
-              to={`/establishment/${establishmentCode}`}
-              className="btn btn-outline-secondary me-2"
-            >
-              Voltar
-            </Link>
-            {isOwner && (
-              <Link
-                to={`/establishment/${establishmentCode}/menus/new`}
-                className="btn btn-primary"
-              >
-                Novo Cardápio
-              </Link>
-            )}
+        <div className="menus-list-header">
+          <div className="menus-list-header-top">
+            <h1 className="menus-list-title">Cardápios</h1>
+            <div className="menus-list-actions">
+              {isOwner && (
+                <Link
+                  to={`/establishment/${establishmentCode}/menus/new`}
+                  className="menus-list-btn menus-list-btn-primary"
+                >
+                  Novo Cardápio
+                </Link>
+              )}
+            </div>
+          </div>
+          
+          <div className="menus-search-container">
+            <div className="menus-search-wrapper">
+              <span className="menus-search-icon"></span>
+              <input
+                type="text"
+                className="menus-search-input"
+                placeholder="Search for food, coffee, etc.."
+              />
+            </div>
           </div>
         </div>
 
@@ -46,18 +54,22 @@ export default function MenusList() {
         )}
 
         {menus.length === 0 ? (
-          <div className="alert alert-info">Nenhum cardápio cadastrado</div>
+          <div className="empty-state">
+            <p>Nenhum cardápio cadastrado</p>
+          </div>
         ) : (
           <div className="menus-grid">
             {menus.map(menu => (
               <div key={menu.id} className="menu-card">
                 <h3 className="menu-card-title">{menu.name}</h3>
-                <p className="menu-card-text">{menu.description}</p>
+                {menu.description && (
+                  <p className="menu-card-description">{menu.description}</p>
+                )}
 
-                <div className="btn-group">
+                <div className="menu-card-actions">
                   <Link
                     to={`/establishment/${establishmentCode}/menus/${menu.id}`}
-                    className="btn btn-outline-primary"
+                    className="menu-card-btn menu-card-btn-primary"
                   >
                     Ver
                   </Link>
@@ -65,13 +77,17 @@ export default function MenusList() {
                     <>
                       <Link
                         to={`/establishment/${establishmentCode}/menus/${menu.id}/edit`}
-                        className="btn btn-outline-secondary"
+                        className="menu-card-btn menu-card-btn-secondary"
                       >
                         Editar
                       </Link>
                       <button
-                        onClick={() => deleteMenu(menu.id)}
-                        className="btn btn-outline-danger"
+                        onClick={() => {
+                          if (window.confirm('Tem certeza que deseja excluir este cardápio?')) {
+                            deleteMenu(menu.id)
+                          }
+                        }}
+                        className="menu-card-btn menu-card-btn-danger"
                       >
                         Excluir
                       </button>
@@ -83,6 +99,8 @@ export default function MenusList() {
           </div>
         )}
       </div>
+      
+      <OrderSidebar establishmentCode={establishmentCode} />
     </Layout>
   )
 }

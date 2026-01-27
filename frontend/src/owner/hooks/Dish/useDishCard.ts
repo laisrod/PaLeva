@@ -35,6 +35,17 @@ export function useDishCard({ dish, establishmentCode }: UseDishCardProps) {
       setPendingAdd(null)
       setSuccessMessage('Item adicionado ao pedido!')
       setTimeout(() => setSuccessMessage(null), 2000)
+      
+      // Recarregar o pedido para atualizar o OrderSidebar
+      // Usar setTimeout para garantir que o backend processou
+      setTimeout(() => {
+        const savedOrderCode = localStorage.getItem(`current_order_${establishmentCode}`)
+        if (savedOrderCode) {
+          loadOrder(savedOrderCode)
+        } else if (currentOrder?.code) {
+          loadOrder(currentOrder.code)
+        }
+      }, 300)
     }
   })
 
@@ -44,9 +55,16 @@ export function useDishCard({ dish, establishmentCode }: UseDishCardProps) {
         dishId: dish.id, 
         portionId: pendingAdd.portionId, 
         quantity: pendingAdd.quantity 
+      }).then(() => {
+        // Após adicionar, recarregar o pedido
+        if (currentOrder?.code) {
+          setTimeout(() => {
+            loadOrder(currentOrder.code)
+          }, 300)
+        }
       })
     }
-  }, [currentOrder, pendingAdd, addingItem, dish.id, addItem])
+  }, [currentOrder, pendingAdd, addingItem, dish.id, addItem, loadOrder])
 
   const handleAddToOrder = async () => {
     if (portions.length === 0 && loadingPortions) {

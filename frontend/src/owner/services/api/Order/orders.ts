@@ -1,12 +1,43 @@
 import { BaseApiService } from '../base'
 
+const getOrderInflight = new Map<string, Promise<any>>()
+const getOrderCache = new Map<string, { data: any; until: number }>()
+const CACHE_MS = 1500
+
+export function invalidateOrderCache(establishmentCode: string, orderCode: string) {
+  getOrderCache.delete(`${establishmentCode}|${orderCode}`)
+}
+
 export class OrdersApi extends BaseApiService {
   async getOrders(establishmentCode: string) {
     return this.request<any[]>(`/establishments/${establishmentCode}/orders`)
   }
 
   async getOrder(establishmentCode: string, orderCode: string) {
-    return this.request<any>(`/establishments/${establishmentCode}/orders/${orderCode}`)
+    const key = `${establishmentCode}|${orderCode}`
+    const now = Date.now()
+    const cached = getOrderCache.get(key)
+    if (cached && cached.until > now) {
+      return { data: cached.data }
+    }
+
+    let prom = getOrderInflight.get(key)
+    if (prom) {
+      return prom
+    }
+
+    prom = this.request<any>(`/establishments/${establishmentCode}/orders/${orderCode}`)
+    getOrderInflight.set(key, prom)
+
+    try {
+      const res = await prom
+      if (res.data && !res.error) {
+        getOrderCache.set(key, { data: res.data, until: now + CACHE_MS })
+      }
+      return res
+    } finally {
+      getOrderInflight.delete(key)
+    }
   }
 
   async updateOrder(

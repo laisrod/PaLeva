@@ -65,12 +65,17 @@ module Api
       end
 
       def show
+        Rails.logger.info "[Orders#show] GET order code=#{params[:code]} order_id=#{@order.id} items_count=#{@order.order_menu_items.size}"
+
         # Recalcular total_price se necessário
         if @order.total_price.nil? || @order.total_price.zero?
           @order.update_total_price
           @order.save if @order.changed?
         end
-        
+
+        # Usar associação já eager-loaded por set_order; ordenar por id em memória (JSON estável)
+        items = @order.order_menu_items.to_a.sort_by(&:id)
+
         order_data = {
           id: @order.id,
           code: @order.code,
@@ -84,7 +89,7 @@ module Api
           updated_at: @order.updated_at,
           establishment_id: @order.establishment_id,
           cancellation_reason: @order.cancellation_reason,
-          order_menu_items: @order.order_menu_items.includes(:portion, menu_item: [:dish, :drink]).map { |item|
+          order_menu_items: items.map { |item|
             menu_item_name = nil
             menu_item_description = nil
             

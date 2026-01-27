@@ -1,26 +1,31 @@
 :root {
-  /* Cores principais - Sushi Market */
-  --color-primary: #dc3545;
-  --color-primary-dark: #c82333;
-  --color-primary-light: #e85d6d;
+  /* Cores principais - Food Magic Dark Theme */
+  --color-primary: #FF7F3F;
+  --color-primary-dark: #FF6B2B;
+  --color-primary-light: #FFA366;
+  
+  /* Cores dark theme */
+  --color-bg-primary: #252836;
+  --color-bg-secondary: #1F1D2B;
+  --color-bg-tertiary: #2D303E;
   
   /* Cores neutras */
   --color-white: #ffffff;
-  --color-gray-50: #f8f9fa;
-  --color-gray-100: #e9ecef;
-  --color-gray-200: #dee2e6;
-  --color-gray-300: #ced4da;
-  --color-gray-400: #adb5bd;
+  --color-gray-50: #F7F7F7;
+  --color-gray-100: #E5E5E5;
+  --color-gray-200: #D0D0D0;
+  --color-gray-300: #ABB1B5;
+  --color-gray-400: #8B8B8B;
   --color-gray-500: #6c757d;
   --color-gray-600: #495057;
   --color-gray-700: #343a40;
   --color-gray-800: #212529;
   --color-gray-900: #1a1a1a;
   
-  /* Cores de texto */
-  --text-primary: #212529;
-  --text-secondary: #6c757d;
-  --text-muted: #adb5bd;
+  /* Cores de texto - Dark Theme */
+  --text-primary: #FFFFFF;
+  --text-secondary: #ABB1B5;
+  --text-muted: #8B8B8B;
   
   /* Espaçamentos */
   --spacing-xs: 4px;
@@ -86,7 +91,7 @@ body {
   font-size: var(--font-size-base);
   line-height: 1.5;
   color: var(--text-primary);
-  background-color: var(--color-white);
+  background-color: var(--color-bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
