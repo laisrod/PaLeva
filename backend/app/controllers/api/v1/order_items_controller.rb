@@ -77,6 +77,23 @@ module Api
         end
       end
 
+      def destroy
+        item = @order.order_menu_items.find(params[:id])
+        item.destroy!
+        @order.reload
+        render json: {
+          message: 'Item removido do pedido',
+          order: {
+            id: @order.id,
+            code: @order.code,
+            status: @order.status,
+            total_price: @order.total_price.to_f
+          }
+        }, status: :ok
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: 'Item não encontrado' }, status: :not_found
+      end
+
       private
 
       def set_order

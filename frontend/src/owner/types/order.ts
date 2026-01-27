@@ -36,5 +36,6 @@ export interface OrderSidebarProps {
 
 export interface OrderSidebarItemProps {
   item: OrderMenuItem
-  onRemove: () => void
+  onRemove: (itemId: number) => void
+  removing?: boolean
 }
