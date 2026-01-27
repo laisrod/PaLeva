@@ -1,25 +1,21 @@
-import { useParams, Link } from 'react-router-dom'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import { useMenus } from '../../hooks/Menu/useMenus'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
+import { useMenusPage } from '../../hooks/Menu/useMenusPage'
+import MenusListLoading from './MenusListLoading'
 import '../../../css/owner/MenusList.css'
 
 export default function MenusList() {
-  const { code } = useParams<{ code: string }>()
-  useRequireAuth()
-  
-  const { menus, loading, error, deleteMenu } = useMenus(code)
-
-  const isOwner = true // TODO: Verificar se o usuário é dono
+  const {
+    establishmentCode,
+    isOwner,
+    menus,
+    loading,
+    error,
+    deleteMenu
+  } = useMenusPage()
 
   if (loading) {
-    return (
-      <Layout>
-        <div className="container mt-4">
-          <p>Carregando...</p>
-        </div>
-      </Layout>
-    )
+    return <MenusListLoading />
   }
 
   return (
@@ -29,14 +25,14 @@ export default function MenusList() {
           <h1>Cardápios</h1>
           <div>
             <Link
-              to={`/establishment/${code}`}
+              to={`/establishment/${establishmentCode}`}
               className="btn btn-outline-secondary me-2"
             >
               Voltar
             </Link>
             {isOwner && (
               <Link
-                to={`/establishment/${code}/menus/new`}
+                to={`/establishment/${establishmentCode}/menus/new`}
                 className="btn btn-primary"
               >
                 Novo Cardápio
@@ -60,7 +56,7 @@ export default function MenusList() {
 
                 <div className="btn-group">
                   <Link
-                    to={`/establishment/${code}/menus/${menu.id}`}
+                    to={`/establishment/${establishmentCode}/menus/${menu.id}`}
                     className="btn btn-outline-primary"
                   >
                     Ver
@@ -68,7 +64,7 @@ export default function MenusList() {
                   {isOwner && (
                     <>
                       <Link
-                        to={`/establishment/${code}/menus/${menu.id}/edit`}
+                        to={`/establishment/${establishmentCode}/menus/${menu.id}/edit`}
                         className="btn btn-outline-secondary"
                       >
                         Editar

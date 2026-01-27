@@ -1,26 +1,20 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useEditDishPortion } from '../../hooks/DishPortion/useEditDishPortion'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useEditDishPortionPage } from '../../hooks/DishPortion/useEditDishPortionPage'
 import '../../../css/owner/CreateDish.css'
 
 export default function EditDishPortion() {
-  const { code, id, portionId } = useParams<{ code: string; id: string; portionId: string }>()
-  useRequireAuth()
-
-  const dishId = id ? parseInt(id) : undefined
   const {
+    establishmentCode,
+    dishId,
+    portionId,
     formData,
     errors,
     loading,
     loadingPortion,
     handleChange,
     handleSubmit,
-  } = useEditDishPortion({ 
-    establishmentCode: code,
-    dishId: dishId,
-    portionId: portionId ? parseInt(portionId) : undefined
-  })
+  } = useEditDishPortionPage()
 
   if (loadingPortion) {
     return (
@@ -41,7 +35,7 @@ export default function EditDishPortion() {
           <div className="dish-header">
             <h1>Editar Porção</h1>
             <Link
-              to={`/establishment/${code}/dishes/${id}/portions`}
+              to={`/establishment/${establishmentCode}/dishes/${dishId}/portions`}
               className="btn-back"
             >
               ← Voltar
@@ -92,7 +86,7 @@ export default function EditDishPortion() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/dishes/${id}/portions`}
+                to={`/establishment/${establishmentCode}/dishes/${dishId}/portions`}
                 className="btn-secondary"
               >
                 Cancelar

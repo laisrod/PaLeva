@@ -1,20 +1,17 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useCreateMenu } from '../../hooks/Menu/useCreateMenu'
-import { useAuthCheck } from '../../hooks/useAuthCheck'
+import { useCreateMenuPage } from '../../hooks/Menu/useCreateMenuPage'
 import '../../../css/owner/CreateMenu.css'
 
 export default function CreateMenu() {
-  const { code } = useParams<{ code: string }>()
-  useAuthCheck()
-
   const {
+    establishmentCode,
     formData,
     errors,
     loading,
     handleChange,
     handleSubmit,
-  } = useCreateMenu({ establishmentCode: code })
+  } = useCreateMenuPage()
 
   return (
     <Layout>
@@ -23,7 +20,7 @@ export default function CreateMenu() {
           <div className="menu-header">
             <h1>Novo Cardápio</h1>
             <Link
-              to={`/establishment/${code}/menus`}
+              to={`/establishment/${establishmentCode}/menus`}
               className="btn-back"
             >
               ← Voltar
@@ -72,7 +69,7 @@ export default function CreateMenu() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/menus`}
+                to={`/establishment/${establishmentCode}/menus`}
                 className="btn-secondary"
               >
                 Cancelar

@@ -1,32 +1,20 @@
-import { useParams, Link } from 'react-router-dom'
-import { useMenu } from '../../hooks/Menu/useMenu'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { MenuItem } from '../../types/menu'
+import { useViewMenuPage } from '../../hooks/Menu/useViewMenuPage'
+import ViewMenuLoading from './ViewMenuLoading'
 import '../../../css/owner/ViewMenu.css'
 
 export default function ViewMenu() {
-  const { code, id } = useParams<{ code: string; id: string }>()
-  const { menu, loading, error } = useMenu({ 
-    menuId: id ? parseInt(id) : undefined,
-    establishmentCode: code 
-  })
-
-  // Transformar o menu do hook para o formato esperado pela view
-  const menuData = menu ? {
-    id: menu.id,
-    name: menu.name,
-    description: menu.description,
-    items: [] as MenuItem[] // Por enquanto vazio, pode ser expandido depois
-  } : null
+  const {
+    establishmentCode,
+    menuId,
+    menuData,
+    loading,
+    error
+  } = useViewMenuPage()
 
   if (loading) {
-    return (
-      <Layout>
-        <div className="view-menu-container">
-          <p>Carregando...</p>
-        </div>
-      </Layout>
-    )
+    return <ViewMenuLoading />
   }
 
   if (error) {
@@ -35,7 +23,7 @@ export default function ViewMenu() {
         <div className="view-menu-container">
           <div className="error-message">
             <p>{error}</p>
-            <Link to={`/establishment/${code}/menus`} className="btn-back">
+            <Link to={`/establishment/${establishmentCode}/menus`} className="btn-back">
               ← Voltar para lista de cardápios
             </Link>
           </div>
@@ -59,13 +47,13 @@ export default function ViewMenu() {
       <div className="view-menu-container">
         <div className="view-menu-header">
           <Link
-            to={`/establishment/${code}/menus`}
+            to={`/establishment/${establishmentCode}/menus`}
             className="btn-back"
           >
             ← Voltar
           </Link>
           <Link
-            to={`/establishment/${code}/menus/${menuData.id}/edit`}
+            to={`/establishment/${establishmentCode}/menus/${menuData.id}/edit`}
             className="btn-edit"
           >
             Editar

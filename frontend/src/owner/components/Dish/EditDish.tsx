@@ -1,15 +1,12 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useEditDish } from '../../hooks/Dish/useEditDish'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
-import { useDishPortions } from '../../hooks/DishPortion/useDishPortions'
+import { useEditDishPage } from '../../hooks/Dish/useEditDishPage'
 import '../../../css/owner/CreateDish.css'
 
 export default function EditDish() {
-  const { code, id } = useParams<{ code: string; id: string }>()
-  useRequireAuth()
-
   const {
+    establishmentCode,
+    dishId,
     formData,
     tags,
     errors,
@@ -21,14 +18,9 @@ export default function EditDish() {
     handleTagToggle,
     handleCreateTag,
     handleSubmit,
-    setFormData,
-  } = useEditDish({ 
-    dishId: id ? parseInt(id) : undefined,
-    establishmentCode: code 
-  })
-
-  const dishId = id ? parseInt(id) : undefined
-  const { portions, loading: loadingPortions } = useDishPortions(code, dishId)
+    portions,
+    loadingPortions,
+  } = useEditDishPage()
 
   if (loadingDish) {
     return (
@@ -49,7 +41,7 @@ export default function EditDish() {
           <div className="dish-header">
             <h1>Editar Prato</h1>
             <Link
-              to={`/establishment/${code}/dishes`}
+              to={`/establishment/${establishmentCode}/dishes`}
               className="btn-back"
             >
               ← Voltar
@@ -125,7 +117,7 @@ export default function EditDish() {
                     </div>
                   ))}
                   <Link
-                    to={`/establishment/${code}/dishes/${id}/portions`}
+                    to={`/establishment/${establishmentCode}/dishes/${dishId}/portions`}
                     className="btn-manage-portions"
                   >
                     Gerenciar Porções →
@@ -135,7 +127,7 @@ export default function EditDish() {
                 <div className="portions-empty">
                   <p>Nenhuma porção cadastrada</p>
                   <Link
-                    to={`/establishment/${code}/dishes/${id}/portions/new`}
+                    to={`/establishment/${establishmentCode}/dishes/${dishId}/portions/new`}
                     className="btn-add-portion"
                   >
                     ➕ Adicionar Porção
@@ -208,7 +200,7 @@ export default function EditDish() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/dishes`}
+                to={`/establishment/${establishmentCode}/dishes`}
                 className="btn-secondary"
               >
                 Cancelar

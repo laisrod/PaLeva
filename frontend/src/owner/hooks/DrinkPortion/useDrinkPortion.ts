@@ -1,13 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ownerApi } from '../../services/api'
 import { useApiData } from '../Api/useApiData'
-import { Portion } from '../../types/portion'
-
-interface UseDrinkPortionOptions {
-  portionId: number | undefined
-  establishmentCode: string | undefined
-  drinkId: number | undefined
-}
+import { Portion, UseDrinkPortionOptions } from '../../types/portion'
 
 export function useDrinkPortion({ portionId, establishmentCode, drinkId }: UseDrinkPortionOptions) {
   const [portion, setPortion] = useState<Portion | null>(null)

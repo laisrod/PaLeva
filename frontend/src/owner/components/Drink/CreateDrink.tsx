@@ -1,14 +1,11 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useCreateDrink } from '../../hooks/Drink/useCreateDrink'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useCreateDrinkPage } from '../../hooks/Drink/useCreateDrinkPage'
 import '../../../css/owner/CreateDish.css'
 
 export default function CreateDrink() {
-  const { code } = useParams<{ code: string }>()
-  useRequireAuth()
-
   const {
+    establishmentCode,
     formData,
     tags,
     errors,
@@ -19,7 +16,7 @@ export default function CreateDrink() {
     handleTagToggle,
     handleCreateTag,
     handleSubmit,
-  } = useCreateDrink({ establishmentCode: code })
+  } = useCreateDrinkPage()
 
   return (
     <Layout>
@@ -28,7 +25,7 @@ export default function CreateDrink() {
           <div className="dish-header">
             <h1>Nova Bebida</h1>
             <Link
-              to={`/establishment/${code}/drinks`}
+              to={`/establishment/${establishmentCode}/drinks`}
               className="btn-back"
             >
               ← Voltar
@@ -166,7 +163,7 @@ export default function CreateDrink() {
 
             <div className="form-actions">
               <Link
-                to={`/establishment/${code}/drinks`}
+                to={`/establishment/${establishmentCode}/drinks`}
                 className="btn-secondary"
               >
                 Cancelar
