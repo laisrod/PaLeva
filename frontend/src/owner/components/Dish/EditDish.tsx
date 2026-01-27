@@ -130,7 +130,7 @@ export default function EditDish() {
                     to={`/establishment/${establishmentCode}/dishes/${dishId}/portions/new`}
                     className="btn-add-portion"
                   >
-                    ➕ Adicionar Porção
+                    Adicionar Porção
                   </Link>
                 </div>
               )}

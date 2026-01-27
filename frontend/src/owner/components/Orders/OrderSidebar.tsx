@@ -12,18 +12,16 @@ export default function OrderSidebar(props: OrderSidebarProps) {
     establishmentCode,
     currentOrder,
     loading,
-    creatingOrder,
     totals,
     itemsCount,
     handleGoToOrders,
-    handleCreateOrder
   } = useOrderSidebar(props)
 
-  if (loading || creatingOrder) {
+  if (loading) {
     return (
       <aside className="order-sidebar">
         <div className="order-sidebar-loading">
-          {creatingOrder ? 'Criando pedido...' : 'Carregando...'}
+          Carregando...
         </div>
       </aside>
     )
@@ -34,13 +32,6 @@ export default function OrderSidebar(props: OrderSidebarProps) {
       <aside className="order-sidebar">
         <div className="order-sidebar-empty">
           <p>Nenhum pedido ativo</p>
-          <button
-            onClick={handleCreateOrder}
-            className="order-sidebar-create-btn"
-            disabled={creatingOrder}
-          >
-            {creatingOrder ? 'Criando...' : 'Criar Novo Pedido'}
-          </button>
           <Link
             to={establishmentCode ? `/establishment/${establishmentCode}/orders` : '#'}
             className="order-sidebar-link-btn"

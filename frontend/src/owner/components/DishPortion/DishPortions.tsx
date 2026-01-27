@@ -36,7 +36,7 @@ export default function DishPortions() {
                 to={`/establishment/${establishmentCode}/dishes/${dishId}/portions/new`}
                 className="dishes-btn dishes-btn-primary"
               >
-                ➕ Nova Porção
+                Nova Porção
               </Link>
             )}
             <Link
@@ -96,7 +96,7 @@ export default function DishPortions() {
                 to={`/establishment/${establishmentCode}/dishes/${dishId}/portions/new`}
                 className="dishes-btn dishes-btn-primary mt-3"
               >
-                ➕ Criar Primeira Porção
+                Criar Primeira Porção
               </Link>
             )}
           </div>
