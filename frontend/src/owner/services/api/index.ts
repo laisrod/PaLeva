@@ -200,6 +200,14 @@ class OwnerApiService extends BaseApiService {
     return this.orderItems.addItem(establishmentCode, orderCode, options)
   }
 
+  removeOrderItem(
+    establishmentCode: string,
+    orderCode: string,
+    itemId: number
+  ) {
+    return this.orderItems.removeItem(establishmentCode, orderCode, itemId)
+  }
+
   getOrder(establishmentCode: string, orderCode: string) {
     return this.orders.getOrder(establishmentCode, orderCode)
   }

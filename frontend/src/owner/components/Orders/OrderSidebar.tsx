@@ -15,6 +15,8 @@ export default function OrderSidebar(props: OrderSidebarProps) {
     totals,
     itemsCount,
     handleGoToOrders,
+    handleRemoveItem,
+    removingId,
   } = useOrderSidebar(props)
 
   if (loading) {
@@ -77,7 +79,8 @@ export default function OrderSidebar(props: OrderSidebarProps) {
           <OrderSidebarItem
             key={item.id}
             item={item}
-            onRemove={handleGoToOrders}
+            onRemove={handleRemoveItem}
+            removing={removingId === item.id}
           />
         ))}
       </div>
@@ -104,7 +107,7 @@ export default function OrderSidebar(props: OrderSidebarProps) {
   )
 }
 
-function OrderSidebarItem({ item, onRemove }: OrderSidebarItemProps) {
+function OrderSidebarItem({ item, onRemove, removing }: OrderSidebarItemProps) {
   const itemName = item.menu_item?.name ?? 'Item'
   const portionName = item.portion?.name ?? item.portion?.description ?? ''
   const displayName = portionName ? `${itemName} - ${portionName}` : itemName
@@ -141,11 +144,12 @@ function OrderSidebarItem({ item, onRemove }: OrderSidebarItemProps) {
             <button
               type="button"
               className="order-sidebar-item-remove"
-              title="Remover item (ir para página de pedidos)"
-              onClick={onRemove}
+              title="Remover item do pedido"
+              onClick={() => onRemove(item.id)}
+              disabled={removing}
               aria-label={`Remover ${displayName}`}
             >
-              🗑️
+              {removing ? '…' : '🗑️'}
             </button>
           </div>
           <input
