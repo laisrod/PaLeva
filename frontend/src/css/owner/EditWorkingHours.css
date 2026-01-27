@@ -4,6 +4,7 @@
   max-width: 100%;
   width: 100%;
   padding: var(--spacing-md);
+  background: var(--color-bg-primary);
 }
 
 .edit-working-hours-header {
@@ -18,33 +19,35 @@
 .edit-working-hours-header h1 {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
+  color: var(--text-primary);
   margin: 0;
 }
 
-.btn-back {
+.edit-working-hours-container .btn-back {
   padding: var(--spacing-sm) var(--spacing-md);
   text-decoration: none;
-  color: var(--text-primary);
-  border: 1px solid var(--color-gray-300);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius-md);
   transition: all var(--transition-base);
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
+  background: transparent;
 }
 
-.btn-back:hover {
-  background: var(--color-gray-50);
+.edit-working-hours-container .btn-back:hover {
+  background: var(--color-bg-tertiary);
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
 
 .working-hours-form {
-  background: var(--color-white);
+  background: var(--color-bg-secondary);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-xl);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .working-hours-grid {
@@ -55,10 +58,10 @@
 }
 
 .working-hour-card {
-  border: 1px solid var(--color-gray-200);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-md);
-  background: var(--color-white);
+  background: var(--color-bg-secondary);
 }
 
 .working-hour-header {
@@ -67,7 +70,7 @@
   align-items: center;
   margin-bottom: var(--spacing-md);
   padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .working-hour-header h3 {
@@ -88,15 +91,17 @@
   width: 50px;
   height: 24px;
   appearance: none;
-  background: var(--color-gray-300);
+  background: var(--color-bg-tertiary);
   border-radius: 12px;
   position: relative;
   cursor: pointer;
   transition: background var(--transition-base);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .toggle-switch input[type="checkbox"]:checked {
   background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .toggle-switch input[type="checkbox"]::before {
@@ -144,10 +149,12 @@
 .time-input-group input[type="time"] {
   width: 100%;
   padding: var(--spacing-sm);
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-base);
   transition: border-color var(--transition-base);
+  background: var(--color-bg-tertiary);
+  color: var(--text-primary);
 }
 
 .time-input-group input[type="time"]:focus {
@@ -155,12 +162,12 @@
   border-color: var(--color-primary);
 }
 
-.form-actions {
+.edit-working-hours-container .form-actions {
   display: flex;
   gap: var(--spacing-md);
   justify-content: flex-end;
   padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--color-gray-200);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-primary,
@@ -194,15 +201,16 @@
   cursor: not-allowed;
 }
 
-.btn-secondary {
-  background: var(--color-white);
+.edit-working-hours-container .btn-secondary {
+  background: var(--color-bg-tertiary);
   color: var(--text-primary);
-  border-color: var(--color-gray-300);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-.btn-secondary:hover {
-  background: var(--color-gray-50);
-  border-color: var(--color-gray-400);
+.edit-working-hours-container .btn-secondary:hover {
+  background: var(--color-bg-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .alert {

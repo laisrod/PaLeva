@@ -1,0 +1,367 @@
+@import '../shared/variables.css';
+
+.order-sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 360px;
+  height: 100vh;
+  background: var(--color-bg-secondary);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 90;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--spacing-xl);
+}
+
+/* Custom scrollbar para OrderSidebar */
+.order-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.order-sidebar::-webkit-scrollbar-track {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--border-radius-sm);
+}
+
+.order-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 127, 63, 0.3);
+  border-radius: var(--border-radius-sm);
+}
+
+.order-sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 127, 63, 0.5);
+}
+
+.order-sidebar-loading,
+.order-sidebar-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  text-align: center;
+}
+
+.order-sidebar-empty p {
+  margin: 0;
+  font-size: var(--font-size-base);
+}
+
+.order-sidebar-link-btn {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.order-sidebar-link-btn:hover {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-primary);
+  color: var(--text-primary);
+}
+
+.order-sidebar-header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.order-sidebar-title-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: opacity var(--transition-base);
+}
+
+.order-sidebar-title-link:hover {
+  opacity: 0.8;
+}
+
+.order-sidebar-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+  cursor: pointer;
+}
+
+.order-sidebar-tabs {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.order-sidebar-tab {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-bg-tertiary);
+  border: none;
+  border-radius: var(--border-radius-md);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.order-sidebar-tab:hover {
+  background: var(--color-bg-secondary);
+  color: var(--text-primary);
+}
+
+.order-sidebar-tab.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.order-sidebar-items {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-bottom: var(--spacing-lg);
+  min-height: 0;
+  padding-right: var(--spacing-xs);
+}
+
+/* Custom scrollbar para OrderSidebar */
+.order-sidebar-items::-webkit-scrollbar {
+  width: 6px;
+}
+
+.order-sidebar-items::-webkit-scrollbar-track {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--border-radius-sm);
+}
+
+.order-sidebar-items::-webkit-scrollbar-thumb {
+  background: rgba(255, 127, 63, 0.3);
+  border-radius: var(--border-radius-sm);
+}
+
+.order-sidebar-items::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 127, 63, 0.5);
+}
+
+.order-sidebar-items-header {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+.order-sidebar-items-header span:last-child {
+  text-align: right;
+}
+
+.order-sidebar-item {
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.order-sidebar-item-content {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: flex-start;
+}
+
+.order-sidebar-item-image {
+  flex-shrink: 0;
+}
+
+.order-sidebar-item-image-placeholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--color-bg-tertiary);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.order-sidebar-item-image img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.order-sidebar-item-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.order-sidebar-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.order-sidebar-item-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.order-sidebar-item-unit-price {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.order-sidebar-item-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.order-sidebar-item-qty-box {
+  flex-shrink: 0;
+}
+
+.order-sidebar-item-qty-input {
+  width: 50px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-bg-tertiary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.order-sidebar-item-qty-input::-webkit-outer-spin-button,
+.order-sidebar-item-qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.order-sidebar-item-total {
+  flex: 1;
+  text-align: right;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.order-sidebar-item-remove {
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-size: var(--font-size-base);
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.order-sidebar-item-remove:hover {
+  background: rgba(255, 127, 63, 0.1);
+  border-color: var(--color-primary-dark);
+}
+
+.order-sidebar-item-note {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-bg-tertiary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.order-sidebar-item-note::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.order-sidebar-item-note:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  color: var(--text-primary);
+}
+
+.order-sidebar-summary {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  flex-shrink: 0;
+}
+
+.order-sidebar-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.order-sidebar-summary-row.order-sidebar-summary-total {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.order-sidebar-summary-row:last-child:not(.order-sidebar-summary-total) {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: 0;
+}
+
+.order-sidebar-checkout {
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-lg);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+}
+
+.order-sidebar-checkout:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 127, 63, 0.4);
+}
+
+/* Mobile */
+@media (max-width: 1024px) {
+  .order-sidebar {
+    display: none;
+  }
+  
+  .owner-main-content {
+    padding-right: var(--spacing-2xl) !important;
+  }
+}

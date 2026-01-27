@@ -12,6 +12,7 @@ interface UseEditDishOptions {
   onSuccess?: () => void
 }
 
+// Hook de lógica de negócio
 export function useEditDish({ dishId, establishmentCode, onSuccess }: UseEditDishOptions) {
   const navigate = useNavigate()
   const { dish, loading: loadingDish, error: dishError } = useDish({ dishId, establishmentCode })

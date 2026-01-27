@@ -32,6 +32,7 @@ export function useAddOrderItem({ establishmentCode, orderCode, onSuccess }: Use
       }
 
       if (response.data) {
+        ownerApi.invalidateOrderCache(establishmentCode, orderCode)
         onSuccess?.()
         return true
       }

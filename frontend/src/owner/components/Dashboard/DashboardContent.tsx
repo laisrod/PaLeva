@@ -45,7 +45,7 @@ export default function DashboardContent({ establishment, isOwner }: DashboardCo
                 to={`/establishment/${establishment.code}/menus/new`}
                 className="dashboard-btn btn-primary-owner"
               >
-                ➕ Criar Cardápio
+                Criar Cardápio
               </Link>
             )}
             <Link
@@ -69,7 +69,7 @@ export default function DashboardContent({ establishment, isOwner }: DashboardCo
                 to={`/establishment/${establishment.code}/dishes/new`}
                 className="dashboard-btn btn-primary-owner"
               >
-                ➕ Novo Prato
+                Novo Prato
               </Link>
             )}
             <Link
@@ -93,7 +93,7 @@ export default function DashboardContent({ establishment, isOwner }: DashboardCo
                 to={`/establishment/${establishment.code}/drinks/new`}
                 className="dashboard-btn btn-primary-owner"
               >
-                ➕ Nova Bebida
+                Nova Bebida
               </Link>
             )}
             <Link

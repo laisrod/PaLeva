@@ -11,7 +11,7 @@ export default function DishesEmpty({ establishmentCode, isOwner }: DishesEmptyP
           to={`/establishment/${establishmentCode}/dishes/new`}
           className="dishes-btn dishes-btn-primary mt-3"
         >
-          ➕ Criar Primeiro Prato
+          Criar Primeiro Prato
         </Link>
       )}
     </div>

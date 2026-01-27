@@ -3,6 +3,7 @@ import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
 import { useEditDish } from './useEditDish'
 import { useDishPortions } from '../DishPortion/useDishPortions'
 
+//Hook da página (orquestrador) - orquestração e contexto da página
 export function useEditDishPage() {
   const { code, id } = useParams<{ code: string; id: string }>()
   useRequireAuth()
