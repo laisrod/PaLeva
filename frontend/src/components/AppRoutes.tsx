@@ -5,6 +5,7 @@ import Home from '../shared/pages/Home'
 import Menu from '../client/pages/Menu'
 import RestaurantsList from '../client/pages/RestaurantsList'
 import CreateEstablishment from '../owner/components/Establishment/CreateEstablishment'
+import EditEstablishment from '../owner/components/Establishment/EditEstablishment'
 import Dashboard from '../owner/components/Dashboard/Dashboard'
 import Dishes from '../owner/components/Dish/Dishes'
 import Drinks from '../owner/components/Drink/Drinks'
@@ -35,6 +36,7 @@ export default function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/restaurants" element={<RestaurantsList />} />
       <Route path="/establishments/new" element={<CreateEstablishment />} />
+      <Route path="/establishment/:code/edit" element={<EditEstablishment />} />
       <Route path="/orders" element={<Orders />} />
       <Route path="/establishment/:code/orders" element={<Orders />} />
       <Route path="/menu/:code" element={<Menu />} />

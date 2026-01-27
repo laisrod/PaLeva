@@ -28,4 +28,23 @@ export class EstablishmentsApi extends BaseApiService {
       body: JSON.stringify({ establishment: establishmentData }),
     })
   }
+
+  async updateEstablishment(code: string, establishmentData: Partial<EstablishmentData>) {
+    return this.request<{
+      establishment: {
+        id: number
+        name: string
+        code: string
+        city?: string
+        state?: string
+        phone_number?: string
+        email?: string
+        full_address?: string
+      }
+      message: string
+    }>(`/establishments/${code}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ establishment: establishmentData }),
+    })
+  }
 }
