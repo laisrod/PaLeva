@@ -10,10 +10,8 @@ export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
   const {
     currentOrder,
     loading,
-    creatingOrder,
     totals,
     itemsCount,
-    createNewOrder,
     loadOrder
   } = useCurrentOrder({
     establishmentCode,
@@ -66,20 +64,12 @@ export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
     }
   }
 
-  const handleCreateOrder = async () => {
-    if (establishmentCode) {
-      await createNewOrder()
-    }
-  }
-
   return {
     establishmentCode,
     currentOrder,
     loading,
-    creatingOrder,
     totals,
     itemsCount,
     handleGoToOrders,
-    handleCreateOrder
   }
 }

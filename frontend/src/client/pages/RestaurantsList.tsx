@@ -59,7 +59,7 @@ export default function RestaurantsList() {
           onClick={() => navigate('/establishments/new')}
           className="create-establishment-btn"
         >
-          ➕ Criar Meu Estabelecimento
+          Criar Meu Estabelecimento
         </button>
       </div>
 
@@ -79,7 +79,7 @@ export default function RestaurantsList() {
             onClick={() => navigate('/establishments/new')}
             className="create-establishment-btn"
           >
-            ➕ Criar Meu Estabelecimento
+            Criar Meu Estabelecimento
           </button>
         </div>
       )}

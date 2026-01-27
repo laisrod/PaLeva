@@ -144,7 +144,7 @@ export default function EditDrink() {
                     to={`/establishment/${establishmentCode}/drinks/${drinkId}/portions/new`}
                     className="btn-add-portion"
                   >
-                    ➕ Adicionar Porção
+                    Adicionar Porção
                   </Link>
                 </div>
               )}

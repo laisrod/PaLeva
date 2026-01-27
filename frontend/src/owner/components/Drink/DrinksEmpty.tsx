@@ -11,7 +11,7 @@ export default function DrinksEmpty({ establishmentCode, isOwner }: DrinksEmptyP
           to={`/establishment/${establishmentCode}/drinks/new`}
           className="drinks-btn drinks-btn-primary mt-3"
         >
-          ➕ Criar Primeira Bebida
+          Criar Primeira Bebida
         </Link>
       )}
     </div>

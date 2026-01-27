@@ -109,7 +109,7 @@ export default function Layout({ children }: LayoutProps) {
                     🔑
                   </Link>
                   <Link to="/register" className="owner-action-btn owner-primary-btn" title="Criar conta">
-                    ➕
+                    Criar conta
                   </Link>
                 </>
               )}
