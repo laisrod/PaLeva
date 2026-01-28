@@ -49,7 +49,7 @@ Rails.application.routes.draw do
         resources :drinks, only: [:index, :show, :create, :update, :destroy] do
           resources :portions, only: [:index, :show, :create, :update, :destroy], controller: 'drinks_portions'
         end
-        resources :tags, only: [:index, :create]
+        resources :tags, only: [:index, :show, :create, :update, :destroy]
         resources :working_hours, only: [:index, :update]
         resources :orders, param: :code, only: [:index, :show, :create, :update, :destroy] do
           resources :items, only: [:create, :update, :destroy], controller: 'order_items'

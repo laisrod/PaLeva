@@ -19,7 +19,7 @@ export default function CreateEstablishment() {
   return (
     <div className="create-establishment-container">
       <div className="create-establishment-card">
-        <h1>PaLeva</h1>
+        <h1>PÁLEVÁ</h1>
         <h2>Novo Restaurante</h2>
 
         {errors.length > 0 && (

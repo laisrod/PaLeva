@@ -52,17 +52,17 @@ export default function Login() {
       const userIsOwner = isOwner(user.role)
       const establishmentCode = user.establishment?.code
 
-      // PRIORIDADE 1: Proprietário
+      // Proprietário
       if (userIsOwner) {
         if (establishmentCode) {
-          navigate(`/establishment/${establishmentCode}/menus`)
+          navigate(`/establishment/${establishmentCode}`)
         } else {
           navigate('/establishments/new')
         }
         return
       }
 
-      // PRIORIDADE 2: Cliente
+      // Cliente
       if (establishmentCode) {
         navigate(`/menu/${establishmentCode}`)
       } else {
@@ -79,7 +79,7 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>PaLeva</h1>
+        <h1>PÁLEVALeva</h1>
         <h2>Login</h2>
         
         <form onSubmit={handleSubmit}>

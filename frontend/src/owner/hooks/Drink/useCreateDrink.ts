@@ -7,7 +7,7 @@ import { CreateDrinkFormData, DrinkData, UseCreateDrinkOptions } from '../../typ
 
 export function useCreateDrink({ establishmentCode, onSuccess }: UseCreateDrinkOptions) {
   const navigate = useNavigate()
-  const { tags, loading: loadingTags, refetch: refetchTags } = useTags(establishmentCode)
+  const { tags, loading: loadingTags, refetch: refetchTags } = useTags({ establishmentCode, category: 'drink' })
   
   const [formData, setFormData] = useState<CreateDrinkFormData>({
     name: '',
@@ -73,7 +73,7 @@ export function useCreateDrink({ establishmentCode, onSuccess }: UseCreateDrinkO
     }
 
     try {
-      const response = await ownerApi.createTag(establishmentCode, formData.newTagName.trim())
+      const response = await ownerApi.createTag(establishmentCode, formData.newTagName.trim(), 'drink')
       if (response.data) {
         await refetchTags()
         setFormData(prev => ({

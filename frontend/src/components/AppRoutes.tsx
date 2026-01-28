@@ -5,6 +5,7 @@ import Home from '../shared/pages/Home'
 import Menu from '../client/pages/Menu'
 import RestaurantsList from '../client/pages/RestaurantsList'
 import CreateEstablishment from '../owner/components/Establishment/CreateEstablishment'
+import EditEstablishment from '../owner/components/Establishment/EditEstablishment'
 import Dashboard from '../owner/components/Dashboard/Dashboard'
 import Dishes from '../owner/components/Dish/Dishes'
 import Drinks from '../owner/components/Drink/Drinks'
@@ -23,6 +24,8 @@ import DrinkPortions from '../owner/components/DrinkPortion/DrinkPortions'
 import CreateDrinkPortion from '../owner/components/DrinkPortion/CreateDrinkPortion'
 import EditDrinkPortion from '../owner/components/DrinkPortion/EditDrinkPortion'
 import Tags from '../owner/components/Tags/Tags'
+import CreateTag from '../owner/components/Tags/CreateTag'
+import EditTag from '../owner/components/Tags/EditTag'
 import Orders from '../owner/components/Orders/Orders'
 import EditWorkingHours from '../owner/components/WorkingHours/EditWorkingHours'
 import TestCreateOrder from '../owner/components/Orders/TestCreateOrder'
@@ -35,6 +38,7 @@ export default function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/restaurants" element={<RestaurantsList />} />
       <Route path="/establishments/new" element={<CreateEstablishment />} />
+      <Route path="/establishment/:code/edit" element={<EditEstablishment />} />
       <Route path="/orders" element={<Orders />} />
       <Route path="/establishment/:code/orders" element={<Orders />} />
       <Route path="/menu/:code" element={<Menu />} />
@@ -55,6 +59,8 @@ export default function AppRoutes() {
       <Route path="/establishment/:code/menus/new" element={<CreateMenu />} />
       <Route path="/establishment/:code/menus/:id" element={<ViewMenu />} />
       <Route path="/establishment/:code/menus/:id/edit" element={<EditMenu />} />
+      <Route path="/establishment/:code/tags/new" element={<CreateTag />} />
+      <Route path="/establishment/:code/tags/:id/edit" element={<EditTag />} />
       <Route path="/establishment/:code/tags" element={<Tags />} />
       <Route path="/establishment/:code/working-hours" element={<EditWorkingHours />} />
       <Route path="/establishment/:code/test-order" element={<TestCreateOrder />} />

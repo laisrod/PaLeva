@@ -1,9 +1,21 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ownerApi } from '../services/api'
 import { useApiData } from './Api/useApiData'
-import { Tag } from '../types/tag'
+import { Tag, TagCategory } from '../types/tag'
 
-export function useTags(establishmentCode: string | undefined) {
+interface UseTagsOptions {
+  establishmentCode: string | undefined
+  category?: TagCategory
+}
+
+export function useTags(establishmentCodeOrOptions: string | undefined | UseTagsOptions, categoryParam?: TagCategory) {
+  // Support both old signature (string) and new signature (object)
+  const options: UseTagsOptions = typeof establishmentCodeOrOptions === 'object' && establishmentCodeOrOptions !== null
+    ? establishmentCodeOrOptions
+    : { establishmentCode: establishmentCodeOrOptions, category: categoryParam }
+
+  const { establishmentCode, category } = options
+
   const [tags, setTags] = useState<Tag[]>([])
   
   const { loading, error, executeRequest } = useApiData<Tag[]>({
@@ -16,24 +28,25 @@ export function useTags(establishmentCode: string | undefined) {
       return
     }
     
-    await executeRequest(() => ownerApi.getTags(establishmentCode))
-  }, [establishmentCode, executeRequest])
+    await executeRequest(() => ownerApi.getTags(establishmentCode, category))
+  }, [establishmentCode, category, executeRequest])
 
+  // Reset tags when category changes and reload
   useEffect(() => {
+    setTags([]) // Clear tags before loading new ones
     if (establishmentCode) {
       loadTags()
     }
-  }, [establishmentCode])
+  }, [establishmentCode, category, loadTags])
 
   const deleteTag = useCallback(async (tagId: number) => {
-    if (!establishmentCode) {
-      return false
-    }
-    
+    if (!establishmentCode) return false
     try {
-      setTags((previousTags) => previousTags.filter((tag) => tag.id !== tagId))
+      const res = await ownerApi.deleteTag(establishmentCode, tagId)
+      if (res.error) return false
+      setTags((prev) => prev.filter((t) => t.id !== tagId))
       return true
-    } catch (err) {
+    } catch {
       return false
     }
   }, [establishmentCode])

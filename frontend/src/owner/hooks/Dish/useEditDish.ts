@@ -16,7 +16,7 @@ interface UseEditDishOptions {
 export function useEditDish({ dishId, establishmentCode, onSuccess }: UseEditDishOptions) {
   const navigate = useNavigate()
   const { dish, loading: loadingDish, error: dishError } = useDish({ dishId, establishmentCode })
-  const { tags, loading: loadingTags, refetch: refetchTags } = useTags(establishmentCode)
+  const { tags, loading: loadingTags, refetch: refetchTags } = useTags({ establishmentCode, category: 'dish' })
   
   const [formData, setFormData] = useState<CreateDishFormData>({
     name: '',
@@ -98,7 +98,7 @@ export function useEditDish({ dishId, establishmentCode, onSuccess }: UseEditDis
     }
 
     try {
-      const response = await ownerApi.createTag(establishmentCode, tagName)
+      const response = await ownerApi.createTag(establishmentCode, tagName, 'dish')
       
       if (response.data) {
         const newTag = response.data.tag
