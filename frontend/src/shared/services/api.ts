@@ -1,4 +1,3 @@
-// Serviço de API para comunicação com backend Rails
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1'
 
 interface ApiResponse<T> {

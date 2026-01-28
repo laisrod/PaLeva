@@ -34,6 +34,16 @@ export interface UseCreateDishOptions {
   onSuccess?: () => void
 }
 
+export interface UseDishOptions {
+  dishId: number | undefined
+  establishmentCode: string | undefined
+}
+
+export interface UseDeleteDishOptions {
+  establishmentCode: string | undefined
+  onSuccess?: () => void
+}
+
 export interface DishesHeaderProps {
   establishmentCode: string
   isOwner: boolean

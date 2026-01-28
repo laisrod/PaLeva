@@ -18,17 +18,6 @@ export default function DrinksHeader({ establishmentCode, isOwner }: DrinksHeade
           )}
         </div>
       </div>
-      
-      <div className="drinks-search-container">
-        <div className="drinks-search-wrapper">
-          <span className="drinks-search-icon"></span>
-          <input
-            type="text"
-            className="drinks-search-input"
-            placeholder="Search for food, coffee, etc.."
-          />
-        </div>
-      </div>
     </div>
   )
 }

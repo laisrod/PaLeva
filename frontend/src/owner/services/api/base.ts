@@ -12,6 +12,7 @@ export class BaseApiService {
     return localStorage.getItem('auth_token')
   }
 
+  //faz a requisição para a api
   protected async request<T>(
     endpoint: string,
     options: RequestInit = {}
@@ -93,7 +94,7 @@ export class BaseApiService {
       }
     }
   }
-
+//faz a requisição para a api para foto
   protected async requestFormData<T>(
     endpoint: string,
     formData: FormData,
