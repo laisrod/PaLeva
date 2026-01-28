@@ -24,6 +24,8 @@ import DrinkPortions from '../owner/components/DrinkPortion/DrinkPortions'
 import CreateDrinkPortion from '../owner/components/DrinkPortion/CreateDrinkPortion'
 import EditDrinkPortion from '../owner/components/DrinkPortion/EditDrinkPortion'
 import Tags from '../owner/components/Tags/Tags'
+import CreateTag from '../owner/components/Tags/CreateTag'
+import EditTag from '../owner/components/Tags/EditTag'
 import Orders from '../owner/components/Orders/Orders'
 import EditWorkingHours from '../owner/components/WorkingHours/EditWorkingHours'
 import TestCreateOrder from '../owner/components/Orders/TestCreateOrder'
@@ -57,6 +59,8 @@ export default function AppRoutes() {
       <Route path="/establishment/:code/menus/new" element={<CreateMenu />} />
       <Route path="/establishment/:code/menus/:id" element={<ViewMenu />} />
       <Route path="/establishment/:code/menus/:id/edit" element={<EditMenu />} />
+      <Route path="/establishment/:code/tags/new" element={<CreateTag />} />
+      <Route path="/establishment/:code/tags/:id/edit" element={<EditTag />} />
       <Route path="/establishment/:code/tags" element={<Tags />} />
       <Route path="/establishment/:code/working-hours" element={<EditWorkingHours />} />
       <Route path="/establishment/:code/test-order" element={<TestCreateOrder />} />

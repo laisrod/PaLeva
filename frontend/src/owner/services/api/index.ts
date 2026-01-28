@@ -66,12 +66,24 @@ class OwnerApiService extends BaseApiService {
     return this.menus.deleteMenu(establishmentCode, menuId)
   }
 
-  getTags(establishmentCode: string) {
-    return this.tags.getTags(establishmentCode)
+  getTags(establishmentCode: string, category?: 'dish' | 'drink') {
+    return this.tags.getTags(establishmentCode, category)
   }
 
-  createTag(establishmentCode: string, name: string) {
-    return this.tags.createTag(establishmentCode, name)
+  getTag(establishmentCode: string, tagId: number) {
+    return this.tags.getTag(establishmentCode, tagId)
+  }
+
+  createTag(establishmentCode: string, name: string, category: 'dish' | 'drink') {
+    return this.tags.createTag(establishmentCode, name, category)
+  }
+
+  updateTag(establishmentCode: string, tagId: number, name: string) {
+    return this.tags.updateTag(establishmentCode, tagId, name)
+  }
+
+  deleteTag(establishmentCode: string, tagId: number) {
+    return this.tags.deleteTag(establishmentCode, tagId)
   }
 
   getDishes(establishmentCode: string, tagIds?: number[]) {

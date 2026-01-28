@@ -1,5 +1,5 @@
 import { BaseApiService } from './base'
-import { EstablishmentData } from '../types/establishment'
+import { EstablishmentData } from '../../types/establishment'
 
 export class EstablishmentsApi extends BaseApiService {
   async getEstablishment(code: string) {

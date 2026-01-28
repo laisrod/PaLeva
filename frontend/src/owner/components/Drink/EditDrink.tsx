@@ -187,7 +187,15 @@ export default function EditDrink() {
             </div>
 
             <div className="form-group">
-              <label>Características</label>
+              <div className="form-group-label-row">
+                <label>Características</label>
+                <Link
+                  to={`/establishment/${establishmentCode}/tags?category=drink`}
+                  className="link-edit-tags"
+                >
+                  Editar características
+                </Link>
+              </div>
               {loadingTags ? (
                 <p>Carregando características...</p>
               ) : (

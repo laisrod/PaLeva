@@ -24,7 +24,7 @@ export function useDrinks(establishmentCode: string | undefined) {
       return
     }
     
-    await executeTagsRequest(() => ownerApi.getTags(establishmentCode))
+    await executeTagsRequest(() => ownerApi.getTags(establishmentCode, 'drink'))
   }, [establishmentCode, executeTagsRequest])
 
   const loadDrinks = useCallback(async () => {
