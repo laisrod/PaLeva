@@ -141,6 +141,21 @@
   display: none;
 }
 
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(0.7);
+  transition: filter var(--transition-base);
+}
+
+.owner-nav-link:hover .nav-icon {
+  filter: brightness(0) saturate(100%) invert(56%) sepia(82%) saturate(1057%) hue-rotate(341deg) brightness(101%) contrast(101%);
+}
+
+.owner-nav-link.active .nav-icon {
+  filter: brightness(0) invert(1);
+}
+
 .owner-nav-right {
   display: flex;
   flex-direction: column;
