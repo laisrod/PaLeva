@@ -211,43 +211,35 @@ export function useOrdersPage() {
     handleSelectDrinkPortion,
     handleSelectMenuItem,
     
-    // Menus
     menus,
     loadingMenus,
     
-    // Menu Items
     menuItems,
     loadingMenuItems,
     
-    // Dishes
     dishes,
     loadingDishes,
     dishesError,
     
-    // Drinks
     drinks,
     loadingDrinks,
     drinksError,
     
-    // Portions
     dishPortions,
     loadingDishPortions,
     drinkPortions,
     loadingDrinkPortions,
     
-    // Add Item
     addItem,
     addingItem,
     addItemError,
     
-    // Customer Info
     customerInfo,
     setCustomerInfo,
     updatingOrder,
     showCustomerModal,
     setShowCustomerModal,
     
-    // Handlers
     handleCreateOrder,
     handleClearOrderAndForm,
     handleUpdateCustomerInfo,

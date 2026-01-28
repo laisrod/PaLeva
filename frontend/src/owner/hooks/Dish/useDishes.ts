@@ -4,6 +4,7 @@ import { useApiData } from '../Api/useApiData'
 import { Dish } from '../../types/dish'
 import { Tag } from '../../types/tag'
 
+//fala com api e retorna os pratos e as características
 export function useDishes(establishmentCode: string | undefined) {
   const [dishes, setDishes] = useState<Dish[]>([])
   const [tags, setTags] = useState<Tag[]>([])

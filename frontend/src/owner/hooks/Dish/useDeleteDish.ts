@@ -1,17 +1,13 @@
 import { useState, useCallback } from 'react'
 import { ownerApi } from '../../services/api'
+import { UseDeleteDishOptions } from '../../types/dish'
 import { getErrorMessage } from '../errorHandler'
-
-interface UseDeleteDishOptions {
-  establishmentCode: string | undefined
-  onSuccess?: () => void
-}
 
 export function useDeleteDish({ establishmentCode, onSuccess }: UseDeleteDishOptions) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const deleteDish = useCallback(async (dishId: number) => {
+  const deleteDish = useCallback(async (dishId: number) => { //memoiza a função para não recriar em todo render
     if (!establishmentCode) {
       setError('Código do estabelecimento não encontrado')
       return false
