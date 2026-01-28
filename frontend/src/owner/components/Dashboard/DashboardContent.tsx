@@ -7,7 +7,7 @@ export default function DashboardContent({ establishment, isOwner }: DashboardCo
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1 className="dashboard-title">PaLeva</h1>
+        <h1 className="dashboard-title">PÁLEVÁ</h1>
         <h2 className="dashboard-subtitle">{establishment.name}</h2>
       </div>
 

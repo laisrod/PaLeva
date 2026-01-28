@@ -1,5 +1,5 @@
 import { BaseApiService } from './base'
-import { WorkingHour, WorkingHourUpdate } from '../types/workingHours'
+import { WorkingHour, WorkingHourUpdate } from '../../types/workingHours'
 
 export class WorkingHoursApi extends BaseApiService {
   async getWorkingHours(establishmentCode: string) {

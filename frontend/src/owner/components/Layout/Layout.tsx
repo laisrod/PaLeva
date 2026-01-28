@@ -1,6 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useLayout } from '../../hooks/Layout/useLayout'
 import { LayoutProps } from '../../types/layout'
+import RestaurantIcon from '../../../assets/restaurant.svg'
+import MenuIcon from '../../../assets/menu.svg'
+import DishIcon from '../../../assets/dish.svg'
+import DrinkIcon from '../../../assets/drink.svg'
+import OrdersIcon from '../../../assets/orders.svg'
+import ClockIcon from '../../../assets/clock.svg'
+import UserIcon from '../../../assets/user.svg'
+import LogoutIcon from '../../../assets/logout.svg'
 import '../../../css/owner/Layout.css'
 
 export default function Layout({ children }: LayoutProps) {
@@ -29,7 +37,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="owner-nav-top">
           <div className="owner-nav-left">
             <Link className="owner-logo" to={establishmentCode ? `/establishment/${establishmentCode}` : '/'}>
-              <span className="logo-text">PaLeva</span>
+              <span className="logo-text">PÁLEVÁ</span>
             </Link>
             
             {establishmentCode && (
@@ -39,42 +47,42 @@ export default function Layout({ children }: LayoutProps) {
                   className={`owner-nav-link ${isActive(`/establishment/${establishmentCode}`) && !isActive('/menus') && !isActive('/dishes') && !isActive('/drinks') && !isActive('/orders') ? 'active' : ''}`}
                   title="Dashboard"
                 >
-                  🏠
+                  <img src={RestaurantIcon} alt="Dashboard" className="nav-icon" />
                 </Link>
                 <Link
                   to={`/establishment/${establishmentCode}/menus`}
                   className={`owner-nav-link ${isActive('/menus') ? 'active' : ''}`}
                   title="Cardápios"
                 >
-                  📋
+                  <img src={MenuIcon} alt="Cardápios" className="nav-icon" />
                 </Link>
                 <Link
                   to={`/establishment/${establishmentCode}/dishes`}
                   className={`owner-nav-link ${isActive('/dishes') ? 'active' : ''}`}
                   title="Pratos"
                 >
-                  🍽️
+                  <img src={DishIcon} alt="Pratos" className="nav-icon" />
                 </Link>
                 <Link
                   to={`/establishment/${establishmentCode}/drinks`}
                   className={`owner-nav-link ${isActive('/drinks') ? 'active' : ''}`}
                   title="Bebidas"
                 >
-                  🥤
+                  <img src={DrinkIcon} alt="Bebidas" className="nav-icon" />
                 </Link>
                 <Link
                   to={`/establishment/${establishmentCode}/orders`}
                   className={`owner-nav-link ${isActive('/orders') ? 'active' : ''}`}
                   title="Pedidos"
                 >
-                  📦
+                  <img src={OrdersIcon} alt="Pedidos" className="nav-icon" />
                 </Link>
                 <Link
                   to={`/establishment/${establishmentCode}/working-hours`}
                   className={`owner-nav-link ${isActive('/working-hours') ? 'active' : ''}`}
                   title="Horários de Funcionamento"
                 >
-                  🕐
+                  <img src={ClockIcon} alt="Horários" className="nav-icon" />
                 </Link>
               </div>
             )}
@@ -89,14 +97,14 @@ export default function Layout({ children }: LayoutProps) {
                     className="owner-action-btn owner-user-btn"
                     title={user.email}
                   >
-                    👤
+                    <img src={UserIcon} alt="Perfil" className="nav-icon" />
                   </button>
                   <button
                     onClick={handleLogout}
                     className="owner-action-btn owner-logout-btn"
                     title="Sair"
                   >
-                    🚪
+                    <img src={LogoutIcon} alt="Sair" className="nav-icon" />
                   </button>
                 </>
               ) : (

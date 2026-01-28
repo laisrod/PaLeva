@@ -152,7 +152,15 @@ export default function EditDish() {
             </div>
 
             <div className="form-group">
-              <label>Características</label>
+              <div className="form-group-label-row">
+                <label>Características</label>
+                <Link
+                  to={`/establishment/${establishmentCode}/tags?category=dish`}
+                  className="link-edit-tags"
+                >
+                  Editar características
+                </Link>
+              </div>
               {loadingTags ? (
                 <p>Carregando características...</p>
               ) : (

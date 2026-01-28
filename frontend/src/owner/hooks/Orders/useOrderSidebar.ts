@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ownerApi } from '../../services/api'
 import { useCurrentOrder } from './useCurrentOrder'
 import { OrderSidebarProps } from '../../types/order'
 
@@ -7,6 +8,7 @@ const POLL_COOLDOWN_MS = 3000
 
 export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
   const navigate = useNavigate()
+  const [removingId, setRemovingId] = useState<number | null>(null)
   const {
     currentOrder,
     loading,
@@ -64,6 +66,26 @@ export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
     }
   }
 
+  const handleRemoveItem = useCallback(
+    async (itemId: number) => {
+      if (!establishmentCode || !currentOrder?.code) return
+      setRemovingId(itemId)
+      try {
+        const res = await ownerApi.removeOrderItem(
+          establishmentCode,
+          currentOrder.code,
+          itemId
+        )
+        if (res.error) return
+        ownerApi.invalidateOrderCache(establishmentCode, currentOrder.code)
+        await loadOrder(currentOrder.code, true)
+      } finally {
+        setRemovingId(null)
+      }
+    },
+    [establishmentCode, currentOrder?.code, loadOrder]
+  )
+
   return {
     establishmentCode,
     currentOrder,
@@ -71,5 +93,7 @@ export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
     totals,
     itemsCount,
     handleGoToOrders,
+    handleRemoveItem,
+    removingId,
   }
 }

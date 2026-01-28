@@ -47,4 +47,18 @@ export class OrderItemsApi extends BaseApiService {
       }),
     })
   }
+
+  async removeItem(
+    establishmentCode: string,
+    orderCode: string,
+    itemId: number
+  ) {
+    return this.request<{
+      message: string
+      order: { id: number; code: string; status: string; total_price: number }
+    }>(
+      `/establishments/${establishmentCode}/orders/${orderCode}/items/${itemId}`,
+      { method: 'DELETE' }
+    )
+  }
 }

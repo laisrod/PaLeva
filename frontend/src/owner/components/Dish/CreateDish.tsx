@@ -102,7 +102,15 @@ export default function CreateDish() {
             </div>
 
             <div className="form-group">
-              <label>Características</label>
+              <div className="form-group-label-row">
+                <label>Características</label>
+                <Link
+                  to={`/establishment/${establishmentCode}/tags?category=dish`}
+                  className="link-edit-tags"
+                >
+                  Editar características
+                </Link>
+              </div>
               {loadingTags ? (
                 <p>Carregando características...</p>
               ) : (
@@ -115,8 +123,8 @@ export default function CreateDish() {
                           checked={formData.selectedTags.includes(tag.id)}
                           onChange={() => handleTagToggle(tag.id)}
                           disabled={loading}
-                        />
-                        <span>{tag.name}</span>
+                        /> 
+                        <span>  {tag.name}</span>
                       </label>
                     ))}
                   </div>

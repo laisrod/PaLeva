@@ -7,7 +7,7 @@ import { CreateDishFormData, DishData, UseCreateDishOptions } from '../../types/
 
 export function useCreateDish({ establishmentCode, onSuccess }: UseCreateDishOptions) {
   const navigate = useNavigate()
-  const { tags, loading: loadingTags, refetch: refetchTags } = useTags(establishmentCode)
+  const { tags, loading: loadingTags, refetch: refetchTags } = useTags({ establishmentCode, category: 'dish' })
   
   const [formData, setFormData] = useState<CreateDishFormData>({
     name: '',
@@ -72,7 +72,7 @@ export function useCreateDish({ establishmentCode, onSuccess }: UseCreateDishOpt
     }
 
     try {
-      const response = await ownerApi.createTag(establishmentCode, tagName)
+      const response = await ownerApi.createTag(establishmentCode, tagName, 'dish')
       
       if (response.data) {
         const newTag = response.data.tag

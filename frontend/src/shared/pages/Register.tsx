@@ -108,7 +108,7 @@ export default function Register() {
   return (
     <div className="register-container">
       <div className="register-card">
-        <h1>PaLeva</h1>
+        <h1>PÁLEVÁ</h1>
         <h2>Criar Conta</h2>
         
         <form onSubmit={handleSubmit}>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+  <!-- Clipboard -->
+  <rect x="4" y="3" width="16" height="18" rx="2"/>
+  <!-- Clipboard top -->
+  <path d="M9 1h6v3H9z"/>
+  <!-- Food dome -->
+  <path d="M12 7a3 3 0 0 0-3 3h6a3 3 0 0 0-3-3z"/>
+  <circle cx="12" cy="7" r="0.5" fill="currentColor"/>
+  <!-- Menu lines -->
+  <line x1="8" y1="13" x2="16" y2="13"/>
+  <line x1="8" y1="16" x2="16" y2="16"/>
+  <line x1="8" y1="19" x2="12" y2="19"/>
+</svg>

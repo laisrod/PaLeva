@@ -45,6 +45,28 @@ module Api
         }, status: :bad_request
       end
 
+      def update
+        @establishment = Establishment.find_by!(code: params[:code])
+        if @establishment.update(establishment_params)
+          render json: {
+            establishment: @establishment.as_json(only: [:id, :name, :code, :city, :state, :phone_number, :email, :full_address]),
+            message: 'Estabelecimento atualizado com sucesso'
+          }, status: :ok
+        else
+          render json: {
+            status: :unprocessable_entity,
+            error: @establishment.errors.full_messages.map(&:to_s)
+          }, status: :unprocessable_entity
+        end
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: 'Estabelecimento não encontrado' }, status: :not_found
+      rescue ActionController::ParameterMissing => e
+        render json: {
+          status: :bad_request,
+          error: ["Parâmetros faltando: #{e.param}"]
+        }, status: :bad_request
+      end
+
       private
 
       def authenticate_api_user_for_create!
