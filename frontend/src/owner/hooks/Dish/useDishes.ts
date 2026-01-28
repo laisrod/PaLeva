@@ -24,7 +24,7 @@ export function useDishes(establishmentCode: string | undefined) {
       return
     }
     
-    await executeTagsRequest(() => ownerApi.getTags(establishmentCode))
+    await executeTagsRequest(() => ownerApi.getTags(establishmentCode, 'dish'))
   }, [establishmentCode, executeTagsRequest])
 
   const loadDishes = useCallback(async () => {

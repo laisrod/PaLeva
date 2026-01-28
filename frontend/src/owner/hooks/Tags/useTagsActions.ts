@@ -1,12 +1,14 @@
 import { useCallback } from 'react'
-import { useTags } from '../useTags'
+
+interface UseTagsActionsOptions {
+  deleteTag: (tagId: number) => Promise<boolean>
+  refetch: () => Promise<void>
+}
 
 /**
  * Hook para gerenciar ações relacionadas a tags
  */
-export function useTagsActions(establishmentCode: string | undefined) {
-  const { deleteTag, refetch } = useTags(establishmentCode)
-
+export function useTagsActions({ deleteTag, refetch }: UseTagsActionsOptions) {
   /**
    * Exclui uma tag após confirmação do usuário
    */

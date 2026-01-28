@@ -54,6 +54,30 @@
   font-size: 0.95rem;
 }
 
+.create-dish-card .form-group-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.create-dish-card .form-group-label-row label {
+  margin-bottom: 0;
+}
+
+.create-dish-card .link-edit-tags {
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.create-dish-card .link-edit-tags:hover {
+  text-decoration: underline;
+}
+
 .create-dish-card .form-group input[type="text"],
 .create-dish-card .form-group input[type="number"],
 .create-dish-card .form-group textarea {
