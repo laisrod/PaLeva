@@ -1,13 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ownerApi } from '../../services/api'
 import { useApiData } from '../Api/useApiData'
-import { Dish } from '../../types/dish'
+import { Dish, UseDishOptions } from '../../types/dish'
 
-interface UseDishOptions {
-  dishId: number | undefined
-  establishmentCode: string | undefined
-}
-
+//quem fala com api
 export function useDish({ dishId, establishmentCode }: UseDishOptions) {
   const [dish, setDish] = useState<Dish | null>(null)
   

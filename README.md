@@ -106,7 +106,6 @@ frontend/src/
 
 1. O primeiro usuário cadastrado é o dono do restaurante
 2. Apenas o proprietário pode:
-   - Cadastrar funcionários
    - Criar/editar cardápios
    - Criar/editar pratos e bebidas
    - Gerenciar características (tags)
@@ -128,8 +127,3 @@ Após rodar o `rails db:seed`:
 - **Email**: owner@example.com
 - **Senha**: 123456
 
-## Documentação Adicional
-
-- [Arquitetura do Backend](backend/ARCHITECTURE.md)
-- [Refatorações Realizadas](backend/REFACTORING.md)
-- [Guia de React no Rails](backend/REACT_GUIDE.md)

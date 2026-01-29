@@ -18,17 +18,6 @@ export default function DishesHeader({ establishmentCode, isOwner }: DishesHeade
           )}
         </div>
       </div>
-      
-      <div className="dishes-search-container">
-        <div className="dishes-search-wrapper">
-          <span className="dishes-search-icon"></span>
-          <input
-            type="text"
-            className="dishes-search-input"
-            placeholder="Search for food, coffee, etc.."
-          />
-        </div>
-      </div>
     </div>
   )
 }

@@ -1,15 +1,13 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from './useAuth'
 
-export default function Home() {
+export function useHomeRedirect() {
   const navigate = useNavigate()
   const { user, loading, isAuthenticated, isOwner, isClient } = useAuth()
 
   useEffect(() => {
-    if (loading) {
-      return // Aguardar verificação de autenticação
-    }
+    if (loading) return
 
     if (!isAuthenticated || !user) {
       navigate('/login')
@@ -18,7 +16,6 @@ export default function Home() {
 
     const establishmentCode = user.establishment?.code
 
-    // PRIORIDADE 1: Proprietário
     if (isOwner) {
       if (establishmentCode) {
         navigate(`/establishment/${establishmentCode}`)
@@ -28,7 +25,6 @@ export default function Home() {
       return
     }
 
-    // PRIORIDADE 2: Cliente
     if (isClient) {
       if (establishmentCode) {
         navigate(`/menu/${establishmentCode}`)
@@ -38,18 +34,10 @@ export default function Home() {
       return
     }
 
-    // FALLBACK: Se tiver estabelecimento mas role indefinido, assume proprietário
     if (establishmentCode) {
       navigate(`/establishment/${establishmentCode}`)
     } else {
       navigate('/restaurants')
     }
   }, [navigate, user, loading, isAuthenticated, isOwner, isClient])
-
-  return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
-      <p>Redirecionando...</p>
-    </div>
-  )
 }
-

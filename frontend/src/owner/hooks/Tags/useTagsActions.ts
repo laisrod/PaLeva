@@ -5,13 +5,9 @@ interface UseTagsActionsOptions {
   refetch: () => Promise<void>
 }
 
-/**
- * Hook para gerenciar ações relacionadas a tags
- */
+
 export function useTagsActions({ deleteTag, refetch }: UseTagsActionsOptions) {
-  /**
-   * Exclui uma tag após confirmação do usuário
-   */
+
   const handleDeleteTag = useCallback(async (tagId: number): Promise<boolean> => {
     const confirmed = window.confirm('Tem certeza que deseja excluir esta característica?')
     
@@ -26,7 +22,6 @@ export function useTagsActions({ deleteTag, refetch }: UseTagsActionsOptions) {
       return false
     }
 
-    // Recarregar a lista de tags após exclusão
     await refetch()
     return true
   }, [deleteTag, refetch])
