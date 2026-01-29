@@ -1,27 +1,20 @@
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Layout from '../Layout/Layout'
 import { useCreateTag } from '../../hooks/Tags/useCreateTag'
-import { TagCategory } from '../../types/tag'
 import '../../../css/owner/CreateMenu.css'
 
 export default function CreateTag() {
   const { code } = useParams<{ code: string }>()
-  const [searchParams] = useSearchParams()
-  const categoryParam = searchParams.get('category') as TagCategory | null
-  const category: TagCategory = categoryParam === 'drink' ? 'drink' : 'dish'
 
   const {
     establishmentCode,
+    title,
     name,
     loading,
     errors,
     handleChange,
     handleSubmit,
-  } = useCreateTag(code, category)
-
-  const title = category === 'drink'
-    ? 'Nova característica de Bebida'
-    : 'Nova característica de Prato'
+  } = useCreateTag(code)
 
   return (
     <Layout>

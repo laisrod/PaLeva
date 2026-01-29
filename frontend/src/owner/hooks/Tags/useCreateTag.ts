@@ -1,10 +1,23 @@
 import { useState, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ownerApi } from '../../services/api'
 import { getErrorMessage } from '../errorHandler'
-import { TagCategory } from '../../types/tag'
+import { TagCategory, getCategoryFromSearchParams, getTagCategoryTitle } from '../../types/tag'
 
-export function useCreateTag(establishmentCode: string | undefined, category: TagCategory) {
+interface UseCreateTagReturn {
+  establishmentCode: string
+  category: TagCategory
+  title: string
+  name: string
+  loading: boolean
+  errors: string[]
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleSubmit: (e: React.FormEvent) => Promise<void>
+}
+
+export function useCreateTag(establishmentCode: string | undefined): UseCreateTagReturn {
+  const [searchParams] = useSearchParams()
+  const category = getCategoryFromSearchParams(searchParams)
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -48,6 +61,8 @@ export function useCreateTag(establishmentCode: string | undefined, category: Ta
 
   return {
     establishmentCode: establishmentCode ?? '',
+    category,
+    title: getTagCategoryTitle(category),
     name,
     loading,
     errors,
