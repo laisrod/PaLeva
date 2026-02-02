@@ -9,27 +9,33 @@ export class OrderItemsApi extends BaseApiService {
       menuItemId?: number
       dishId?: number
       drinkId?: number
-      portionId: number
+      portionId?: number
+      menuId?: number
       quantity?: number
     }
   ) {
-    const { menuItemId, dishId, drinkId, portionId, quantity = 1 } = options
+    const { menuItemId, dishId, drinkId, portionId, menuId, quantity = 1 } = options
     
     const orderItemData: any = {
-      portion_id: portionId,
       quantity: quantity
     }
 
-    if (menuItemId) {
+    if (menuId) {
+      orderItemData.menu_id = menuId
+    } else if (menuItemId) {
       orderItemData.menu_item_id = menuItemId
+      orderItemData.portion_id = portionId
     } else if (dishId) {
       orderItemData.dish_id = dishId
+      orderItemData.portion_id = portionId
     } else if (drinkId) {
       orderItemData.drink_id = drinkId
+      orderItemData.portion_id = portionId
     }
 
     return this.request<{
-      order_item: OrderMenuItem
+      order_item?: OrderMenuItem
+      order_items?: OrderMenuItem[]
       order: {
         id: number
         code: string
@@ -37,6 +43,7 @@ export class OrderItemsApi extends BaseApiService {
         total_price: number
       }
       message: string
+      warnings?: string[]
     }>(`/establishments/${establishmentCode}/orders/${orderCode}/items`, {
       method: 'POST',
       headers: {

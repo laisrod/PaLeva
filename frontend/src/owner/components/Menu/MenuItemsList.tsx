@@ -2,7 +2,8 @@ import { MenuItemsListProps } from '../../types/menu'
 import { useMenuItemsList } from '../../hooks/Menu/useMenuItemsList'
 import '../../../css/owner/MenuItemsList.css'
 
-export default function MenuItemsList({ menuItems, onSelectItem, loading }: MenuItemsListProps) {
+export default function MenuItemsList(props: MenuItemsListProps) {
+  const { menuItems, loading } = props
   const {
     selectedMenuItem,
     selectedPortion,
@@ -11,11 +12,7 @@ export default function MenuItemsList({ menuItems, onSelectItem, loading }: Menu
     handlePortionClick,
     handleAddToOrder,
     handleQuantityChange
-  } = useMenuItemsList()
-
-  const handleAddClick = () => {
-    handleAddToOrder(onSelectItem)
-  }
+  } = useMenuItemsList(props)
 
   if (loading) {
     return <div className="menu-items-list-loading">Carregando itens...</div>
@@ -109,7 +106,7 @@ export default function MenuItemsList({ menuItems, onSelectItem, loading }: Menu
                           />
                         </div>
                         <button
-                          onClick={handleAddClick}
+                          onClick={handleAddToOrder}
                           className="menu-item-add-button"
                         >
                           Adicionar ao Pedido

@@ -8,6 +8,7 @@ export function useDrinks(establishmentCode: string | undefined) {
   const [drinks, setDrinks] = useState<Drink[]>([])
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTags, setSelectedTags] = useState<number[]>([])
+  const [searchTerm, setSearchTerm] = useState<string>('')
   
   const { loading: loadingTags, executeRequest: executeTagsRequest } = useApiData<Tag[]>({
     defaultErrorMessage: 'Erro ao carregar características',
@@ -60,13 +61,21 @@ export function useDrinks(establishmentCode: string | undefined) {
     })
   }, [])
 
+  // Filtrar bebidas por nome
+  const filteredDrinks = drinks.filter(drink => {
+    if (!searchTerm.trim()) return true
+    return drink.name.toLowerCase().includes(searchTerm.toLowerCase())
+  })
+
   return {
-    drinks,
+    drinks: filteredDrinks,
     tags,
     selectedTags,
     loading: loading || loadingTags,
     error,
     toggleTag,
+    searchTerm,
+    setSearchTerm,
     refetch: loadDrinks
   }
 }

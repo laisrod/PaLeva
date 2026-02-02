@@ -19,6 +19,7 @@ export interface MenuItemWithPortions {
     id: number
     name: string
     description: string
+    photo_url?: string
     portions: Array<{
       id: number
       description: string
@@ -29,6 +30,7 @@ export interface MenuItemWithPortions {
     id: number
     name: string
     description: string
+    photo_url?: string
     portions: Array<{
       id: number
       description: string
@@ -94,4 +96,29 @@ export interface MenuItemsListProps {
   menuItems: MenuItemWithPortions[]
   onSelectItem: (menuItemId: number, portionId: number, quantity: number) => void
   loading?: boolean
+}
+
+export interface AddMenuItemsProps {
+  establishmentCode: string
+  menuId: number
+  onItemAdded: () => void
+  existingItems: Array<{ dish?: { id: number } | null; drink?: { id: number } | null }>
+}
+
+export interface ManagingPortions {
+  menuItemId: number
+  productId: number
+  isDish: boolean
+  productName: string
+}
+
+export interface ManageMenuItemPortionsProps {
+  establishmentCode: string
+  menuId: number
+  menuItemId: number
+  productId: number
+  isDish: boolean
+  productName: string
+  onClose: () => void
+  onSuccess: () => void
 }

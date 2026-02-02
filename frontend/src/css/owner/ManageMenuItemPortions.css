@@ -1,0 +1,255 @@
+@import '../shared/variables.css';
+
+.manage-menu-item-portions-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+}
+
+.manage-menu-item-portions-modal {
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.manage-menu-item-portions-title {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.manage-menu-item-portions-error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.manage-menu-item-portions-loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-secondary);
+}
+
+.manage-menu-item-portions-empty {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-secondary);
+}
+
+.manage-menu-item-portions-empty p {
+  margin-bottom: var(--spacing-md);
+}
+
+.manage-menu-item-portions-header {
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.manage-menu-item-portions-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-base);
+}
+
+.manage-menu-item-portions-link:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.manage-menu-item-portions-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.manage-menu-item-portions-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-bg-tertiary);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-base);
+}
+
+.manage-menu-item-portions-item:hover {
+  border-color: var(--color-primary);
+  background: var(--color-bg-secondary);
+}
+
+.manage-menu-item-portions-item.selected {
+  border-color: var(--color-primary);
+  background: rgba(255, 127, 63, 0.1);
+}
+
+.manage-menu-item-portions-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+  cursor: pointer;
+}
+
+.manage-menu-item-portions-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.manage-menu-item-portions-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.manage-menu-item-portions-description {
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.manage-menu-item-portions-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.manage-menu-item-portions-edit-btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--color-primary);
+  color: var(--color-white);
+  text-decoration: none;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-base);
+  border: 1px solid var(--color-primary);
+}
+
+.manage-menu-item-portions-edit-btn:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.manage-menu-item-portions-add {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.manage-menu-item-portions-add-btn {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: transparent;
+  color: var(--color-primary);
+  text-decoration: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
+  border: 1px dashed var(--color-primary);
+  transition: all var(--transition-base);
+}
+
+.manage-menu-item-portions-add-btn:hover {
+  background: rgba(255, 127, 63, 0.1);
+  border-color: var(--color-primary-dark);
+  color: var(--color-primary-dark);
+}
+
+.manage-menu-item-portions-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.manage-menu-item-portions-cancel,
+.manage-menu-item-portions-save,
+.manage-menu-item-portions-close {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border: 1px solid;
+}
+
+.manage-menu-item-portions-cancel,
+.manage-menu-item-portions-close {
+  background: var(--color-bg-tertiary);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.manage-menu-item-portions-cancel:hover,
+.manage-menu-item-portions-close:hover {
+  background: var(--color-bg-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.manage-menu-item-portions-save {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.manage-menu-item-portions-save:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.manage-menu-item-portions-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .manage-menu-item-portions-modal {
+    max-width: 100%;
+    margin: var(--spacing-md);
+    padding: var(--spacing-lg);
+  }
+
+  .manage-menu-item-portions-actions {
+    flex-direction: column;
+  }
+
+  .manage-menu-item-portions-cancel,
+  .manage-menu-item-portions-save {
+    width: 100%;
+  }
+}

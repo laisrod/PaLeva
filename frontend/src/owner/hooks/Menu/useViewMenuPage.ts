@@ -17,6 +17,7 @@ export function useViewMenuPage() {
     id: menu.id,
     name: menu.name,
     description: menu.description,
+    price: menu.price,
     items: [] as MenuItem[] // Por enquanto vazio, pode ser expandido depois
   } : null
 

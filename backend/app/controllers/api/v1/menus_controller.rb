@@ -34,19 +34,44 @@ module Api
         @menu = @establishment.menus.find(params[:id])
         
         menu_items_with_portions = @menu.menu_items.map do |menu_item|
+          dish_photo_url = nil
+          if menu_item.dish
+            begin
+              dish_photo_url = menu_item.dish.photo.attached? ? url_for(menu_item.dish.photo) : nil
+            rescue => e
+              Rails.logger.error "Erro ao gerar photo_url para dish #{menu_item.dish.id}: #{e.message}"
+              dish_photo_url = nil
+            end
+          end
+
+          drink_photo_url = nil
+          if menu_item.drink
+            begin
+              drink_photo_url = menu_item.drink.photo.attached? ? url_for(menu_item.drink.photo) : nil
+            rescue => e
+              Rails.logger.error "Erro ao gerar photo_url para drink #{menu_item.drink.id}: #{e.message}"
+              drink_photo_url = nil
+            end
+          end
+
+          # Obter apenas as porções selecionadas para este menu_item
+          selected_portions = menu_item.portions.map { |p| { id: p.id, description: p.description, price: p.price.to_f } }
+          
           item_data = {
             id: menu_item.id,
             dish: menu_item.dish ? {
               id: menu_item.dish.id,
               name: menu_item.dish.name,
               description: menu_item.dish.description,
-              portions: menu_item.dish.portions.map { |p| { id: p.id, description: p.description, price: p.price.to_f } }
+              photo_url: dish_photo_url,
+              portions: selected_portions
             } : nil,
             drink: menu_item.drink ? {
               id: menu_item.drink.id,
               name: menu_item.drink.name,
               description: menu_item.drink.description,
-              portions: menu_item.drink.portions.map { |p| { id: p.id, description: p.description, price: p.price.to_f } }
+              photo_url: drink_photo_url,
+              portions: selected_portions
             } : nil
           }
           item_data
