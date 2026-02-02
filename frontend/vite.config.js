@@ -15,6 +15,12 @@ export default defineConfig({
         target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
+      },
+      // Proxy para WebSocket (Action Cable)
+      '/cable': {
+        target: 'ws://localhost:3000',
+        ws: true,
+        changeOrigin: true,
       }
     }
   }
