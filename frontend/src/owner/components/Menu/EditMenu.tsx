@@ -1,9 +1,7 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
 import { useEditMenuPage } from '../../hooks/Menu/useEditMenuPage'
-import { useMenuItems } from '../../hooks/Menu/useMenuItems'
-import { useMenuItemsManagement } from '../../hooks/Menu/useMenuItemsManagement'
+import { useEditMenuItems } from '../../hooks/Menu/useEditMenuItems'
 import AddMenuItems from './AddMenuItems'
 import ManageMenuItemPortions from './ManageMenuItemPortions'
 import EditMenuLoading from './EditMenuLoading'
@@ -23,44 +21,19 @@ export default function EditMenu() {
   } = useEditMenuPage()
 
   const menuIdNumber = menuId ? parseInt(menuId) : undefined
-  const { menuItems, loading: loadingItems, refetch: refetchItems } = useMenuItems({
+  const {
+    menuItems,
+    loadingItems,
+    refetchItems,
+    removingItem,
+    managingPortions,
+    handleRemoveItem,
+    handleManagePortions,
+    handleCloseManagePortions,
+  } = useEditMenuItems({
     menuId: menuIdNumber,
     establishmentCode,
   })
-
-  const { removeMenuItem, loading: removingItem } = useMenuItemsManagement({
-    establishmentCode,
-    menuId: menuIdNumber,
-    onSuccess: refetchItems,
-  })
-
-  const [managingPortions, setManagingPortions] = useState<{
-    menuItemId: number
-    productId: number
-    isDish: boolean
-    productName: string
-  } | null>(null)
-
-  const handleRemoveItem = async (itemId: number) => {
-    if (window.confirm('Tem certeza que deseja remover este item do cardápio?')) {
-      await removeMenuItem(itemId)
-    }
-  }
-
-  const handleManagePortions = (item: any) => {
-    const product = item.dish || item.drink
-    if (!product) return
-
-    const productId = item.dish?.id || item.drink?.id
-    const isDish = !!item.dish
-
-    setManagingPortions({
-      menuItemId: item.id,
-      productId: productId!,
-      isDish,
-      productName: product.name,
-    })
-  }
 
   if (loadingMenu) {
     return <EditMenuLoading />
@@ -260,7 +233,7 @@ export default function EditMenu() {
               productId={managingPortions.productId}
               isDish={managingPortions.isDish}
               productName={managingPortions.productName}
-              onClose={() => setManagingPortions(null)}
+              onClose={handleCloseManagePortions}
               onSuccess={refetchItems}
             />
           )}

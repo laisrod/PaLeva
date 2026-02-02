@@ -1,17 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useManageMenuItemPortions } from '../../hooks/Menu/useManageMenuItemPortions'
+import { ManageMenuItemPortionsProps } from '../../types/menu'
 import '../../../css/owner/ManageMenuItemPortions.css'
-
-interface ManageMenuItemPortionsProps {
-  establishmentCode: string
-  menuId: number
-  menuItemId: number
-  productId: number
-  isDish: boolean
-  productName: string
-  onClose: () => void
-  onSuccess: () => void
-}
 
 export default function ManageMenuItemPortions({
   establishmentCode,
