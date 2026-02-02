@@ -15,6 +15,14 @@ module Api
             menu = @establishment.menus.find_by(id: params[:order_item][:menu_id].to_i)
             return render json: { error: 'Menu não encontrado' }, status: :not_found unless menu
 
+            # Verificar se o menu tem preço
+            unless menu.price.present? && menu.price > 0
+              return render json: {
+                status: :unprocessable_entity,
+                error: ['Este cardápio não possui preço cadastrado. Adicione um preço ao cardápio antes de adicioná-lo ao pedido.']
+              }, status: :unprocessable_entity
+            end
+
             quantity = (params[:order_item][:quantity] || 1).to_i
 
             # Criar um único order_item representando o menu completo
@@ -64,10 +72,28 @@ module Api
 
           # Se menu_item foi criado/encontrado, usar seu ID
           if menu_item
+            # Verificar se a porção tem preço
+            portion_id = params[:order_item][:portion_id].to_i
+            portion = Portion.find_by(id: portion_id)
+            
+            unless portion
+              return render json: {
+                status: :not_found,
+                error: ['Porção não encontrada']
+              }, status: :not_found
+            end
+
+            unless portion.price.present? && portion.price > 0
+              return render json: {
+                status: :unprocessable_entity,
+                error: ['Esta porção não possui preço cadastrado. Adicione um preço à porção antes de adicioná-la ao pedido.']
+              }, status: :unprocessable_entity
+            end
+
             # Criar hash apenas com os parâmetros permitidos
             order_item_params_hash = {
               menu_item_id: menu_item.id,
-              portion_id: params[:order_item][:portion_id].to_i,
+              portion_id: portion_id,
               quantity: (params[:order_item][:quantity] || 1).to_i
             }
             @order_item = @order.order_menu_items.new(order_item_params_hash)
@@ -77,6 +103,26 @@ module Api
             permitted_params.delete(:dish_id)
             permitted_params.delete(:drink_id)
             permitted_params.delete(:menu_id)
+            
+            # Verificar se a porção tem preço quando adicionada diretamente
+            if permitted_params[:portion_id].present?
+              portion = Portion.find_by(id: permitted_params[:portion_id])
+              
+              unless portion
+                return render json: {
+                  status: :not_found,
+                  error: ['Porção não encontrada']
+                }, status: :not_found
+              end
+
+              unless portion.price.present? && portion.price > 0
+                return render json: {
+                  status: :unprocessable_entity,
+                  error: ['Esta porção não possui preço cadastrado. Adicione um preço à porção antes de adicioná-la ao pedido.']
+                }, status: :unprocessable_entity
+              end
+            end
+            
             @order_item = @order.order_menu_items.new(permitted_params)
           end
 

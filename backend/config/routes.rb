@@ -43,7 +43,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :establishments, param: :code do
         resources :menus, only: [:index, :show, :create, :update, :destroy] do
-          resources :menu_items, only: [:create, :destroy, :update]
+          resources :menu_items, only: [:index, :create, :destroy, :update]
         end
         resources :dishes, only: [:index, :show, :create, :update, :destroy] do
           resources :portions, only: [:index, :show, :create, :update, :destroy]
