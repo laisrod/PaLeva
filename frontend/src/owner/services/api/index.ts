@@ -66,6 +66,18 @@ class OwnerApiService extends BaseApiService {
     return this.menus.deleteMenu(establishmentCode, menuId)
   }
 
+  createMenuItem(establishmentCode: string, menuId: number, menuItemData: { dish_id?: number; drink_id?: number; portion_ids?: number[] }) {
+    return this.menus.createMenuItem(establishmentCode, menuId, menuItemData)
+  }
+
+  updateMenuItem(establishmentCode: string, menuId: number, menuItemId: number, portionIds: number[]) {
+    return this.menus.updateMenuItem(establishmentCode, menuId, menuItemId, portionIds)
+  }
+
+  deleteMenuItem(establishmentCode: string, menuId: number, menuItemId: number) {
+    return this.menus.deleteMenuItem(establishmentCode, menuId, menuItemId)
+  }
+
   getTags(establishmentCode: string, category?: 'dish' | 'drink') {
     return this.tags.getTags(establishmentCode, category)
   }
@@ -205,7 +217,8 @@ class OwnerApiService extends BaseApiService {
       menuItemId?: number
       dishId?: number
       drinkId?: number
-      portionId: number
+      portionId?: number
+      menuId?: number
       quantity?: number
     }
   ) {

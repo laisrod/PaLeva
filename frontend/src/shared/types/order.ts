@@ -26,8 +26,15 @@ export type OrderStatus =
 export interface OrderMenuItem {
   id: number
   quantity: number
-  menu_item_id: number
-  portion_id: number
+  menu_item_id?: number
+  portion_id?: number
+  menu_id?: number
+  menu?: {
+    id: number
+    name: string
+    description?: string
+    price: number
+  }
   menu_item?: MenuItem
   portion?: Portion
 }

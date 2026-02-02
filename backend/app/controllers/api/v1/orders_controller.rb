@@ -90,35 +90,56 @@ module Api
           establishment_id: @order.establishment_id,
           cancellation_reason: @order.cancellation_reason,
           order_menu_items: items.map { |item|
-            menu_item_name = nil
-            menu_item_description = nil
-            
-            if item.menu_item
-              if item.menu_item.dish
-                menu_item_name = item.menu_item.dish.name
-                menu_item_description = item.menu_item.dish.description
-              elsif item.menu_item.drink
-                menu_item_name = item.menu_item.drink.name
-                menu_item_description = item.menu_item.drink.description
+            # Se o item tem menu_id direto, é um menu completo
+            if item.menu_id
+              menu = Menu.find_by(id: item.menu_id)
+              {
+                id: item.id,
+                quantity: item.quantity,
+                menu_id: item.menu_id,
+                menu: menu ? {
+                  id: menu.id,
+                  name: menu.name,
+                  description: menu.description,
+                  price: menu.price.to_f
+                } : nil,
+                menu_item: nil,
+                portion: nil
+              }
+            else
+              # Item individual (menu_item + portion)
+              menu_item_name = nil
+              menu_item_description = nil
+              
+              if item.menu_item
+                if item.menu_item.dish
+                  menu_item_name = item.menu_item.dish.name
+                  menu_item_description = item.menu_item.dish.description
+                elsif item.menu_item.drink
+                  menu_item_name = item.menu_item.drink.name
+                  menu_item_description = item.menu_item.drink.description
+                end
               end
+              
+              {
+                id: item.id,
+                quantity: item.quantity,
+                menu_item_id: item.menu_item_id,
+                portion_id: item.portion_id,
+                menu_id: nil,
+                menu: nil,
+                menu_item: item.menu_item ? {
+                  id: item.menu_item.id,
+                  name: menu_item_name,
+                  description: menu_item_description
+                } : nil,
+                portion: item.portion ? {
+                  id: item.portion.id,
+                  description: item.portion.description,
+                  price: item.portion.price.to_f
+                } : nil
+              }
             end
-            
-            {
-              id: item.id,
-              quantity: item.quantity,
-              menu_item_id: item.menu_item_id,
-              portion_id: item.portion_id,
-              menu_item: item.menu_item ? {
-                id: item.menu_item.id,
-                name: menu_item_name,
-                description: menu_item_description
-              } : nil,
-              portion: item.portion ? {
-                id: item.portion.id,
-                description: item.portion.description,
-                price: item.portion.price.to_f
-              } : nil
-            }
           }
         }
         

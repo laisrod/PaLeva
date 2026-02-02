@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
-import { useViewMenuPage } from '../../hooks/Menu/useViewMenuPage'
+import { useViewMenu } from '../../hooks/Menu/useViewMenu'
 import ViewMenuLoading from './ViewMenuLoading'
 import '../../../css/owner/ViewMenu.css'
 
@@ -10,8 +10,12 @@ export default function ViewMenu() {
     menuId,
     menuData,
     loading,
-    error
-  } = useViewMenuPage()
+    error,
+    menuItems,
+    loadingItems,
+    removingItem,
+    handleRemoveItem,
+  } = useViewMenu()
 
   if (loading) {
     return <ViewMenuLoading />
@@ -63,24 +67,78 @@ export default function ViewMenu() {
         <div className="menu-details">
           <h1>{menuData.name}</h1>
           <p className="menu-description">{menuData.description}</p>
+          {menuData.price !== undefined && menuData.price !== null && typeof menuData.price === 'number' && (
+            <p className="menu-price">Preço: R$ {Number(menuData.price).toFixed(2)}</p>
+          )}
 
-          {menuData.items.length > 0 ? (
+          {loadingItems ? (
+            <div className="menu-items-loading">Carregando itens...</div>
+          ) : menuItems.length > 0 ? (
             <div className="menu-items">
               <h2>Itens do Cardápio</h2>
               <div className="items-grid">
-                {menuData.items.map((item) => (
-                  <div key={item.id} className="menu-item-card">
-                    {item.image && (
-                      <img src={item.image} alt={item.name} className="item-image" />
-                    )}
-                    <h3>{item.name}</h3>
-                    <p>{item.description}</p>
-                    <div className="item-price">
-                      A partir de R$ {item.price.toFixed(2)}
+                {menuItems.map((item) => {
+                  const product = item.dish || item.drink
+                  if (!product) return null
+
+                  const portions = product.portions || []
+
+                  return (
+                    <div key={item.id} className="menu-item-card">
+                      {product.photo_url ? (
+                        <img 
+                          src={product.photo_url} 
+                          alt={product.name} 
+                          className="item-image" 
+                        />
+                      ) : (
+                        <div className="item-image-placeholder">
+                          <span>Sem foto</span>
+                        </div>
+                      )}
+                      
+                      <div className="menu-item-content">
+                        <div className="menu-item-header-info">
+                          <h3>{product.name}</h3>
+                          <div className="item-category">
+                            {item.dish ? 'Prato' : 'Bebida'}
+                          </div>
+                        </div>
+                        
+                        {product.description && (
+                          <p className="menu-item-description">{product.description}</p>
+                        )}
+
+                        {portions.length > 0 ? (
+                          <div className="menu-item-portions-section">
+                            <h4 className="portions-title">Porções Disponíveis:</h4>
+                            <div className="portions-list">
+                              {portions.map((portion) => (
+                                <div key={portion.id} className="portion-item">
+                                  <span className="portion-description">
+                                    {portion.description}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="no-portions">
+                            <p>Nenhuma porção cadastrada</p>
+                          </div>
+                        )}
+
+                        <button
+                          onClick={() => handleRemoveItem(item.id)}
+                          className="remove-item-btn"
+                          disabled={removingItem}
+                        >
+                          {removingItem ? 'Removendo...' : 'Remover do Cardápio'}
+                        </button>
+                      </div>
                     </div>
-                    <div className="item-category">{item.category}</div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           ) : (

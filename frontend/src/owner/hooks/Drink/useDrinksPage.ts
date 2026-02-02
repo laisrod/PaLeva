@@ -10,7 +10,7 @@ export function useDrinksPage() {
   useRequireAuth()
   
   const { isOwner } = useAuth()
-  const { drinks, tags, selectedTags, loading, error, toggleTag, refetch } = useDrinks(code)
+  const { drinks, tags, selectedTags, loading, error, toggleTag, searchTerm, setSearchTerm, refetch } = useDrinks(code)
   const { deleteDrink, loading: deleting } = useDeleteDrink({ 
     establishmentCode: code,
     onSuccess: () => {
@@ -27,6 +27,8 @@ export function useDrinksPage() {
     loading,
     error,
     toggleTag,
+    searchTerm,
+    setSearchTerm,
     deleteDrink,
     deleting
   }

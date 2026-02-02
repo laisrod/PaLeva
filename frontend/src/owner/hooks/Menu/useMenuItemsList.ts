@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react'
+import { MenuItemsListProps } from '../../types/menu'
 
 // gerencia estado de seleção de itens e porções
-export function useMenuItemsList() {
+export function useMenuItemsList(props: MenuItemsListProps) {
+  const { onSelectItem } = props
   const [selectedMenuItem, setSelectedMenuItem] = useState<number | null>(null)
   const [selectedPortion, setSelectedPortion] = useState<number | null>(null)
   const [quantity, setQuantity] = useState(1)
@@ -20,16 +22,14 @@ export function useMenuItemsList() {
     setSelectedPortion(portionId)
   }
 
-  const handleAddToOrder = useCallback((
-    onSelectItem: (menuItemId: number, portionId: number, quantity: number) => void
-  ) => {
+  const handleAddToOrder = useCallback(() => {
     if (selectedMenuItem && selectedPortion) {
       onSelectItem(selectedMenuItem, selectedPortion, quantity)
       setSelectedMenuItem(null)
       setSelectedPortion(null)
       setQuantity(1)
     }
-  }, [selectedMenuItem, selectedPortion, quantity])
+  }, [selectedMenuItem, selectedPortion, quantity, onSelectItem])
 
   const handleQuantityChange = (value: number) => {
     setQuantity(Math.max(1, value || 1))

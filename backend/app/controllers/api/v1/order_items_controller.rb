@@ -10,6 +10,50 @@ module Api
 
       def create
         begin
+          # Se menu_id foi fornecido, criar um único order_item representando o menu completo
+          if params[:order_item] && params[:order_item][:menu_id].present?
+            menu = @establishment.menus.find_by(id: params[:order_item][:menu_id].to_i)
+            return render json: { error: 'Menu não encontrado' }, status: :not_found unless menu
+
+            quantity = (params[:order_item][:quantity] || 1).to_i
+
+            # Criar um único order_item representando o menu completo
+            @order_item = @order.order_menu_items.new(
+              menu_id: menu.id,
+              quantity: quantity
+            )
+
+            if @order_item.save
+              @order.reload
+              render json: {
+                order_item: {
+                  id: @order_item.id,
+                  quantity: @order_item.quantity,
+                  menu_id: @order_item.menu_id,
+                  menu: {
+                    id: menu.id,
+                    name: menu.name,
+                    description: menu.description,
+                    price: menu.price.to_f
+                  }
+                },
+                order: {
+                  id: @order.id,
+                  code: @order.code,
+                  status: @order.status,
+                  total_price: @order.total_price.to_f
+                },
+                message: 'Menu adicionado ao pedido com sucesso'
+              }, status: :created
+            else
+              render json: {
+                status: :unprocessable_entity,
+                error: @order_item.errors.full_messages
+              }, status: :unprocessable_entity
+            end
+            return
+          end
+
           # Se dish_id ou drink_id foi fornecido, criar ou encontrar menu_item
           menu_item = nil
           if params[:order_item] && params[:order_item][:dish_id].present?
@@ -32,6 +76,7 @@ module Api
             permitted_params = order_item_params.to_h
             permitted_params.delete(:dish_id)
             permitted_params.delete(:drink_id)
+            permitted_params.delete(:menu_id)
             @order_item = @order.order_menu_items.new(permitted_params)
           end
 
@@ -103,7 +148,7 @@ module Api
       end
 
       def order_item_params
-        params.require(:order_item).permit(:menu_item_id, :portion_id, :quantity, :dish_id, :drink_id)
+        params.require(:order_item).permit(:menu_item_id, :portion_id, :quantity, :dish_id, :drink_id, :menu_id)
       end
 
       def find_or_create_menu_item_for_dish(dish_id)
