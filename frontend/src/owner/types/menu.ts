@@ -104,3 +104,21 @@ export interface AddMenuItemsProps {
   onItemAdded: () => void
   existingItems: Array<{ dish?: { id: number } | null; drink?: { id: number } | null }>
 }
+
+export interface ManagingPortions {
+  menuItemId: number
+  productId: number
+  isDish: boolean
+  productName: string
+}
+
+export interface ManageMenuItemPortionsProps {
+  establishmentCode: string
+  menuId: number
+  menuItemId: number
+  productId: number
+  isDish: boolean
+  productName: string
+  onClose: () => void
+  onSuccess: () => void
+}
