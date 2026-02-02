@@ -7,6 +7,10 @@ export default defineConfig({
   resolve: {
     dedupe: ['react', 'react-dom'],
   },
+  // Base path para GitHub Pages (ajuste se seu repositório não for a raiz)
+  // Se o repositório for username.github.io/repo-name, use: base: '/repo-name/'
+  // Se for username.github.io (repositório raiz), deixe base: '/'
+  base: process.env.GITHUB_PAGES ? '/PaLeva/' : '/',
   server: {
     port: 5176,
     proxy: {

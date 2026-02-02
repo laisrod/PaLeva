@@ -1,8 +1,3 @@
-/**
- * Serviço WebSocket para conexão com Action Cable (Rails)
- * Gerencia conexão, subscrições e callbacks
- */
-
 type MessageCallback = (data: any) => void
 type ConnectionCallback = () => void
 type ErrorCallback = (error: Event) => void
@@ -31,16 +26,10 @@ class WebSocketService {
     onError?: ErrorCallback
   } = {}
 
-  /**
-   * Obtém o token de autenticação do localStorage
-   */
   private getAuthToken(): string | null {
     return localStorage.getItem('auth_token')
   }
 
-  /**
-   * Constrói a URL do WebSocket
-   */
   private getWebSocketUrl(): string {
     const token = this.getAuthToken()
     if (!token) {
@@ -53,15 +42,34 @@ class WebSocketService {
       return `${protocol}//${window.location.host}/cable?email=${encodeURIComponent(token)}`
     }
     
-    // Em produção, usar URL configurada
+    // Em produção, usar URL configurada via variável de ambiente ou inferir do API_URL
+    const wsUrl = import.meta.env.VITE_WS_URL
+    if (wsUrl) {
+      // Se VITE_WS_URL estiver configurada, usar diretamente
+      const protocol = wsUrl.startsWith('wss://') ? 'wss:' : wsUrl.startsWith('ws://') ? 'ws:' : (window.location.protocol === 'https:' ? 'wss:' : 'ws:')
+      const host = wsUrl.replace(/^wss?:\/\//, '').replace(/\/cable.*$/, '')
+      return `${protocol}//${host}/cable?email=${encodeURIComponent(token)}`
+    }
+    
+    // Se não houver VITE_WS_URL, tentar inferir do VITE_API_URL
+    const apiUrl = import.meta.env.VITE_API_URL
+    if (apiUrl && !apiUrl.startsWith('/')) {
+      // Se VITE_API_URL for uma URL completa, extrair o host
+      try {
+        const url = new URL(apiUrl)
+        const protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
+        return `${protocol}//${url.host}/cable?email=${encodeURIComponent(token)}`
+      } catch {
+        // Se não for uma URL válida, usar o host atual
+      }
+    }
+    
+    // Fallback: usar o host atual
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const host = import.meta.env.VITE_WS_URL || window.location.host
-    return `${protocol}//${host}/cable?email=${encodeURIComponent(token)}`
+    return `${protocol}//${window.location.host}/cable?email=${encodeURIComponent(token)}`
   }
 
-  /**
-   * Conecta ao WebSocket
-   */
+
   connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN || this.isConnecting) {
       return
@@ -133,9 +141,7 @@ class WebSocketService {
     }
   }
 
-  /**
-   * Desconecta do WebSocket
-   */
+
   disconnect(): void {
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer)
@@ -150,9 +156,7 @@ class WebSocketService {
     this.subscriptions.clear()
   }
 
-  /**
-   * Agenda uma tentativa de reconexão
-   */
+
   private scheduleReconnect(): void {
     if (this.reconnectTimer) {
       return
@@ -169,9 +173,7 @@ class WebSocketService {
     }, delay)
   }
 
-  /**
-   * Envia uma mensagem através do WebSocket
-   */
+
   private send(data: any): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data))
@@ -180,9 +182,7 @@ class WebSocketService {
     }
   }
 
-  /**
-   * Processa mensagens recebidas do servidor
-   */
+
   private handleMessage(message: any): void {
     // Mensagem de boas-vindas
     if (message.type === 'welcome') {
@@ -190,7 +190,6 @@ class WebSocketService {
       return
     }
 
-    // Confirmação de subscrição
     if (message.type === 'confirm_subscription') {
       console.log('[WebSocket] Subscription confirmed:', message.identifier)
       const identifier = JSON.parse(message.identifier)
@@ -202,13 +201,11 @@ class WebSocketService {
       return
     }
 
-    // Rejeição de subscrição
     if (message.type === 'reject_subscription') {
       console.error('[WebSocket] Subscription rejected:', message.identifier)
       return
     }
 
-    // Mensagem de dados
     if (message.identifier && message.message) {
       try {
         const identifier = JSON.parse(message.identifier)
@@ -276,9 +273,7 @@ class WebSocketService {
     return () => this.unsubscribe(channel, params)
   }
 
-  /**
-   * Remove subscrição de um canal
-   */
+
   unsubscribe(channel: string, params: Record<string, any> = {}): void {
     const subscriptionKey = `${channel}_${JSON.stringify(params)}`
     const subscription = this.subscriptions.get(subscriptionKey)
@@ -296,9 +291,6 @@ class WebSocketService {
     this.subscriptions.delete(subscriptionKey)
   }
 
-  /**
-   * Envia comando de subscrição
-   */
   private sendSubscribeCommand(channel: string, params: Record<string, any>): void {
     this.send({
       command: 'subscribe',
@@ -309,18 +301,14 @@ class WebSocketService {
     })
   }
 
-  /**
-   * Reconecta todas as subscrições após reconexão
-   */
+
   private resubscribeAll(): void {
     this.subscriptions.forEach((subscription) => {
       this.sendSubscribeCommand(subscription.channel, subscription.params || {})
     })
   }
 
-  /**
-   * Define callbacks de conexão
-   */
+
   onConnection(callbacks: {
     onOpen?: ConnectionCallback
     onClose?: ConnectionCallback
@@ -329,9 +317,7 @@ class WebSocketService {
     this.connectionCallbacks = callbacks
   }
 
-  /**
-   * Verifica se está conectado
-   */
+
   isConnected(): boolean {
     return this.ws?.readyState === WebSocket.OPEN
   }
