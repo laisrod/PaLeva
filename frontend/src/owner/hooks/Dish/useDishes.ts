@@ -9,6 +9,7 @@ export function useDishes(establishmentCode: string | undefined) {
   const [dishes, setDishes] = useState<Dish[]>([])
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTags, setSelectedTags] = useState<number[]>([])
+  const [searchTerm, setSearchTerm] = useState<string>('')
   
   const { loading: loadingTags, executeRequest: executeTagsRequest } = useApiData<Tag[]>({
     defaultErrorMessage: 'Erro ao carregar características',
@@ -61,13 +62,21 @@ export function useDishes(establishmentCode: string | undefined) {
     })
   }, [])
 
+  // Filtrar pratos por nome
+  const filteredDishes = dishes.filter(dish => {
+    if (!searchTerm.trim()) return true
+    return dish.name.toLowerCase().includes(searchTerm.toLowerCase())
+  })
+
   return {
-    dishes,
+    dishes: filteredDishes,
     tags,
     selectedTags,
     loading: loading || loadingTags,
     error,
     toggleTag,
+    searchTerm,
+    setSearchTerm,
     refetch: loadDishes
   }
 }

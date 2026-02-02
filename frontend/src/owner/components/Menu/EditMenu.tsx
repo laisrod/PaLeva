@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
 import { useEditMenuPage } from '../../hooks/Menu/useEditMenuPage'
+import { useEditMenuItems } from '../../hooks/Menu/useEditMenuItems'
+import AddMenuItems from './AddMenuItems'
+import ManageMenuItemPortions from './ManageMenuItemPortions'
 import EditMenuLoading from './EditMenuLoading'
 import '../../../css/owner/CreateMenu.css'
+import '../../../css/owner/ViewMenu.css'
 
 export default function EditMenu() {
   const {
@@ -15,6 +19,21 @@ export default function EditMenu() {
     handleChange,
     handleSubmit,
   } = useEditMenuPage()
+
+  const menuIdNumber = menuId ? parseInt(menuId) : undefined
+  const {
+    menuItems,
+    loadingItems,
+    refetchItems,
+    removingItem,
+    managingPortions,
+    handleRemoveItem,
+    handleManagePortions,
+    handleCloseManagePortions,
+  } = useEditMenuItems({
+    menuId: menuIdNumber,
+    establishmentCode,
+  })
 
   if (loadingMenu) {
     return <EditMenuLoading />
@@ -101,6 +120,123 @@ export default function EditMenu() {
               </button>
             </div>
           </form>
+
+          {menuIdNumber && (
+            <div className="menu-items-section">
+              {loadingItems ? (
+                <div className="menu-items-loading">Carregando itens...</div>
+              ) : menuItems.length > 0 ? (
+                <div className="menu-items-current">
+                  <h3 className="menu-items-current-title">Itens Atuais do Cardápio</h3>
+                  <div className="items-grid">
+                    {menuItems.map((item) => {
+                      const product = item.dish || item.drink
+                      if (!product) return null
+
+                      const portions = product.portions || []
+                      const productId = item.dish?.id || item.drink?.id
+                      const isDish = !!item.dish
+                      const portionsPath = isDish
+                        ? `/establishment/${establishmentCode}/dishes/${productId}/portions`
+                        : `/establishment/${establishmentCode}/drinks/${productId}/portions`
+
+                      return (
+                        <div key={item.id} className="menu-item-card">
+                          {product.photo_url ? (
+                            <img 
+                              src={product.photo_url} 
+                              alt={product.name} 
+                              className="item-image" 
+                            />
+                          ) : (
+                            <div className="item-image-placeholder">
+                              <span>Sem foto</span>
+                            </div>
+                          )}
+                          
+                          <div className="menu-item-content">
+                            <div className="menu-item-header-info">
+                              <h4 className="menu-item-card-name">{product.name}</h4>
+                              <div className="item-category">
+                                {isDish ? 'Prato' : 'Bebida'}
+                              </div>
+                            </div>
+                            
+                            {product.description && (
+                              <p className="menu-item-card-description">{product.description}</p>
+                            )}
+
+                            {portions.length > 0 ? (
+                              <div className="menu-item-portions-section">
+                                <h5 className="portions-title">Porções Disponíveis:</h5>
+                                <div className="portions-list">
+                                  {portions.map((portion) => (
+                                    <div key={portion.id} className="portion-item">
+                                      <span className="portion-description">
+                                        {portion.description}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                                <button
+                                  onClick={() => handleManagePortions(item)}
+                                  className="btn-manage-portions"
+                                >
+                                  Gerenciar Porções →
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="no-portions">
+                                <p>Nenhuma porção selecionada</p>
+                                <button
+                                  onClick={() => handleManagePortions(item)}
+                                  className="btn-add-portion"
+                                >
+                                  Selecionar Porções
+                                </button>
+                              </div>
+                            )}
+
+                            <button
+                              onClick={() => handleRemoveItem(item.id)}
+                              className="remove-item-btn"
+                              disabled={removingItem}
+                            >
+                              {removingItem ? 'Removendo...' : 'Remover do Cardápio'}
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <div className="menu-items-empty">
+                  <p>Nenhum item no cardápio ainda.</p>
+                </div>
+              )}
+
+              <AddMenuItems
+                establishmentCode={establishmentCode}
+                menuId={menuIdNumber}
+                onItemAdded={refetchItems}
+                existingItems={menuItems}
+              />
+            </div>
+          )}
+
+          {managingPortions && (
+            <ManageMenuItemPortions
+              establishmentCode={establishmentCode}
+              menuId={menuIdNumber!}
+              menuItemId={managingPortions.menuItemId}
+              productId={managingPortions.productId}
+              isDish={managingPortions.isDish}
+              productName={managingPortions.productName}
+              onClose={handleCloseManagePortions}
+              onSuccess={refetchItems}
+            />
+          )}
         </div>
       </div>
     </Layout>

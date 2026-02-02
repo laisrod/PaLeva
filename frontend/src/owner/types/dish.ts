@@ -53,6 +53,8 @@ export interface DishesFiltersProps {
   tags: Tag[]
   selectedTags: number[]
   onToggleTag: (tagId: number) => void
+  searchTerm: string
+  onSearchChange: (value: string) => void
 }
 
 export interface DishesEmptyProps {

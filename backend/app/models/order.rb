@@ -43,7 +43,16 @@ class Order < ApplicationRecord
   def update_total_price
     self.total_price = order_menu_items.sum do |order_item|
       begin
-        if order_item.portion&.price
+        # Se o order_item tem menu_id direto, usar o preço do menu
+        if order_item.menu_id
+          menu = Menu.find_by(id: order_item.menu_id)
+          if menu&.price
+            menu.price * (order_item.quantity || 0)
+          else
+            0
+          end
+        # Caso contrário, usar o preço da porção (para itens adicionados diretamente)
+        elsif order_item.portion&.price
           order_item.portion.price * (order_item.quantity || 0)
         else
           0

@@ -17,6 +17,8 @@ export default function Dishes() {
     selectedTags,
     loading,
     toggleTag,
+    searchTerm,
+    setSearchTerm,
     deleteDish,
     deleting
   } = useDishesPage()
@@ -33,7 +35,9 @@ export default function Dishes() {
         <DishesFilters 
           tags={tags} 
           selectedTags={selectedTags} 
-          onToggleTag={toggleTag} 
+          onToggleTag={toggleTag}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
         />
 
         {dishes.length > 0 ? (
