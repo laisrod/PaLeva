@@ -12,7 +12,9 @@ import { useDishes } from '../Dish/useDishes'
 import { useDrinks } from '../Drink/useDrinks'
 import { useDishPortions } from '../DishPortion/useDishPortions'
 import { useDrinkPortions } from '../DrinkPortion/useDrinkPortions'
+import { useOrderUpdates } from './useOrderUpdates'
 import { ownerApi } from '../../services/api'
+import { Order } from '../../../shared/types/order'
 
 export function useOrdersPage() {
   useRequireAuth()
@@ -58,6 +60,34 @@ export function useOrdersPage() {
         orderFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }, 100)
     }
+  })
+
+  // Integrar atualizações em tempo real
+  useOrderUpdates({
+    establishmentCode: establishmentCode || undefined,
+    enabled: !!establishmentCode,
+    onOrderCreated: (order: Order) => {
+      // Quando um novo pedido é criado, atualizar a lista
+      refetchOrders()
+    },
+    onOrderUpdated: (order: Order) => {
+      // Quando um pedido é atualizado, atualizar a lista
+      refetchOrders()
+      
+      // Se for o pedido atual, recarregar
+      if (currentOrder?.code === order.code) {
+        loadOrder(order.code)
+      }
+    },
+    onOrderStatusChanged: (order: Order) => {
+      // Quando o status muda, atualizar a lista
+      refetchOrders()
+      
+      // Se for o pedido atual, recarregar
+      if (currentOrder?.code === order.code) {
+        loadOrder(order.code)
+      }
+    },
   })
 
   const { menus, loading: loadingMenus } = useMenus(establishmentCode)

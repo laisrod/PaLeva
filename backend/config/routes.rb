@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   devise_for :users
   root to: 'establishments#index'
   
+  # Action Cable mount point
+  mount ActionCable.server => '/cable'
+  
   resources :establishments do
     get 'search', on: :collection
     resources :working_hours, only: %i[edit update]
