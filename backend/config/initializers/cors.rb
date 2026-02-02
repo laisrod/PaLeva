@@ -5,7 +5,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       'http://localhost:5176',
       'http://localhost:5177',
       /https?:\/\/.*\.vercel\.app/,
-      /https?:\/\/.*\.railway\.app/,
+      /https?:\/\/.*\.render\.com/,
       /https?:\/\/.*\.github\.io/
     )
     resource '*',
