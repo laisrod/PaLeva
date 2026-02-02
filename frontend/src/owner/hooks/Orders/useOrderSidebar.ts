@@ -2,7 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ownerApi } from '../../services/api'
 import { useCurrentOrder } from './useCurrentOrder'
+import { useOrderUpdates } from './useOrderUpdates'
 import { OrderSidebarProps } from '../../types/order'
+import { Order } from '../../../shared/types/order'
 
 const POLL_COOLDOWN_MS = 3000
 
@@ -65,6 +67,24 @@ export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
       navigate(`/establishment/${establishmentCode}/orders`)
     }
   }
+
+  // Integrar atualizações em tempo real
+  useOrderUpdates({
+    establishmentCode: establishmentCode || undefined,
+    enabled: !!establishmentCode && !!currentOrder,
+    onOrderUpdated: (order: Order) => {
+      // Se for o pedido atual, recarregar
+      if (currentOrder?.code === order.code) {
+        loadOrder(order.code, true)
+      }
+    },
+    onOrderStatusChanged: (order: Order) => {
+      // Se for o pedido atual, recarregar
+      if (currentOrder?.code === order.code) {
+        loadOrder(order.code, true)
+      }
+    },
+  })
 
   const handleRemoveItem = useCallback(
     async (itemId: number) => {
