@@ -26,7 +26,8 @@ export interface AddOrderItemOptions {
   menuItemId?: number
   dishId?: number
   drinkId?: number
-  portionId: number
+  portionId?: number
+  menuId?: number
   quantity?: number
 }
 

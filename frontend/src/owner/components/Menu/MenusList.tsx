@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import Layout from '../Layout/Layout'
 import OrderSidebar from '../Orders/OrderSidebar'
 import { useMenusPage } from '../../hooks/Menu/useMenusPage'
+import { useMenuCard } from '../../hooks/Menu/useMenuCard'
 import MenusListLoading from './MenusListLoading'
 import '../../../css/owner/MenusList.css'
 
@@ -60,41 +61,13 @@ export default function MenusList() {
         ) : (
           <div className="menus-grid">
             {menus.map(menu => (
-              <div key={menu.id} className="menu-card">
-                <h3 className="menu-card-title">{menu.name}</h3>
-                {menu.description && (
-                  <p className="menu-card-description">{menu.description}</p>
-                )}
-
-                <div className="menu-card-actions">
-                  <Link
-                    to={`/establishment/${establishmentCode}/menus/${menu.id}`}
-                    className="menu-card-btn menu-card-btn-primary"
-                  >
-                    Ver
-                  </Link>
-                  {isOwner && (
-                    <>
-                      <Link
-                        to={`/establishment/${establishmentCode}/menus/${menu.id}/edit`}
-                        className="menu-card-btn menu-card-btn-secondary"
-                      >
-                        Editar
-                      </Link>
-                      <button
-                        onClick={() => {
-                          if (window.confirm('Tem certeza que deseja excluir este cardápio?')) {
-                            deleteMenu(menu.id)
-                          }
-                        }}
-                        className="menu-card-btn menu-card-btn-danger"
-                      >
-                        Excluir
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
+              <MenuCard
+                key={menu.id}
+                menu={menu}
+                establishmentCode={establishmentCode}
+                isOwner={isOwner}
+                onDelete={deleteMenu}
+              />
             ))}
           </div>
         )}
@@ -102,6 +75,85 @@ export default function MenusList() {
       
       <OrderSidebar establishmentCode={establishmentCode} />
     </Layout>
+  )
+}
+
+function MenuCard({ menu, establishmentCode, isOwner, onDelete }: { 
+  menu: { id: number; name: string; description?: string; price?: number }
+  establishmentCode: string
+  isOwner: boolean
+  onDelete: (menuId: number) => void
+}) {
+  const {
+    showItemModal,
+    setShowItemModal,
+    selectedMenuItemId,
+    setSelectedMenuItemId,
+    selectedPortionId,
+    setSelectedPortionId,
+    menuItems,
+    loadingMenuItems,
+    successMessage,
+    addingItem,
+    handleAddToOrder,
+    handleConfirmAddToOrder
+  } = useMenuCard({ menuId: menu.id, establishmentCode })
+
+  return (
+    <>
+      <div className="menu-card">
+        <h3 className="menu-card-title">{menu.name}</h3>
+        {menu.description && (
+          <p className="menu-card-description">{menu.description}</p>
+        )}
+        {menu.price !== undefined && menu.price !== null && typeof menu.price === 'number' && (
+          <p className="menu-card-price">R$ {Number(menu.price).toFixed(2)}</p>
+        )}
+
+        {successMessage && (
+          <div className="menu-card-success-message">
+            {successMessage}
+          </div>
+        )}
+
+        <div className="menu-card-actions">
+          <button
+            className="menu-card-btn menu-card-btn-add"
+            onClick={handleAddToOrder}
+            disabled={addingItem || loadingMenuItems}
+          >
+            {addingItem ? 'Adicionando...' : 'Add to Order'}
+          </button>
+          <Link
+            to={`/establishment/${establishmentCode}/menus/${menu.id}`}
+            className="menu-card-btn menu-card-btn-primary"
+          >
+            Ver
+          </Link>
+          {isOwner && (
+            <>
+              <Link
+                to={`/establishment/${establishmentCode}/menus/${menu.id}/edit`}
+                className="menu-card-btn menu-card-btn-secondary"
+              >
+                Editar
+              </Link>
+              <button
+                onClick={() => {
+                  if (window.confirm('Tem certeza que deseja excluir este cardápio?')) {
+                    onDelete(menu.id)
+                  }
+                }}
+                className="menu-card-btn menu-card-btn-danger"
+              >
+                Excluir
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+    </>
   )
 }
 

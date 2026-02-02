@@ -18,6 +18,8 @@ export default function Drinks() {
     loading,
     error,
     toggleTag,
+    searchTerm,
+    setSearchTerm,
     deleteDrink,
     deleting
   } = useDrinksPage()
@@ -34,7 +36,9 @@ export default function Drinks() {
         <DrinksFilters 
           tags={tags} 
           selectedTags={selectedTags} 
-          onToggleTag={toggleTag} 
+          onToggleTag={toggleTag}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
         />
 
         {error && (

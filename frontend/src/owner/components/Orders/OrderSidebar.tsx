@@ -108,10 +108,67 @@ export default function OrderSidebar(props: OrderSidebarProps) {
 }
 
 function OrderSidebarItem({ item, onRemove, removing }: OrderSidebarItemProps) {
+  // Se é um menu completo
+  if (item.menu_id && item.menu) {
+    const displayName = item.menu.name
+    const unitPrice = typeof item.menu.price === 'number' ? item.menu.price : Number(item.menu.price) || 0
+    const totalPrice = unitPrice * item.quantity
+
+    return (
+      <div className="order-sidebar-item">
+        <div className="order-sidebar-item-content">
+          <div className="order-sidebar-item-image">
+            <div className="order-sidebar-item-image-placeholder" aria-hidden />
+          </div>
+          <div className="order-sidebar-item-main">
+            <div className="order-sidebar-item-info">
+              <div className="order-sidebar-item-name">{displayName}</div>
+              <div className="order-sidebar-item-unit-price">
+                R$ {Number(unitPrice).toFixed(2)}
+              </div>
+            </div>
+            <div className="order-sidebar-item-row">
+              <div className="order-sidebar-item-qty-box">
+                <input
+                  type="number"
+                  min={1}
+                  value={item.quantity}
+                  readOnly
+                  className="order-sidebar-item-qty-input"
+                  aria-label={`Quantidade ${displayName}`}
+                />
+              </div>
+              <div className="order-sidebar-item-total">
+                R$ {Number(totalPrice).toFixed(2)}
+              </div>
+              <button
+                type="button"
+                className="order-sidebar-item-remove"
+                title="Remover item do pedido"
+                onClick={() => onRemove(item.id)}
+                disabled={removing}
+                aria-label={`Remover ${displayName}`}
+              >
+                {removing ? '…' : <img src="/lixeira-de-reciclagem.png" alt="Remover" />}
+              </button>
+            </div>
+            <input
+              type="text"
+              placeholder="Order Note..."
+              className="order-sidebar-item-note"
+              defaultValue={(item as { note?: string }).note ?? ''}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Item individual (menu_item + portion)
   const itemName = item.menu_item?.name ?? 'Item'
   const portionName = item.portion?.name ?? item.portion?.description ?? ''
   const displayName = portionName ? `${itemName} - ${portionName}` : itemName
-  const unitPrice = item.portion?.price ?? 0
+  const unitPrice = typeof item.portion?.price === 'number' ? item.portion.price : Number(item.portion?.price) || 0
   const totalPrice = unitPrice * item.quantity
 
   return (
@@ -124,7 +181,7 @@ function OrderSidebarItem({ item, onRemove, removing }: OrderSidebarItemProps) {
           <div className="order-sidebar-item-info">
             <div className="order-sidebar-item-name">{displayName}</div>
             <div className="order-sidebar-item-unit-price">
-              R$ {unitPrice.toFixed(2)}
+              R$ {Number(unitPrice).toFixed(2)}
             </div>
           </div>
           <div className="order-sidebar-item-row">
@@ -139,7 +196,7 @@ function OrderSidebarItem({ item, onRemove, removing }: OrderSidebarItemProps) {
               />
             </div>
             <div className="order-sidebar-item-total">
-              R$ {totalPrice.toFixed(2)}
+              R$ {Number(totalPrice).toFixed(2)}
             </div>
             <button
               type="button"
@@ -149,7 +206,7 @@ function OrderSidebarItem({ item, onRemove, removing }: OrderSidebarItemProps) {
               disabled={removing}
               aria-label={`Remover ${displayName}`}
             >
-              {removing ? '…' : '🗑️'}
+              {removing ? '…' : <img src="/lixeira-de-reciclagem.png" alt="Remover" />}
             </button>
           </div>
           <input

@@ -31,7 +31,6 @@ export default function RestaurantsList() {
       return
     }
 
-    // Se não for cliente, não permitir acesso
     if (!isClient) {
       navigate('/login')
       return

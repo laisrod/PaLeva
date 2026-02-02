@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_28_063303) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_02_115655) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -117,6 +117,16 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_28_063303) do
     t.integer "user_id"
   end
 
+  create_table "menu_item_portions", force: :cascade do |t|
+    t.integer "menu_item_id", null: false
+    t.integer "portion_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["menu_item_id", "portion_id"], name: "index_menu_item_portions_on_menu_item_id_and_portion_id", unique: true
+    t.index ["menu_item_id"], name: "index_menu_item_portions_on_menu_item_id"
+    t.index ["portion_id"], name: "index_menu_item_portions_on_portion_id"
+  end
+
   create_table "menu_items", force: :cascade do |t|
     t.integer "menu_id", null: false
     t.integer "drink_id"
@@ -146,6 +156,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_28_063303) do
     t.integer "portion_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "menu_id"
+    t.index ["menu_id"], name: "index_order_menu_items_on_menu_id"
     t.index ["menu_item_id"], name: "index_order_menu_items_on_menu_item_id"
     t.index ["order_id"], name: "index_order_menu_items_on_order_id"
     t.index ["portion_id"], name: "index_order_menu_items_on_portion_id"
@@ -230,11 +242,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_28_063303) do
   add_foreign_key "drink_tags", "tags"
   add_foreign_key "drinks", "establishments"
   add_foreign_key "employee_invitations", "establishments"
+  add_foreign_key "menu_item_portions", "menu_items"
+  add_foreign_key "menu_item_portions", "portions"
   add_foreign_key "menu_items", "dishes"
   add_foreign_key "menu_items", "drinks"
   add_foreign_key "menu_items", "menus"
   add_foreign_key "menus", "establishments"
   add_foreign_key "order_menu_items", "menu_items"
+  add_foreign_key "order_menu_items", "menus"
   add_foreign_key "order_menu_items", "orders"
   add_foreign_key "order_menu_items", "portions"
   add_foreign_key "orders", "establishments"

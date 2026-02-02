@@ -3,7 +3,6 @@ class Dish < ApplicationRecord
   
   has_one_attached :photo
   
-  # Validações de foto apenas se estiver presente
   validates :photo, content_type: ['image/png', 'image/jpeg', 'image/webp'],
                     size: { less_than: 5.megabytes },
                     if: -> { photo.attached? }

@@ -9,7 +9,7 @@ export function useDishesPage() {
   useRequireAuth()
   
   const { isOwner } = useAuth()
-  const { dishes, tags, selectedTags, loading, toggleTag, refetch } = useDishes(code)
+  const { dishes, tags, selectedTags, loading, toggleTag, searchTerm, setSearchTerm, refetch } = useDishes(code)
   const { deleteDish, loading: deleting } = useDeleteDish({ 
     establishmentCode: code,
     onSuccess: () => {
@@ -25,6 +25,8 @@ export function useDishesPage() {
     selectedTags,
     loading,
     toggleTag,
+    searchTerm,
+    setSearchTerm,
     deleteDish,
     deleting
   }
