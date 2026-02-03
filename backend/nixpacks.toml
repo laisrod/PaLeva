@@ -1,8 +1,0 @@
-[phases.install]
-cmds = ["bundle install"]
-
-[phases.build]
-cmds = ["bundle exec rails assets:precompile || true"]
-
-[start]
-cmd = "bundle exec puma -C config/puma.rb"
