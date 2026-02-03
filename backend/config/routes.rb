@@ -75,24 +75,3 @@ Rails.application.routes.draw do
     end
   end
 end
-
-
-# config/routes.rb
-Rails.application.routes.draw do
-  # ... suas rotas normais aqui em cima ...
-
-  # Catch-all para OPTIONS (preflight) - força resposta CORS
-  match '*path', via: :options, to: lambda { |env|
-    origin = env['HTTP_ORIGIN']
-    headers = {
-      'Access-Control-Allow-Origin'  => origin || '*',
-      'Access-Control-Allow-Methods' => 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD',
-      'Access-Control-Allow-Headers' => 'Content-Type, Authorization, Accept, Origin',
-      'Access-Control-Allow-Credentials' => 'true',
-      'Access-Control-Max-Age'       => '86400',
-      'Content-Length'               => '0',
-      'Content-Type'                 => 'text/plain'
-    }
-    [204, headers, []]
-  }
-end
