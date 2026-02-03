@@ -14,11 +14,17 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
         return origin if allowed.include?(origin)
       end
       
-      # Permite deployments do Vercel (qualquer subdomínio)
-      return origin if origin.match?(/https?:\/\/.*\.vercel\.app/)
+      # Permite deployments do Vercel (qualquer subdomínio, incluindo previews e branches)
+      # Exemplos: https://pa-leva-git-main-lais-projects-5e3ce429.vercel.app
+      #          https://paleva.vercel.app
+      if origin.include?('.vercel.app')
+        return origin
+      end
       
       # Permite desenvolvimento local
-      return origin if origin.match?(/http:\/\/localhost:\d+/)
+      if origin.start_with?('http://localhost:')
+        return origin
+      end
       
       nil
     end
