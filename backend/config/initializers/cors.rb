@@ -1,19 +1,20 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    # Allow all Vercel deployments and other origins
+    # Para debug: teste com '*' primeiro
+    # origins '*'
+
     origins(
       'http://localhost:5176',
       'http://localhost:5177',
-      /https?:\/\/.*\.vercel\.app/,
-      /https?:\/\/.*\.render\.com/,
-      /https?:\/\/.*\.github\.io/,
-      /https?:\/\/pa-leva.*\.vercel\.app/
+      /\Ahttps?:\/\/[a-z0-9-]+(?:-[a-z0-9-]+)*\.vercel\.app\z/i,  # case insensitive, cobre todos previews
+      'https://pa-leva-git-main-lais-projects-5e3ce429.vercel.app'  # adicione o exato se souber
     )
+
     resource '*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head],
       credentials: true,
-      expose: ['Authorization', 'Content-Type'],
+      expose: ['Authorization'],
       max_age: 86400
   end
 end
