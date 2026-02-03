@@ -32,11 +32,9 @@ threads threads_count, threads_count
 port ENV.fetch("PORT") { 3000 }
 
 # Workers são desabilitados por padrão no Render (single process mode)
-# Apenas use workers se WEB_CONCURRENCY estiver explicitamente definido e > 0
-if ENV["WEB_CONCURRENCY"].present? && ENV["WEB_CONCURRENCY"].to_i > 0
-  workers ENV["WEB_CONCURRENCY"].to_i
-  preload_app!
-end
+# Força modo single process - não usa workers para evitar "Early termination of worker"
+# O Solid Queue funciona melhor em modo single process
+workers 0
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
