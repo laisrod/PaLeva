@@ -6,7 +6,8 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       'http://localhost:5177',
       /https?:\/\/.*\.vercel\.app/,
       /https?:\/\/.*\.render\.com/,
-      /https?:\/\/.*\.github\.io/
+      /https?:\/\/.*\.github\.io/,
+      /https?:\/\/pa-leva.*\.vercel\.app/
     )
     resource '*',
       headers: :any,
