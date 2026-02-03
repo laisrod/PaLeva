@@ -31,9 +31,12 @@ threads threads_count, threads_count
 # Render e outros serviços de deploy fornecem a variável PORT
 port ENV.fetch("PORT") { 3000 }
 
-# Workers não são definidos - Puma usa modo single process por padrão
-# Isso evita problemas de "Early termination of worker" no Render
-# Não defina workers a menos que realmente precise de múltiplos processos
+# Força modo single process (workers = 0) para evitar problemas no Render
+# Isso evita "Early termination of worker" e reduz uso de memória
+workers 0
+
+# Silencia o aviso sobre cluster mode com 1 worker
+silence_single_worker_warning
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
