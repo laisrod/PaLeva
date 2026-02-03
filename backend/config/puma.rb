@@ -31,16 +31,16 @@ threads threads_count, threads_count
 # Render e outros serviços de deploy fornecem a variável PORT
 port ENV.fetch("PORT") { 3000 }
 
-# Workers são desabilitados por padrão no Render (single process mode)
-# Força modo single process - não usa workers para evitar "Early termination of worker"
-# O Solid Queue funciona melhor em modo single process
-workers 0
+# Workers não são definidos - Puma usa modo single process por padrão
+# Isso evita problemas de "Early termination of worker" no Render
+# Não defina workers a menos que realmente precise de múltiplos processos
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
 
 # Run the Solid Queue supervisor inside of Puma for single-server deployments
-plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
+# Desabilitado temporariamente para evitar conflitos
+# plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
