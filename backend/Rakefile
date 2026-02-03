@@ -1,6 +1,11 @@
 # Add your own tasks in files placed in lib/tasks ending in .rake,
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
-require_relative "config/application"
-
-Rails.application.load_tasks
+begin
+  require_relative "config/application"
+  Rails.application.load_tasks
+rescue => e
+  # Silently fail during build if Rails can't be loaded
+  # This can happen during bundle install or other build steps
+  puts "Warning: Could not load Rails tasks: #{e.message}" if ENV['RAILS_ENV'] != 'production'
+end
