@@ -2,7 +2,7 @@ services:
   - type: web
     name: paleva-backend
     env: ruby
-    buildCommand: bundle install && bundle exec rails assets:precompile || true
+    buildCommand: bundle install
     startCommand: bundle exec puma -C config/puma.rb
     envVars:
       - key: RAILS_ENV
