@@ -108,37 +108,37 @@ module Api
               }
             else
               # Item individual (menu_item + portion)
-              menu_item_name = nil
-              menu_item_description = nil
-              
-              if item.menu_item
-                if item.menu_item.dish
-                  menu_item_name = item.menu_item.dish.name
-                  menu_item_description = item.menu_item.dish.description
-                elsif item.menu_item.drink
-                  menu_item_name = item.menu_item.drink.name
-                  menu_item_description = item.menu_item.drink.description
-                end
+            menu_item_name = nil
+            menu_item_description = nil
+            
+            if item.menu_item
+              if item.menu_item.dish
+                menu_item_name = item.menu_item.dish.name
+                menu_item_description = item.menu_item.dish.description
+              elsif item.menu_item.drink
+                menu_item_name = item.menu_item.drink.name
+                menu_item_description = item.menu_item.drink.description
               end
-              
-              {
-                id: item.id,
-                quantity: item.quantity,
-                menu_item_id: item.menu_item_id,
-                portion_id: item.portion_id,
+            end
+            
+            {
+              id: item.id,
+              quantity: item.quantity,
+              menu_item_id: item.menu_item_id,
+              portion_id: item.portion_id,
                 menu_id: nil,
                 menu: nil,
-                menu_item: item.menu_item ? {
-                  id: item.menu_item.id,
-                  name: menu_item_name,
-                  description: menu_item_description
-                } : nil,
-                portion: item.portion ? {
-                  id: item.portion.id,
-                  description: item.portion.description,
-                  price: item.portion.price.to_f
-                } : nil
-              }
+              menu_item: item.menu_item ? {
+                id: item.menu_item.id,
+                name: menu_item_name,
+                description: menu_item_description
+              } : nil,
+              portion: item.portion ? {
+                id: item.portion.id,
+                description: item.portion.description,
+                price: item.portion.price.to_f
+              } : nil
+            }
             end
           }
         }
