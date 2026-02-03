@@ -29,7 +29,8 @@ threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 # Render e outros serviços de deploy fornecem a variável PORT
-port ENV.fetch("PORT") { 3000 }
+# O Render precisa que o servidor escute em 0.0.0.0 para detectar a porta
+bind "tcp://0.0.0.0:#{ENV.fetch('PORT') { 3000 }}"
 
 # Força modo single process (workers = 0) para evitar problemas no Render
 # Isso evita "Early termination of worker" e reduz uso de memória
