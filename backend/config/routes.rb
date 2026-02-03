@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
   devise_for :users
+  
+  # Health check endpoint (não requer autenticação)
+  get '/up', to: proc { [200, {}, ['OK']] }
+  
   root to: 'establishments#index'
   
   # Action Cable mount point

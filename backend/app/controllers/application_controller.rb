@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_active_storage_url_options
-  before_action :create_current_order
+  before_action :create_current_order, unless: -> { request.path.start_with?('/api/') }
 
   # Tratamento de exceções para APIs
   rescue_from ActionController::InvalidAuthenticityToken, with: :handle_api_exception
@@ -45,8 +45,15 @@ class ApplicationController < ActionController::Base
   private
 
   def create_current_order
-    if current_user && current_user.establishment && !current_order
-      @current_order ||= Order.create(establishment: current_user.establishment, status: 'draft')
+    return if request.path.start_with?('/api/')
+    
+    begin
+      if current_user && current_user.establishment && !current_order
+        @current_order ||= Order.create(establishment: current_user.establishment, status: 'draft')
+      end
+    rescue => e
+      Rails.logger.error "Erro ao criar pedido atual: #{e.message}"
+      # Não bloqueia a requisição se houver erro ao criar o pedido
     end
   end
 
