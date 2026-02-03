@@ -28,8 +28,15 @@ threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
 threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
-# Railway e outros serviços de deploy fornecem a variável PORT
+# Render e outros serviços de deploy fornecem a variável PORT
 port ENV.fetch("PORT") { 3000 }
+
+# Workers são desabilitados por padrão no Render (single process mode)
+# Apenas use workers se WEB_CONCURRENCY estiver explicitamente definido e > 0
+if ENV["WEB_CONCURRENCY"].present? && ENV["WEB_CONCURRENCY"].to_i > 0
+  workers ENV["WEB_CONCURRENCY"].to_i
+  preload_app!
+end
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
