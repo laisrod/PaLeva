@@ -1,44 +1,43 @@
 # config/initializers/cors.rb
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    # Validação dinâmica de origem usando um proc
-    # Retorna a string de origem se corresponder aos padrões permitidos (necessário para credentials: true)
+    # Permite origens do Vercel, localhost e origens definidas em ALLOWED_ORIGINS
     origins do |source, request|
       # O rack-cors passa a origem como primeiro parâmetro (source)
-      # Se não estiver disponível, obtém do header HTTP_ORIGIN
+      # Para requisições OPTIONS (preflight), pode vir vazio, então pegamos do header
       origin = source
       origin ||= request.env['HTTP_ORIGIN']
       origin ||= request.env['Origin']
       
-      return nil unless origin
+      return nil if origin.nil? || origin.to_s.empty?
       
-      # Normaliza a origem
-      origin = origin.to_s.strip.chomp('/')
+      origin = origin.to_s.strip
       
-      # Verifica primeiro contra a variável de ambiente (para produção)
+      # Log para debug
+      Rails.logger.info "[CORS] Verificando origem: #{origin}" if defined?(Rails.logger)
+      
+      # Verifica origens definidas na variável de ambiente primeiro
       if ENV['ALLOWED_ORIGINS'].present?
-        allowed = ENV['ALLOWED_ORIGINS'].split(',').map(&:strip).map { |o| o.chomp('/') }
+        allowed = ENV['ALLOWED_ORIGINS'].split(',').map(&:strip)
         if allowed.include?(origin)
-          Rails.logger.debug "CORS: Origem permitida via ALLOWED_ORIGINS: #{origin}" if defined?(Rails.logger)
+          Rails.logger.info "[CORS] ✓ Permitida via ALLOWED_ORIGINS: #{origin}" if defined?(Rails.logger)
           return origin
         end
       end
       
-      # Permite deployments do Vercel (qualquer subdomínio, incluindo previews e branches)
-      # Exemplos: https://pa-leva-git-main-lais-projects-5e3ce429.vercel.app
-      #          https://paleva.vercel.app
-      if origin.match?(/^https?:\/\/.*\.vercel\.app/)
-        Rails.logger.debug "CORS: Origem Vercel permitida: #{origin}" if defined?(Rails.logger)
+      # Permite qualquer URL do Vercel (qualquer subdomínio, incluindo previews)
+      if origin.include?('.vercel.app')
+        Rails.logger.info "[CORS] ✓ Origem Vercel permitida: #{origin}" if defined?(Rails.logger)
         return origin
       end
       
-      # Permite desenvolvimento local
-      if origin.match?(/^http:\/\/localhost(:\d+)?/)
-        Rails.logger.debug "CORS: Origem localhost permitida: #{origin}" if defined?(Rails.logger)
+      # Permite localhost para desenvolvimento
+      if origin.start_with?('http://localhost') || origin.start_with?('http://127.0.0.1')
+        Rails.logger.info "[CORS] ✓ Origem localhost permitida: #{origin}" if defined?(Rails.logger)
         return origin
       end
       
-      Rails.logger.debug "CORS: Origem bloqueada: #{origin}" if defined?(Rails.logger)
+      Rails.logger.warn "[CORS] ✗ Origem bloqueada: #{origin}" if defined?(Rails.logger)
       nil
     end
 
