@@ -30,8 +30,8 @@ test:
 # Similarly, if you deploy your application as a Docker container, you must
 # ensure the database is located in a persisted volume.
 production:
-  # Use PostgreSQL on Render, SQLite locally
-  <% if ENV['DATABASE_URL'] %>
+  # Use PostgreSQL on Render - sempre usar PostgreSQL em produção
+  <% if ENV['DATABASE_URL'].present? %>
     <% db = URI.parse(ENV['DATABASE_URL']) %>
     adapter: postgresql
     encoding: unicode
@@ -42,7 +42,13 @@ production:
     password: <%= db.password %>
     database: <%= db.path[1..-1] %>
   <% else %>
-    <<: *default
-    adapter: sqlite3
-    database: storage/production.sqlite3
+    # Forçar erro se DATABASE_URL não estiver configurada
+    adapter: postgresql
+    encoding: unicode
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    host: localhost
+    port: 5432
+    username: postgres
+    password: password
+    database: paleva_production
   <% end %>
