@@ -4,6 +4,8 @@ class User < ApplicationRecord
 
   has_one :establishment, dependent: :destroy
   has_many :orders, dependent: :nullify
+  has_many :reviews, dependent: :destroy
+  has_many :ratings, dependent: :destroy
 
   validates :name, :email, :last_name, :cpf, presence: true
   validates :cpf, uniqueness: true, format: { with: /\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/ }

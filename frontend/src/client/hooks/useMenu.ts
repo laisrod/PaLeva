@@ -11,6 +11,8 @@ interface MenuItem {
   image?: string
   category?: string
   menu_item_id?: number
+  average_rating?: number
+  ratings_count?: number
   portions?: Array<{
     id: number
     name: string
@@ -51,11 +53,13 @@ export function useMenu(establishmentCode: string | undefined) {
           id: item.id,
           name: item.name,
           description: item.description,
-          price: item.price,
+          price: item.min_price || item.price || 0,
           category: item.category || 'Geral',
           menu_item_id: item.menu_item_id || index + 1,
           portions: item.portions || [],
-          image: item.image
+          image: item.photo_url || item.image,
+          average_rating: item.average_rating || 0,
+          ratings_count: item.ratings_count || 0
         }))
 
         const uniqueCategories = Array.from(new Set(

@@ -749,6 +749,173 @@ async getDrinks(establishmentCode: string) {
       }
     }
   }
+
+  // Reviews (Avaliações de Pedidos)
+  async createOrderReview(orderId: number, reviewData: {
+    rating: number
+    comment?: string
+  }) {
+    try {
+      return await this.request<{
+        review: {
+          id: number
+          rating: number
+          comment?: string
+          created_at: string
+          user: {
+            id: number
+            name: string
+            email: string
+          }
+        }
+        message: string
+      }>(`/orders/${orderId}/reviews`, {
+        method: 'POST',
+        body: JSON.stringify({ review: reviewData }),
+      })
+    } catch (error) {
+      return {
+        error: 'Erro ao criar avaliação',
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
+      }
+    }
+  }
+
+  async getOrderReviews(orderId: number) {
+    try {
+      return await this.request<{
+        reviews: Array<{
+          id: number
+          rating: number
+          comment?: string
+          created_at: string
+          user: {
+            id: number
+            name: string
+            email: string
+          }
+        }>
+        average_rating: number
+        total_reviews: number
+      }>(`/orders/${orderId}/reviews`)
+    } catch (error) {
+      return {
+        error: 'Erro ao buscar avaliações',
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
+      }
+    }
+  }
+
+  // Ratings (Avaliações de Pratos/Bebidas)
+  async createDishRating(establishmentCode: string, dishId: number, ratingData: {
+    rating: number
+    comment?: string
+  }) {
+    try {
+      return await this.request<{
+        rating: {
+          id: number
+          rating: number
+          comment?: string
+          created_at: string
+          user: {
+            id: number
+            name: string
+            email: string
+          }
+        }
+        message: string
+      }>(`/establishments/${establishmentCode}/dishes/${dishId}/ratings`, {
+        method: 'POST',
+        body: JSON.stringify({ rating: ratingData }),
+      })
+    } catch (error) {
+      return {
+        error: 'Erro ao criar avaliação',
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
+      }
+    }
+  }
+
+  async createDrinkRating(establishmentCode: string, drinkId: number, ratingData: {
+    rating: number
+    comment?: string
+  }) {
+    try {
+      return await this.request<{
+        rating: {
+          id: number
+          rating: number
+          comment?: string
+          created_at: string
+          user: {
+            id: number
+            name: string
+            email: string
+          }
+        }
+        message: string
+      }>(`/establishments/${establishmentCode}/drinks/${drinkId}/ratings`, {
+        method: 'POST',
+        body: JSON.stringify({ rating: ratingData }),
+      })
+    } catch (error) {
+      return {
+        error: 'Erro ao criar avaliação',
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
+      }
+    }
+  }
+
+  async getDishRatings(establishmentCode: string, dishId: number) {
+    try {
+      return await this.request<{
+        ratings: Array<{
+          id: number
+          rating: number
+          comment?: string
+          created_at: string
+          user: {
+            id: number
+            name: string
+            email: string
+          }
+        }>
+        average_rating: number
+        total_ratings: number
+      }>(`/establishments/${establishmentCode}/dishes/${dishId}/ratings`)
+    } catch (error) {
+      return {
+        error: 'Erro ao buscar avaliações',
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
+      }
+    }
+  }
+
+  async getDrinkRatings(establishmentCode: string, drinkId: number) {
+    try {
+      return await this.request<{
+        ratings: Array<{
+          id: number
+          rating: number
+          comment?: string
+          created_at: string
+          user: {
+            id: number
+            name: string
+            email: string
+          }
+        }>
+        average_rating: number
+        total_ratings: number
+      }>(`/establishments/${establishmentCode}/drinks/${drinkId}/ratings`)
+    } catch (error) {
+      return {
+        error: 'Erro ao buscar avaliações',
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
+      }
+    }
+  }
 }
 
 export const api = new ApiService()
