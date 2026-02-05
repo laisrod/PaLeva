@@ -3,7 +3,7 @@
 .layout {
   min-height: 100vh;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   background: var(--color-bg-primary);
   position: relative;
 }
@@ -11,8 +11,8 @@
 /* Header Superior - Estilo Food Magic */
 .owner-header {
   position: fixed;
-  top: 0;
-  left: 80px;
+  top: 70px;
+  left: 0;
   right: 0;
   background: var(--color-bg-secondary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -50,65 +50,67 @@
   font-weight: var(--font-weight-normal);
 }
 
-/* Sidebar Vertical - Estilo Food Magic */
+/* Navbar Horizontal Superior */
 .owner-navbar {
   background: var(--color-bg-primary);
-  width: 80px;
-  min-width: 80px;
-  height: 100vh;
+  width: 100%;
+  height: auto;
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  padding: var(--spacing-lg) 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .owner-nav-top {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: var(--spacing-xl);
   flex: 1;
   width: 100%;
-  padding: var(--spacing-lg) 0;
+  padding: 0;
 }
 
 .owner-nav-left {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: var(--spacing-lg);
-  width: 100%;
+  width: auto;
+  flex: 1;
 }
 
 .owner-logo {
   text-decoration: none;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 0;
+  margin-right: var(--spacing-lg);
 }
 
 .logo-text {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);
-  writing-mode: vertical-rl;
+  writing-mode: horizontal-tb;
   text-orientation: mixed;
-  transform: rotate(180deg);
+  transform: none;
 }
 
 .owner-nav-links {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: var(--spacing-md);
   align-items: center;
-  width: 100%;
+  width: auto;
 }
 
 .owner-nav-link {
@@ -158,13 +160,13 @@
 
 .owner-nav-right {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: var(--spacing-md);
-  width: 100%;
-  margin-top: auto;
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  width: auto;
+  margin-left: auto;
+  padding-top: 0;
+  border-top: none;
 }
 
 .owner-nav-info {
@@ -182,10 +184,10 @@
 
 .owner-nav-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: var(--spacing-sm);
-  width: 100%;
+  width: auto;
 }
 
 .owner-action-btn {
@@ -253,8 +255,8 @@
 
 .owner-main-content {
   flex: 1;
-  padding-top: 100px;
-  padding-left: 100px;
+  padding-top: 150px;
+  padding-left: var(--spacing-2xl);
   padding-right: var(--spacing-2xl);
   padding-bottom: var(--spacing-xl);
   max-width: 100%;

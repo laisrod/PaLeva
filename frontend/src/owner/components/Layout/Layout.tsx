@@ -23,16 +23,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="layout">
-      {/* Header Superior - Informações do Estabelecimento */}
-      <header className="owner-header">
-        {user?.establishment && (
-          <div className="owner-header-subtitle">
-            <p>{user.establishment.name} - Gestão de Estabelecimento</p>
-          </div>
-        )}
-      </header>
-
-      {/* Sidebar Vertical */}
+      {/* Navbar Horizontal Superior */}
       <nav className="owner-navbar">
         <div className="owner-nav-top">
           <div className="owner-nav-left">
@@ -143,6 +134,15 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
       </nav>
+
+      {/* Header Superior - Informações do Estabelecimento */}
+      <header className="owner-header">
+        {user?.establishment && (
+          <div className="owner-header-subtitle">
+            <p>{user.establishment.name} - Gestão de Estabelecimento</p>
+          </div>
+        )}
+      </header>
 
       <main className="owner-main-content">
         {children}

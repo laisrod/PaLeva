@@ -20,7 +20,8 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
                  request.env['HTTP_X_FORWARDED_HOST'] # Alguns proxies usam isso
       end
       
-      return nil if origin.nil? || origin.to_s.empty?
+      # Retorna nil se não houver origem
+      next nil if origin.nil? || origin.to_s.empty?
       
       origin = origin.to_s.strip.chomp('/')
       
@@ -32,7 +33,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
         allowed = ENV['ALLOWED_ORIGINS'].split(',').map(&:strip).map { |o| o.chomp('/') }
         if allowed.include?(origin)
           Rails.logger.info "[CORS] ✓ Permitida via ALLOWED_ORIGINS: #{origin}" if defined?(Rails.logger)
-          return origin
+          next origin
         end
       end
       
@@ -40,13 +41,13 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       # Verifica tanto com http quanto https
       if origin.match?(/^https?:\/\/.*\.vercel\.app/)
         Rails.logger.info "[CORS] ✓ Origem Vercel permitida: #{origin}" if defined?(Rails.logger)
-        return origin
+        next origin
       end
       
       # Permite localhost para desenvolvimento
       if origin.match?(/^http:\/\/localhost(:\d+)?/) || origin.match?(/^http:\/\/127\.0\.0\.1(:\d+)?/)
         Rails.logger.info "[CORS] ✓ Origem localhost permitida: #{origin}" if defined?(Rails.logger)
-        return origin
+        next origin
       end
       
       Rails.logger.warn "[CORS] ✗ Origem bloqueada: #{origin}" if defined?(Rails.logger)

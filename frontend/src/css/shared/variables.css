@@ -27,6 +27,12 @@
   --text-secondary: #ABB1B5;
   --text-muted: #8B8B8B;
   
+  /* Cores de notificação */
+  --color-info: #3b82f6;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  
   /* Espaçamentos */
   --spacing-xs: 4px;
   --spacing-sm: 8px;

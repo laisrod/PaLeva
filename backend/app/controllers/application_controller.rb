@@ -58,7 +58,14 @@ class ApplicationController < ActionController::Base
   end
 
   def set_active_storage_url_options
-    ActiveStorage::Current.url_options = { host: request.base_url }
+    return if request.path.start_with?('/api/')
+    
+    begin
+      ActiveStorage::Current.url_options = { host: request.base_url }
+    rescue => e
+      Rails.logger.warn "Erro ao configurar ActiveStorage URL: #{e.message}"
+      # Não bloqueia a requisição se houver erro
+    end
   end
 
   protected
