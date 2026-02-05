@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_02_115655) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_05_133156) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -175,7 +175,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_02_115655) do
     t.datetime "updated_at", null: false
     t.string "customer_phone"
     t.string "cancellation_reason"
+    t.integer "user_id"
     t.index ["establishment_id"], name: "index_orders_on_establishment_id"
+    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "portions", force: :cascade do |t|
@@ -197,6 +199,35 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_02_115655) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["portion_id"], name: "index_price_histories_on_portion_id"
+  end
+
+  create_table "ratings", force: :cascade do |t|
+    t.integer "dish_id"
+    t.integer "drink_id"
+    t.integer "user_id", null: false
+    t.integer "rating", null: false
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dish_id", "user_id"], name: "index_ratings_on_dish_id_and_user_id", unique: true, where: "dish_id IS NOT NULL /*application='TakeAway'*/"
+    t.index ["dish_id"], name: "index_ratings_on_dish_id"
+    t.index ["drink_id", "user_id"], name: "index_ratings_on_drink_id_and_user_id", unique: true, where: "drink_id IS NOT NULL /*application='TakeAway'*/"
+    t.index ["drink_id"], name: "index_ratings_on_drink_id"
+    t.index ["rating"], name: "index_ratings_on_rating"
+    t.index ["user_id"], name: "index_ratings_on_user_id"
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.integer "order_id", null: false
+    t.integer "user_id", null: false
+    t.integer "rating", null: false
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id", "user_id"], name: "index_reviews_on_order_id_and_user_id", unique: true
+    t.index ["order_id"], name: "index_reviews_on_order_id"
+    t.index ["rating"], name: "index_reviews_on_rating"
+    t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -253,8 +284,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_02_115655) do
   add_foreign_key "order_menu_items", "orders"
   add_foreign_key "order_menu_items", "portions"
   add_foreign_key "orders", "establishments"
+  add_foreign_key "orders", "users"
   add_foreign_key "portions", "dishes"
   add_foreign_key "portions", "drinks"
   add_foreign_key "price_histories", "portions"
+  add_foreign_key "ratings", "dishes"
+  add_foreign_key "ratings", "drinks"
+  add_foreign_key "ratings", "users"
+  add_foreign_key "reviews", "orders"
+  add_foreign_key "reviews", "users"
   add_foreign_key "working_hours", "establishments"
 end
