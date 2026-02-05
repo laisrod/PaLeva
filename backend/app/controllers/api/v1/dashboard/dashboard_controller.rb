@@ -146,8 +146,18 @@ module Api
             menu = Menu.find_by(id: order_item.menu_id)
             menu&.name || "Menu ##{order_item.menu_id}"
           elsif order_item.menu_item_id
-            menu_item = MenuItem.find_by(id: order_item.menu_item_id)
-            menu_item&.name || "Item ##{order_item.menu_item_id}"
+            menu_item = MenuItem.includes(:dish, :drink).find_by(id: order_item.menu_item_id)
+            if menu_item
+              if menu_item.dish
+                menu_item.dish.name
+              elsif menu_item.drink
+                menu_item.drink.name
+              else
+                "Item ##{order_item.menu_item_id}"
+              end
+            else
+              "Item ##{order_item.menu_item_id}"
+            end
           elsif order_item.portion_id
             portion = Portion.find_by(id: order_item.portion_id)
             if portion&.dish
@@ -170,6 +180,15 @@ module Api
           elsif order_item.portion_id
             portion = Portion.find_by(id: order_item.portion_id)
             (portion&.price || 0) * (order_item.quantity || 0)
+          elsif order_item.menu_item_id
+            # MenuItem precisa ter uma portion associada para ter preço
+            # O preço vem da portion, não do menu_item diretamente
+            if order_item.portion_id
+              portion = Portion.find_by(id: order_item.portion_id)
+              (portion&.price || 0) * (order_item.quantity || 0)
+            else
+              0
+            end
           else
             0
           end
