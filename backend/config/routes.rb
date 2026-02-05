@@ -80,6 +80,10 @@ Rails.application.routes.draw do
       post '/sign_in', to: 'sessions#create'
       delete '/sign_out', to: 'sessions#destroy'
       get '/is_signed_in', to: 'sessions#is_signed_in?'
+      
+      # Histórico de pedidos do cliente
+      get '/orders/history', to: 'order_history#index'
+      get '/orders/history/:id', to: 'order_history#show'
     end
   end
 end
