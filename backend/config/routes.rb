@@ -70,6 +70,10 @@ Rails.application.routes.draw do
             patch :cancelled, to: 'orders#cancel'
           end
         end
+        # Dashboard de estatísticas
+        namespace :dashboard do
+          get 'stats', to: 'dashboard#stats'
+        end
       end
 
       resources :users, only: [:create]
