@@ -3,7 +3,7 @@ services:
     name: paleva-backend
     env: ruby
     buildCommand: bundle install
-    startCommand: bundle exec puma -C config/puma.rb
+    startCommand: ./bin/render-start.sh
     envVars:
       - key: RAILS_ENV
         value: production
