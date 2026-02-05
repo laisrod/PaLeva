@@ -3,12 +3,8 @@
 if Rails.env.production?
   # Garante que DATABASE_URL está configurada
   unless ENV['DATABASE_URL'].present?
-    raise "DATABASE_URL environment variable is required in production. Please configure it in your Render dashboard."
+    Rails.logger.warn "WARNING: DATABASE_URL environment variable is not set in production!"
+  else
+    Rails.logger.info "Production environment detected. Using PostgreSQL adapter."
   end
-  
-  # Força o uso de PostgreSQL
-  Rails.logger.info "Production environment detected. Using PostgreSQL adapter."
-rescue => e
-  Rails.logger.error "Database configuration error: #{e.message}"
-  raise
 end
