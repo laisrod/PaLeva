@@ -15,7 +15,12 @@ module OrderBroadcastable
 
   def broadcast_order_updated
     if status_changed?
-      broadcast_order('order_status_changed')
+      # Se foi cancelado, enviar notificação especial
+      if status == 'cancelled'
+        broadcast_order('order_cancelled')
+      else
+        broadcast_order('order_status_changed')
+      end
     elsif saved_change_to_total_price? || order_menu_items.any? { |item| item.saved_changes? }
       broadcast_order('order_updated')
     end
@@ -36,6 +41,7 @@ module OrderBroadcastable
 
     order_data = format_order_for_broadcast
     
+    # Broadcast para o canal de pedidos do estabelecimento
     ActionCable.server.broadcast(
       "orders:#{establishment.code}",
       {
@@ -45,7 +51,104 @@ module OrderBroadcastable
       }
     )
 
+    # Enviar notificações para o owner do estabelecimento
+    send_notification(event_type, order_data)
+
     Rails.logger.info "[OrderBroadcast] Broadcasted #{event_type} for order #{code} to orders:#{establishment.code}"
+  end
+
+  def send_notification(event_type, order_data)
+    return unless establishment&.user
+
+    notification_data = build_notification(event_type, order_data)
+    
+    # Enviar notificação para o owner
+    owner_id = establishment.user.id
+    ActionCable.server.broadcast(
+      "notifications:#{owner_id}",
+      notification_data
+    )
+    Rails.logger.info "[Notification] Sent #{event_type} notification to owner (user_id: #{owner_id}) for order #{code}"
+
+    # Se o pedido tem um usuário associado (cliente), enviar notificação também
+    if user.present? && user.id != establishment.user.id
+      ActionCable.server.broadcast(
+        "notifications:#{user.id}",
+        notification_data
+      )
+      Rails.logger.info "[Notification] Sent #{event_type} notification to client (user_id: #{user.id}) for order #{code}"
+    end
+  end
+
+  def build_notification(event_type, order_data)
+    case event_type
+    when 'order_created'
+      {
+        type: 'info',
+        title: 'Novo Pedido Recebido',
+        message: "Pedido ##{code} foi criado. Total: R$ #{sprintf('%.2f', total_price || 0)}",
+        order_id: id,
+        order_code: code,
+        timestamp: Time.current.iso8601
+      }
+    when 'order_status_changed'
+      notification = {
+        type: 'info',
+        title: 'Status do Pedido Atualizado',
+        message: "Pedido ##{code} mudou para: #{status_label}",
+        order_id: id,
+        order_code: code,
+        timestamp: Time.current.iso8601
+      }
+      
+      # Notificação especial quando pedido está pronto
+      if status == 'ready'
+        notification[:type] = 'success'
+        notification[:title] = 'Pedido Pronto!'
+        notification[:message] = "Seu pedido ##{code} está pronto para retirada!"
+      end
+      
+      notification
+    when 'order_cancelled'
+      {
+        type: 'error',
+        title: 'Pedido Cancelado',
+        message: "Pedido ##{code} foi cancelado#{cancellation_reason.present? ? ": #{cancellation_reason}" : ''}",
+        order_id: id,
+        order_code: code,
+        timestamp: Time.current.iso8601
+      }
+    when 'order_updated'
+      {
+        type: 'info',
+        title: 'Pedido Atualizado',
+        message: "Pedido ##{code} foi atualizado",
+        order_id: id,
+        order_code: code,
+        timestamp: Time.current.iso8601
+      }
+    else
+      {
+        type: 'info',
+        title: 'Atualização de Pedido',
+        message: "Pedido ##{code} foi atualizado",
+        order_id: id,
+        order_code: code,
+        timestamp: Time.current.iso8601
+      }
+    end
+  end
+
+  def status_label
+    status_map = {
+      'draft' => 'Rascunho',
+      'pending' => 'Pendente',
+      'preparing' => 'Preparando',
+      'ready' => 'Pronto',
+      'delivered' => 'Entregue',
+      'cancelled' => 'Cancelado'
+    }
+    status_map[status] || status
   end
 
   def format_order_for_broadcast

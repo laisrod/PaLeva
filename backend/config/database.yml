@@ -30,7 +30,6 @@ test:
 # Similarly, if you deploy your application as a Docker container, you must
 # ensure the database is located in a persisted volume.
 production:
-  <<: *default
   # Use PostgreSQL on Render, SQLite locally
   <% if ENV['DATABASE_URL'] %>
     <% db = URI.parse(ENV['DATABASE_URL']) %>
@@ -43,6 +42,7 @@ production:
     password: <%= db.password %>
     database: <%= db.path[1..-1] %>
   <% else %>
+    <<: *default
     adapter: sqlite3
     database: storage/production.sqlite3
   <% end %>
