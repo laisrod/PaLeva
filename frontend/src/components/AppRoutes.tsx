@@ -30,6 +30,7 @@ import EditTag from '../owner/components/Tags/EditTag'
 import Orders from '../owner/components/Orders/Orders'
 import EditWorkingHours from '../owner/components/WorkingHours/EditWorkingHours'
 import TestCreateOrder from '../owner/components/Orders/TestCreateOrder'
+import Ratings from '../owner/pages/Ratings'
 
 export default function AppRoutes() {
   return (
@@ -65,6 +66,7 @@ export default function AppRoutes() {
       <Route path="/establishment/:code/tags/:id/edit" element={<EditTag />} />
       <Route path="/establishment/:code/tags" element={<Tags />} />
       <Route path="/establishment/:code/working-hours" element={<EditWorkingHours />} />
+      <Route path="/establishment/:code/ratings" element={<Ratings />} />
       <Route path="/establishment/:code/test-order" element={<TestCreateOrder />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -7,6 +7,7 @@ class Order < ApplicationRecord
   belongs_to :user, optional: true
   has_many :order_menu_items, dependent: :destroy
   has_many :menu_items, through: :order_menu_items
+  has_many :reviews, dependent: :destroy
   
   before_save :reset_timestamps
   before_save :update_total_price, unless: :destroyed?

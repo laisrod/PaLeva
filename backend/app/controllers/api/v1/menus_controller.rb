@@ -64,14 +64,18 @@ module Api
               name: menu_item.dish.name,
               description: menu_item.dish.description,
               photo_url: dish_photo_url,
-              portions: selected_portions
+              portions: selected_portions,
+              average_rating: menu_item.dish.average_rating,
+              ratings_count: menu_item.dish.ratings_count
             } : nil,
             drink: menu_item.drink ? {
               id: menu_item.drink.id,
               name: menu_item.drink.name,
               description: menu_item.drink.description,
               photo_url: drink_photo_url,
-              portions: selected_portions
+              portions: selected_portions,
+              average_rating: menu_item.drink.average_rating,
+              ratings_count: menu_item.drink.ratings_count
             } : nil
           }
           item_data

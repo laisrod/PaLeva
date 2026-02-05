@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import StarRating from '../../shared/components/StarRating'
 import '../../css/client/components/ProductCard.css'
 
 interface ProductCardProps {
@@ -10,6 +11,8 @@ interface ProductCardProps {
     weight?: string
     pieces?: string
     image?: string
+    average_rating?: number
+    ratings_count?: number
     portions?: Array<{
       id: number
       name: string
@@ -47,6 +50,16 @@ export default function ProductCard({ item, onAddToCart }: ProductCardProps) {
         <h3 className="product-name">{item.name}</h3>
         {item.description && (
           <p className="product-description">{item.description}</p>
+        )}
+        {(item.average_rating !== undefined && item.average_rating > 0) && (
+          <div className="product-rating">
+            <StarRating
+              rating={item.average_rating}
+              size="small"
+              showValue={true}
+              count={item.ratings_count}
+            />
+          </div>
         )}
         
         {item.portions && item.portions.length > 0 && (
