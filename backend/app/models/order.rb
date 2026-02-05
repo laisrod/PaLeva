@@ -4,6 +4,7 @@ class Order < ApplicationRecord
   include OrderBroadcastable
 
   belongs_to :establishment
+  belongs_to :user, optional: true
   has_many :order_menu_items, dependent: :destroy
   has_many :menu_items, through: :order_menu_items
   

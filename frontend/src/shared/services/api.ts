@@ -594,7 +594,7 @@ async getDrinks(establishmentCode: string) {
     }
   }
 
-  // Create public order (no authentication required)
+  // Create public order (authentication optional but recommended)
   async createPublicOrder(establishmentCode: string, orderData: {
     customer_name?: string
     customer_email?: string
@@ -607,11 +607,19 @@ async getDrinks(establishmentCode: string) {
     }>
   }) {
     try {
+      const token = this.getAuthToken()
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      }
+      
+      // Adiciona token se disponível (para associar pedido ao usuário)
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+      
       const response = await fetch(`${API_BASE_URL}/establishments/${establishmentCode}/orders`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         credentials: 'include',
         body: JSON.stringify({ order: orderData }),
       })
@@ -629,6 +637,115 @@ async getDrinks(establishmentCode: string) {
     } catch (error) {
       return {
         error: error instanceof Error ? error.message : 'Erro desconhecido',
+      }
+    }
+  }
+
+  // Histórico de pedidos do cliente
+  async getOrderHistory(params?: {
+    status?: string
+    start_date?: string
+    end_date?: string
+    page?: number
+    per_page?: number
+  }) {
+    try {
+      const queryParams = new URLSearchParams()
+      if (params?.status) queryParams.append('status', params.status)
+      if (params?.start_date) queryParams.append('start_date', params.start_date)
+      if (params?.end_date) queryParams.append('end_date', params.end_date)
+      if (params?.page) queryParams.append('page', params.page.toString())
+      if (params?.per_page) queryParams.append('per_page', params.per_page.toString())
+
+      const queryString = queryParams.toString()
+      const endpoint = `/orders/history${queryString ? `?${queryString}` : ''}`
+
+      return await this.request<{
+        orders: Array<{
+          id: number
+          code: string
+          status: string
+          total_price: number
+          created_at: string
+          updated_at: string
+          establishment: {
+            id: number
+            code: string
+            name: string
+          }
+          order_menu_items?: Array<{
+            id: number
+            quantity: number
+            menu?: {
+              id: number
+              name: string
+              price: number
+            }
+            menu_item?: {
+              id: number
+              name: string
+            }
+            portion?: {
+              id: number
+              description: string
+              price: number
+            }
+          }>
+        }>
+        pagination: {
+          page: number
+          per_page: number
+          total: number
+          total_pages: number
+        }
+      }>(endpoint)
+    } catch (error) {
+      return {
+        error: 'Erro ao buscar histórico de pedidos',
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
+      }
+    }
+  }
+
+  async getOrderHistoryItem(orderId: number) {
+    try {
+      return await this.request<{
+        order: {
+          id: number
+          code: string
+          status: string
+          total_price: number
+          created_at: string
+          updated_at: string
+          establishment: {
+            id: number
+            code: string
+            name: string
+          }
+          order_menu_items: Array<{
+            id: number
+            quantity: number
+            menu?: {
+              id: number
+              name: string
+              price: number
+            }
+            menu_item?: {
+              id: number
+              name: string
+            }
+            portion?: {
+              id: number
+              description: string
+              price: number
+            }
+          }>
+        }
+      }>(`/orders/history/${orderId}`)
+    } catch (error) {
+      return {
+        error: 'Erro ao buscar pedido',
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
       }
     }
   }

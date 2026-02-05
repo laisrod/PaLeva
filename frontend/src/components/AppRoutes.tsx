@@ -4,6 +4,7 @@ import Register from '../shared/components/Register'
 import Home from '../shared/components/Home'
 import Menu from '../client/pages/Menu'
 import RestaurantsList from '../client/pages/RestaurantsList'
+import OrderHistory from '../client/pages/OrderHistory'
 import CreateEstablishment from '../owner/components/Establishment/CreateEstablishment'
 import EditEstablishment from '../owner/components/Establishment/EditEstablishment'
 import Dashboard from '../owner/components/Dashboard/Dashboard'
@@ -37,6 +38,7 @@ export default function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/restaurants" element={<RestaurantsList />} />
+      <Route path="/orders/history" element={<OrderHistory />} />
       <Route path="/establishments/new" element={<CreateEstablishment />} />
       <Route path="/establishment/:code/edit" element={<EditEstablishment />} />
       <Route path="/orders" element={<Orders />} />

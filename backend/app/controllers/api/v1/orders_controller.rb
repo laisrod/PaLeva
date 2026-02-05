@@ -12,6 +12,8 @@ module Api
         order_data = order_params
         @order = @establishment.orders.new(order_data)
         @order.status = 'draft'
+        # Associa o pedido ao usuário autenticado
+        @order.user = current_api_user if current_api_user
 
         if @order.save
           render json: {
