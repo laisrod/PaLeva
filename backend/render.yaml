@@ -9,9 +9,10 @@ services:
       echo "Working directory: $(pwd)"
       echo "DATABASE_URL: ${DATABASE_URL:0:50}..."
       echo "Running migrations..."
-      cd backend && bundle exec rails db:migrate RAILS_ENV=production || echo "Migration failed, continuing..."
-      echo "Starting Puma..."
-      exec bundle exec puma -C config/puma.rb
+      cd backend || cd /opt/render/project/src/backend || (echo "ERROR: Could not find backend directory" && pwd && ls -la)
+      bundle exec rails db:migrate RAILS_ENV=production
+      echo "Migrations completed. Starting Puma..."
+      bundle exec puma -C config/puma.rb
     envVars:
       - key: RAILS_ENV
         value: production
