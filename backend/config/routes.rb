@@ -54,14 +54,17 @@ Rails.application.routes.draw do
         end
         resources :dishes, only: [:index, :show, :create, :update, :destroy] do
           resources :portions, only: [:index, :show, :create, :update, :destroy]
+          resources :ratings, only: [:index, :create], controller: 'ratings'
         end
         resources :drinks, only: [:index, :show, :create, :update, :destroy] do
           resources :portions, only: [:index, :show, :create, :update, :destroy], controller: 'drinks_portions'
+          resources :ratings, only: [:index, :create], controller: 'ratings'
         end
         resources :tags, only: [:index, :show, :create, :update, :destroy]
         resources :working_hours, only: [:index, :update]
         resources :orders, param: :code, only: [:index, :show, :create, :update, :destroy] do
           resources :items, only: [:create, :update, :destroy], controller: 'order_items'
+          resources :reviews, only: [:index, :create], controller: 'reviews'
           member do
             patch :confirm, to: 'orders#confirm'
             patch :prepare_order, to: 'orders#prepare_order'
@@ -74,6 +77,10 @@ Rails.application.routes.draw do
         namespace :dashboard do
           get 'stats', to: 'dashboard#stats'
         end
+        # Menu público (todos os pratos e bebidas)
+        get 'menu', to: 'establishments#public_menu'
+        # Avaliações do estabelecimento
+        get 'ratings', to: 'establishments_ratings#index'
       end
 
       resources :users, only: [:create]
@@ -84,6 +91,10 @@ Rails.application.routes.draw do
       # Histórico de pedidos do cliente
       get '/orders/history', to: 'order_history#index'
       get '/orders/history/:id', to: 'order_history#show'
+      
+      # Reviews e Ratings
+      resources :reviews, only: [:show]
+      resources :ratings, only: [:show]
     end
   end
 end

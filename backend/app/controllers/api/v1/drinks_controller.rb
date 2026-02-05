@@ -36,7 +36,9 @@ module Api
             photo_url: photo_url,
             tags: d.tags.map { |tag| { id: tag.id, name: tag.name } },
             min_price: min_price ? min_price.to_f : nil,
-            max_price: max_price ? max_price.to_f : nil
+            max_price: max_price ? max_price.to_f : nil,
+            average_rating: d.average_rating,
+            ratings_count: d.ratings_count
           }
         }
         render json: drinks_data, status: :ok
@@ -65,7 +67,9 @@ module Api
           photo_url: photo_url,
           tags: @drink.tags.map { |tag| { id: tag.id, name: tag.name } },
           min_price: min_price ? min_price.to_f : nil,
-          max_price: max_price ? max_price.to_f : nil
+          max_price: max_price ? max_price.to_f : nil,
+          average_rating: @drink.average_rating,
+          ratings_count: @drink.ratings_count
         }
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Bebida não encontrada' }, status: :not_found
