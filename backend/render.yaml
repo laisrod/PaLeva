@@ -3,7 +3,7 @@ services:
     name: paleva-backend
     env: ruby
     buildCommand: bundle install
-    startCommand: ./bin/render-start.sh
+    startCommand: bash backend/bin/render-start.sh
     envVars:
       - key: RAILS_ENV
         value: production
