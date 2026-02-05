@@ -292,6 +292,47 @@ class OwnerApiService extends BaseApiService {
   getDashboardStats(establishmentCode: string, period: 'day' | 'month' | 'year' = 'day') {
     return this.dashboard.getStats(establishmentCode, period)
   }
+
+  getRatings(establishmentCode: string) {
+    return this.request<{
+      order_reviews: Array<{
+        id: number
+        type: string
+        rating: number
+        comment?: string
+        created_at: string
+        user: { id: number; name: string; email: string }
+        order: { id: number; code: string; total_price: number; status: string }
+      }>
+      dish_ratings: Array<{
+        id: number
+        type: string
+        rating: number
+        comment?: string
+        created_at: string
+        user: { id: number; name: string; email: string }
+        item: { id: number; name: string; type: string }
+      }>
+      drink_ratings: Array<{
+        id: number
+        type: string
+        rating: number
+        comment?: string
+        created_at: string
+        user: { id: number; name: string; email: string }
+        item: { id: number; name: string; type: string }
+      }>
+      statistics: {
+        total_order_reviews: number
+        total_dish_ratings: number
+        total_drink_ratings: number
+        average_order_rating: number
+        average_dish_rating: number
+        average_drink_rating: number
+        overall_average: number
+      }
+    }>(`/establishments/${establishmentCode}/ratings`)
+  }
 }
 
 export const ownerApi = new OwnerApiService()

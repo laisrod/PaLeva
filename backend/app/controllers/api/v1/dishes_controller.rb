@@ -27,7 +27,9 @@ module Api
             photo_url: d.photo.attached? ? url_for(d.photo) : nil,
             tags: d.tags.map { |tag| { id: tag.id, name: tag.name } },
             min_price: min_price ? min_price.to_f : nil,
-            max_price: max_price ? max_price.to_f : nil
+            max_price: max_price ? max_price.to_f : nil,
+            average_rating: d.average_rating,
+            ratings_count: d.ratings_count
           }
         }
         render json: dishes_with_tags, status: :ok
@@ -47,7 +49,9 @@ module Api
           photo_url: @dish.photo.attached? ? url_for(@dish.photo) : nil,
           tags: @dish.tags.map { |tag| { id: tag.id, name: tag.name } },
           min_price: min_price ? min_price.to_f : nil,
-          max_price: max_price ? max_price.to_f : nil
+          max_price: max_price ? max_price.to_f : nil,
+          average_rating: @dish.average_rating,
+          ratings_count: @dish.ratings_count
         }
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Prato não encontrado' }, status: :not_found
