@@ -7,6 +7,7 @@ import { OrdersApi, invalidateOrderCache } from './Order/orders'
 import { WorkingHoursApi } from './workingHours'
 import { PortionsApi } from './portions'
 import { OrderItemsApi } from './Order/orderItems'
+import { DashboardApi } from './dashboard'
 import { BaseApiService } from './base'
 import { Portion } from '../../types/portion'
 
@@ -20,6 +21,7 @@ class OwnerApiService extends BaseApiService {
   workingHours: WorkingHoursApi
   portions: PortionsApi
   orderItems: OrderItemsApi
+  dashboard: DashboardApi
 
   constructor() {
     super()
@@ -32,6 +34,7 @@ class OwnerApiService extends BaseApiService {
     this.workingHours = new WorkingHoursApi()
     this.portions = new PortionsApi()
     this.orderItems = new OrderItemsApi()
+    this.dashboard = new DashboardApi()
   }
 
   getEstablishment(code: string) {
@@ -284,6 +287,10 @@ class OwnerApiService extends BaseApiService {
 
   updateWorkingHour(establishmentCode: string, workingHourId: number, workingHourData: any) {
     return this.workingHours.updateWorkingHour(establishmentCode, workingHourId, workingHourData)
+  }
+
+  getDashboardStats(establishmentCode: string, period: 'day' | 'month' | 'year' = 'day') {
+    return this.dashboard.getStats(establishmentCode, period)
   }
 }
 
