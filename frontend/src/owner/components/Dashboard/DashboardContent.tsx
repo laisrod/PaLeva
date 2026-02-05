@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { DashboardContentProps } from '../../types/dashboard'
+import DashboardStats from './DashboardStats'
 import '../../../css/owner/Dashboard.css'
 
 
@@ -10,6 +11,9 @@ export default function DashboardContent({ establishment, isOwner }: DashboardCo
         <h1 className="dashboard-title">PÁLEVÁ</h1>
         <h2 className="dashboard-subtitle">{establishment.name}</h2>
       </div>
+
+      {/* Seção de Estatísticas */}
+      <DashboardStats establishmentCode={establishment.code} />
 
       <div className="dashboard-grid">
         {/* Card: Informações do Estabelecimento */}
