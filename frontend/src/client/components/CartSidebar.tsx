@@ -1,30 +1,6 @@
+import { CartSidebarProps } from '../types/cart'
+import { calculateItemCount, formatItemCount } from '../utils/cartUtils'
 import '../../css/client/components/CartSidebar.css'
-
-interface CartItem {
-  id: number
-  name: string
-  description?: string
-  price: number
-  quantity: number
-  portion?: string
-  image?: string
-}
-
-interface CartSidebarProps {
-  cart: CartItem[]
-  orderType: 'delivery' | 'takeaway'
-  showCart: boolean
-  onClose: () => void
-  onUpdateQuantity: (itemId: number, portion: string | undefined, quantity: number) => void
-  onRemoveItem: (itemId: number, portion: string | undefined) => void
-  onToggleCart: () => void
-  subtotal: number
-  deliveryFee: number
-  packagingFee: number
-  total: number
-  onCheckout: () => void
-  checkoutLoading?: boolean
-}
 
 export default function CartSidebar({
   cart,
@@ -41,7 +17,7 @@ export default function CartSidebar({
   onCheckout,
   checkoutLoading = false
 }: CartSidebarProps) {
-  const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+  const itemCount = calculateItemCount(cart)
 
   return (
     <>
@@ -60,7 +36,7 @@ export default function CartSidebar({
           <h2>
             Seu Pedido
             {itemCount > 0 && (
-              <span className="cart-item-count">({itemCount} {itemCount === 1 ? 'item' : 'itens'})</span>
+              <span className="cart-item-count">({itemCount} {formatItemCount(itemCount)})</span>
             )}
           </h2>
           <button className="close-cart" onClick={onClose}>×</button>

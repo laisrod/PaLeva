@@ -1,42 +1,15 @@
-import { useState } from 'react'
 import StarRating from '../../shared/components/StarRating'
+import { ProductCardProps } from '../types/product'
+import { useProductCard } from '../hooks/useProductCard'
 import '../../css/client/components/ProductCard.css'
 
-interface ProductCardProps {
-  item: {
-    id: number
-    name: string
-    description?: string
-    price: number
-    weight?: string
-    pieces?: string
-    image?: string
-    average_rating?: number
-    ratings_count?: number
-    portions?: Array<{
-      id: number
-      name: string
-      price: number
-    }>
-  }
-  onAddToCart: (item: any, portion?: { id: number; name: string; price: number }) => void
-}
-
 export default function ProductCard({ item, onAddToCart }: ProductCardProps) {
-  const [selectedPortion, setSelectedPortion] = useState<{ id: number; name: string; price: number } | null>(
-    item.portions && item.portions.length > 0 ? item.portions[0] : null
-  )
-
-  const displayPrice = selectedPortion ? selectedPortion.price : item.price
-  const displayName = selectedPortion ? `${item.name} - ${selectedPortion.name}` : item.name
-
-  const handleAddToCart = () => {
-    if (item.portions && item.portions.length > 0 && selectedPortion) {
-      onAddToCart(item, selectedPortion)
-    } else {
-      onAddToCart(item)
-    }
-  }
+  const {
+    selectedPortion,
+    displayPrice,
+    handlePortionChange,
+    handleAddToCart
+  } = useProductCard({ item, onAddToCart })
 
   return (
     <div className="product-card">
@@ -66,10 +39,7 @@ export default function ProductCard({ item, onAddToCart }: ProductCardProps) {
           <div className="portion-selector">
             <select
               value={selectedPortion?.id || ''}
-              onChange={(e) => {
-                const portion = item.portions?.find(p => p.id === parseInt(e.target.value))
-                if (portion) setSelectedPortion(portion)
-              }}
+              onChange={(e) => handlePortionChange(parseInt(e.target.value))}
               className="portion-select"
             >
               {item.portions.map(portion => (
