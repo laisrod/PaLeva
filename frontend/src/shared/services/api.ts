@@ -588,6 +588,7 @@ async getDrinks(establishmentCode: string) {
 
       return { data }
     } catch (error) {
+      console.error('[api.getPublicMenu] Exception:', error)
       return {
         error: error instanceof Error ? error.message : 'Erro desconhecido',
       }

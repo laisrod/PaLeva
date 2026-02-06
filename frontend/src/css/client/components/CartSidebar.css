@@ -57,13 +57,13 @@
   top: var(--spacing-lg);
   width: 100%;
   max-height: calc(100vh - var(--spacing-xl));
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--border-radius-md);
+  background: var(--color-bg-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-xl);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Desktop: sempre visível, ignora showCart */
@@ -129,11 +129,11 @@
 
 .cart-header {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--color-white);
+  background: var(--color-bg-secondary);
   flex-shrink: 0;
 }
 
@@ -175,7 +175,7 @@
 }
 
 .close-cart:hover {
-  background: var(--color-gray-100);
+  background: var(--color-bg-tertiary);
   color: var(--text-primary);
 }
 
@@ -208,7 +208,7 @@
   display: flex;
   gap: var(--spacing-md);
   padding: var(--spacing-md);
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .cart-item-image {
@@ -248,8 +248,8 @@
 .quantity-btn {
   width: 28px;
   height: 28px;
-  border: 1px solid var(--color-gray-300);
-  background: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-primary);
   border-radius: var(--border-radius-sm);
   cursor: pointer;
   font-size: var(--font-size-lg);
@@ -261,7 +261,7 @@
 }
 
 .quantity-btn:hover {
-  background: var(--color-gray-50);
+  background: var(--color-bg-tertiary);
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
@@ -309,9 +309,9 @@
 
 .add-to-order {
   padding: var(--spacing-lg);
-  border-top: 1px solid var(--color-gray-200);
-  border-bottom: 1px solid var(--color-gray-200);
-  background: var(--color-gray-50);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-tertiary);
 }
 
 .add-to-order h3 {
@@ -329,8 +329,8 @@
 .suggestion-item {
   flex: 1;
   padding: var(--spacing-sm);
-  border: 1px solid var(--color-gray-300);
-  background: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-primary);
   border-radius: var(--border-radius-md);
   cursor: pointer;
   display: flex;
@@ -342,7 +342,7 @@
 
 .suggestion-item:hover {
   border-color: var(--color-primary);
-  background: var(--color-gray-50);
+  background: var(--color-bg-tertiary);
 }
 
 .suggestion-item img {
@@ -366,7 +366,7 @@
 
 .order-pickup {
   padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .order-pickup h3 {
@@ -385,13 +385,14 @@
 .pickup-btn {
   flex: 1;
   padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--color-gray-300);
-  background: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-primary);
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all var(--transition-base);
+  color: var(--text-primary);
 }
 
 .pickup-btn:hover {
@@ -407,10 +408,11 @@
 .promo-code {
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-sm);
-  background: var(--color-white);
+  background: var(--color-bg-primary);
+  color: var(--text-primary);
 }
 
 .promo-code:focus {
@@ -420,8 +422,8 @@
 
 .order-summary {
   padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--color-gray-200);
-  background: var(--color-white);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-secondary);
 }
 
 .summary-row {
@@ -435,7 +437,7 @@
 .summary-row.total {
   margin-top: var(--spacing-md);
   padding-top: var(--spacing-md);
-  border-top: 2px solid var(--color-gray-200);
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);

@@ -2,7 +2,7 @@
 
 .menu-container {
   min-height: 100vh;
-  background: var(--color-white);
+  background: var(--color-bg-primary);
   padding-bottom: 80px; /* Espaço para bottom navigation no mobile */
 }
 

@@ -1,5 +1,5 @@
 import { useParams, Link, useSearchParams } from 'react-router-dom'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useRequireOwner } from '../../../shared/hooks/useRequireOwner'
 import { useAuth } from '../../../shared/hooks/useAuth'
 import { useTags } from '../../hooks/useTags'
 import { useTagsActions } from '../../hooks/Tags/useTagsActions'
@@ -11,7 +11,7 @@ export default function Tags() {
   const { code } = useParams<{ code: string }>()
   const [searchParams] = useSearchParams()
   const categoryFilter = searchParams.get('category') as TagCategory | null
-  useRequireAuth()
+  useRequireOwner() // Verifica se é owner e redireciona se não for
 
   const { isOwner } = useAuth()
   

@@ -1,12 +1,12 @@
 import { useParams } from 'react-router-dom'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useRequireOwner } from '../../../shared/hooks/useRequireOwner'
 import { useCreateDishPortion } from './useCreateDishPortion'
 
 
 //gerencia params, auth e hook de criação
 export function useCreateDishPortionPage() {
   const { code, id } = useParams<{ code: string; id: string }>()
-  useRequireAuth()
+  useRequireOwner() // Verifica se é owner e redireciona se não for
 
   const dishId = id ? parseInt(id) : undefined
 

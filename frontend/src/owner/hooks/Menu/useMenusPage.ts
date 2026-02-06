@@ -1,12 +1,12 @@
 import { useParams } from 'react-router-dom'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useRequireOwner } from '../../../shared/hooks/useRequireOwner'
 import { useAuth } from '../../../shared/hooks/useAuth'
 import { useMenus } from './useMenus'
 
 // gerencia params, auth, owner check e hook de listagem
 export function useMenusPage() {
   const { code } = useParams<{ code: string }>()
-  useRequireAuth()
+  useRequireOwner() // Verifica se é owner e redireciona se não for
   
   const { isOwner } = useAuth()
   const { menus, loading, error, deleteMenu } = useMenus(code)

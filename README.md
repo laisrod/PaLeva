@@ -124,6 +124,12 @@ O sistema utiliza um tema escuro moderno com:
 ## Credenciais de Teste
 
 Após rodar o `rails db:seed`:
+
+### Proprietário (Owner)
 - **Email**: owner@example.com
-- **Senha**: 123456
+- **Senha**: testes123456
+
+### Cliente
+- **Email**: client@example.com
+- **Senha**: testes123456
 

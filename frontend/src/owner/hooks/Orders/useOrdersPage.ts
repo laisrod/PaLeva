@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useRequireOwner } from '../../../shared/hooks/useRequireOwner'
 import { useAuth } from '../../../shared/hooks/useAuth'
 import { useOrders } from './useOrders'
 import { useCurrentOrder } from './useCurrentOrder'
@@ -17,7 +17,7 @@ import { ownerApi } from '../../services/api'
 import { Order } from '../../../shared/types/order'
 
 export function useOrdersPage() {
-  useRequireAuth()
+  useRequireOwner() // Verifica se é owner e redireciona se não for
   const { code } = useParams<{ code: string }>()
   const { user } = useAuth()
   const establishmentCode = code || user?.establishment?.code || localStorage.getItem('establishment_code') || undefined
