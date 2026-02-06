@@ -2,16 +2,20 @@ services:
   - type: web
     name: paleva-backend
     env: ruby
-    buildCommand: bundle install
+    buildCommand: |
+      bundle install
+      echo "Running migrations during build..."
+      cd backend || cd /opt/render/project/src/backend || pwd
+      bundle exec rails db:migrate RAILS_ENV=production || echo "Migrations will run on start"
     startCommand: |
       echo "=========================================="
       echo "Starting Render deployment..."
       echo "Working directory: $(pwd)"
       echo "DATABASE_URL: ${DATABASE_URL:0:50}..."
-      echo "Running migrations..."
-      cd backend || cd /opt/render/project/src/backend || (echo "ERROR: Could not find backend directory" && pwd && ls -la)
-      bundle exec rails db:migrate RAILS_ENV=production
-      echo "Migrations completed. Starting Puma..."
+      echo "Running migrations again to ensure they're applied..."
+      cd backend || cd /opt/render/project/src/backend || pwd
+      bundle exec rails db:migrate RAILS_ENV=production || bundle exec rails db:prepare RAILS_ENV=production || echo "Migration failed, but continuing..."
+      echo "Starting Puma..."
       bundle exec puma -C config/puma.rb
     envVars:
       - key: RAILS_ENV
