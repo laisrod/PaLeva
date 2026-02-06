@@ -1,10 +1,5 @@
+import { MenuCategoriesProps } from '../types/menu'
 import '../../css/client/components/MenuCategories.css'
-
-interface MenuCategoriesProps {
-  categories: string[]
-  selectedCategory: string
-  onSelectCategory: (category: string) => void
-}
 
 export default function MenuCategories({
   categories,

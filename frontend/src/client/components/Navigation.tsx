@@ -1,13 +1,5 @@
+import { NavigationProps } from '../types/navigation'
 import '../../css/client/components/Navigation.css'
-
-interface NavigationProps {
-  orderType?: 'delivery' | 'takeaway'
-  onOrderTypeChange?: (type: 'delivery' | 'takeaway') => void
-  location?: string
-  onLocationChange?: (location: string) => void
-  cartItemCount?: number
-  onCartClick?: () => void
-}
 
 export default function Navigation({
   orderType = 'delivery',

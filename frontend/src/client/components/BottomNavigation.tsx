@@ -1,12 +1,9 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { useBottomNavigation } from '../hooks/useBottomNavigation'
 import '../../css/client/components/BottomNavigation.css'
 
 export default function BottomNavigation() {
-  const location = useLocation()
-
-  const isActive = (path: string) => {
-    return location.pathname.includes(path)
-  }
+  const { isActive } = useBottomNavigation()
 
   return (
     <nav className="bottom-navigation">
