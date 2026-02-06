@@ -4,7 +4,7 @@ import { ownerApi } from '../../../../shared/services/api'
 import { useCurrentOrder } from './useCurrentOrder'
 import { useOrderUpdates } from './useOrderUpdates'
 import { OrderSidebarProps } from '../../types/order'
-import { Order } from '../../../shared/types/order'
+import { Order } from '../../../../../shared/types/order'
 
 const POLL_COOLDOWN_MS = 3000
 
@@ -70,7 +70,7 @@ export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
 
   // Integrar atualizações em tempo real
   useOrderUpdates({
-    establishmentCode: establishmentCode || undefined,
+    establishmentCode: establishmentCode || 'string',
     enabled: !!establishmentCode && !!currentOrder,
     onOrderUpdated: (order: Order) => {
       // Se for o pedido atual, recarregar
