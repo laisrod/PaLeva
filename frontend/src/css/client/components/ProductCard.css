@@ -1,25 +1,28 @@
 @import '../../shared/variables.css';
 
 .product-card {
-  background: var(--color-white);
-  border-radius: var(--border-radius-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-xl);
   overflow: hidden;
   transition: all var(--transition-base);
   display: flex;
   flex-direction: column;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .product-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-color: var(--color-primary);
 }
 
 .product-image {
   width: 100%;
   height: 180px;
   overflow: hidden;
-  background: var(--color-gray-100);
+  background: var(--color-bg-tertiary);
   position: relative;
 }
 
@@ -76,10 +79,10 @@
 .portion-select {
   width: 100%;
   padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius-sm);
   font-size: var(--font-size-sm);
-  background: var(--color-white);
+  background: var(--color-bg-primary);
   color: var(--text-primary);
   cursor: pointer;
   transition: border-color var(--transition-base);

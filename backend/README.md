@@ -88,8 +88,14 @@ Acesse `http://localhost:3000`
 ## Credenciais de Teste
 
 Após rodar `rails db:seed`:
+
+### Proprietário (Owner)
 - **Email**: owner@example.com
-- **Senha**: 123456
+- **Senha**: testes123456
+
+### Cliente
+- **Email**: client@example.com
+- **Senha**: testes123456
 
 ## Documentação Adicional
 

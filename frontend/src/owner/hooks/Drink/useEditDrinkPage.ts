@@ -1,12 +1,12 @@
 import { useParams } from 'react-router-dom'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useRequireOwner } from '../../../shared/hooks/useRequireOwner'
 import { useEditDrink } from './useEditDrink'
 import { useDrinkPortions } from '../DrinkPortion/useDrinkPortions'
 
 // gerencia params, auth, hook de edição e porções
 export function useEditDrinkPage() {
   const { code, id } = useParams<{ code: string; id: string }>()
-  useRequireAuth()
+  useRequireOwner() // Verifica se é owner e redireciona se não for
 
   const drinkId = id ? parseInt(id) : undefined
 

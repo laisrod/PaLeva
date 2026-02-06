@@ -69,7 +69,7 @@ module Api
 
       # GET /api/v1/establishments/:code/menu
       def public_menu
-        @establishment = Establishment.find_by!(code: params[:code])
+        @establishment = Establishment.find_by!(code: params[:code] || params[:establishment_code])
         
         dishes = @establishment.dishes.map do |dish|
           prices = dish.portions.pluck(:price)
@@ -128,9 +128,29 @@ module Api
           }
         end
         
+        menus = @establishment.menus.where(active: true).map do |menu|
+          menu_price = menu.price ? menu.price.to_f : 0.0
+          {
+            id: menu.id,
+            name: menu.name,
+            description: menu.description,
+            photo_url: nil, # Menus não têm foto própria
+            min_price: menu_price,
+            max_price: menu_price,
+            price: menu_price,
+            average_rating: 0,
+            ratings_count: 0,
+            category: 'Menus',
+            menu_id: menu.id,
+            portions: [] # Menus não têm porções, têm preço fixo
+          }
+        end
+        
+        all_items = dishes + drinks + menus
+        
         render json: {
           menu: {
-            items: [...dishes, ...drinks]
+            items: all_items
           }
         }, status: :ok
       rescue ActiveRecord::RecordNotFound

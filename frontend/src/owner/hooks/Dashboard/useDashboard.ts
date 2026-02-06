@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom'
+import { useRequireOwner } from '../../../shared/hooks/useRequireOwner'
 import { useAuth } from '../../../shared/hooks/useAuth'
 import { useEstablishment } from '../Establishment/useEstablishment'
 
@@ -13,6 +14,7 @@ export interface UseDashboardReturn {
 
 export function useDashboard(): UseDashboardReturn {
   const { code } = useParams<{ code: string }>()
+  useRequireOwner() // Verifica se é owner e redireciona se não for
   const { isOwner } = useAuth()
   const { establishment, loading, error } = useEstablishment(code)
 

@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useRequireAuth } from '../../../shared/hooks/useRequireAuth'
+import { useRequireOwner } from '../../../shared/hooks/useRequireOwner'
 import { useCurrentOrder } from './useCurrentOrder'
 import { useAddOrderItem } from './useAddOrderItem'
 import { useMenus } from '../Menu/useMenus'
 import { useMenuItems } from '../Menu/useMenuItems'
 
 export function useTestCreateOrderPage() {
-  useRequireAuth()
+  useRequireOwner() // Verifica se é owner e redireciona se não for
   const { code } = useParams<{ code: string }>()
   
   const { 
