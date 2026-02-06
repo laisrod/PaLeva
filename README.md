@@ -1,135 +1,69 @@
-# PaLeva - Sistema de Gerenciamento de Restaurantes
+# Guia de Testes
 
-Sistema completo de gerenciamento de restaurantes com backend Rails e frontend React, desenvolvido com tema escuro moderno.
+Este projeto usa **Vitest** + **React Testing Library** para testes.
 
-## Estrutura do Projeto
-
-```
-PaLeva/
-├── backend/          # API Rails
-├── frontend/         # Aplicação React (Vite + TypeScript)
-└── README.md         # Este arquivo
-```
-
-## Funcionalidades
-
-### Área do Proprietário (Owner)
-
-- **Dashboard**: Visão geral do estabelecimento com estatísticas
-- **Pratos**: Cadastro, edição e gerenciamento de pratos com porções
-- **Bebidas**: Cadastro, edição e gerenciamento de bebidas com porções
-- **Cardápios**: Criação e gerenciamento de cardápios com itens
-- **Pedidos**: Visualização e gerenciamento de pedidos
-- **Características (Tags)**: Tags separadas para pratos e bebidas
-- **Horários de Funcionamento**: Configuração de horários por dia da semana
-- **Estabelecimento**: Edição de dados do estabelecimento
-
-### Área do Cliente
-
-- **Lista de Restaurantes**: Visualização de restaurantes disponíveis
-- **Menu**: Visualização do cardápio do restaurante
-- **Carrinho**: Adição de itens e finalização de pedidos
-
-## Tecnologias
-
-### Backend
-- Ruby on Rails 7
-- PostgreSQL
-- Devise (autenticação)
-- RSpec (testes)
-
-### Frontend
-- React 18
-- TypeScript
-- Vite
-- React Router DOM
-- CSS Modules com variáveis CSS
-
-## Como Rodar
-
-### Backend (Rails)
+## Scripts Disponíveis
 
 ```bash
-cd backend
-bundle install
-rails db:create db:migrate db:seed
-rails server
+# Executar testes em modo watch (recomendado durante desenvolvimento)
+npm test
+
+# Executar testes uma vez
+npm run test:run
+
+# Executar testes com UI interativa
+npm run test:ui
+
+# Executar testes com cobertura
+npm run test:coverage
 ```
 
-O backend estará disponível em `http://localhost:3000`
+## Estrutura de Testes (Feature-Based)
 
-### Frontend (React)
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-O frontend estará disponível em `http://localhost:5176`
-
-## Testes
-
-### Backend
-```bash
-cd backend
-rspec
-```
-
-## Arquitetura do Frontend
+**Recomendação: Coloque os testes junto ao código que eles testam (co-location)**
 
 ```
-frontend/src/
-├── assets/           # Ícones SVG
-├── client/           # Componentes e páginas do cliente
-│   ├── components/   # Componentes reutilizáveis
-│   ├── hooks/        # Hooks customizados
-│   └── pages/        # Páginas
-├── components/       # Componentes compartilhados (AppRoutes, etc.)
-├── css/              # Estilos CSS
-│   ├── client/       # Estilos da área do cliente
-│   ├── owner/        # Estilos da área do proprietário
-│   └── shared/       # Variáveis e estilos compartilhados
-├── owner/            # Componentes e lógica do proprietário
-│   ├── components/   # Componentes organizados por domínio
-│   ├── hooks/        # Hooks customizados
-│   ├── services/     # Serviços de API
-│   └── types/        # Tipos TypeScript
-└── shared/           # Código compartilhado
-    ├── hooks/        # useAuth, etc.
-    ├── pages/        # Login, Register
-    ├── services/     # API compartilhada
-    └── utils/        # Utilitários
+src/
+├── owner/features/dishes/
+│   ├── components/Dish/Dishes.tsx
+│   ├── components/Dish/Dishes.test.tsx      ← Teste do componente
+│   ├── hooks/Dish/useDishes.ts
+│   ├── hooks/Dish/useDishes.test.ts         ← Teste do hook
+│   └── services/dishes.ts
+│   └── services/dishes.test.ts              ← Teste do service
+└── test/
+    ├── setup.ts                              ← Configuração global
+    ├── utils/                                ← Helpers compartilhados
+    └── mocks/                                ← Mocks compartilhados
 ```
 
-## Regras de Negócio
+**Ver `ARCHITECTURE.md` para detalhes completos da arquitetura de testes.**
 
-1. O primeiro usuário cadastrado é o dono do restaurante
-2. Apenas o proprietário pode:
-   - Criar/editar cardápios
-   - Criar/editar pratos e bebidas
-   - Gerenciar características (tags)
-   - Configurar horários de funcionamento
-3. Tags são separadas por categoria (pratos/bebidas)
-4. Cada prato/bebida pode ter múltiplas porções com preços diferentes
+## Exemplo de Teste
 
-## Design
+```typescript
+import { describe, it, expect } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { MyComponent } from './MyComponent'
 
-O sistema utiliza um tema escuro moderno com:
-- Cor primária: `#FF7F3F` (laranja)
-- Background: `#252836` (escuro)
-- Cards: `#1F1D2B` (escuro secundário)
-- Ícones SVG customizados na navegação
+describe('MyComponent', () => {
+  it('renders correctly', () => {
+    render(<MyComponent />)
+    expect(screen.getByText('Hello')).toBeInTheDocument()
+  })
+})
+```
 
-## Credenciais de Teste
+## Boas Práticas
 
-Após rodar o `rails db:seed`:
+1. **Teste comportamento, não implementação**
+2. **Use queries acessíveis**: `getByRole`, `getByLabelText`, `getByText`
+3. **Evite detalhes de implementação**: não teste estados internos
+4. **Teste integração**: teste como o usuário interage com o componente
+5. **Use `userEvent`** para simular interações do usuário
 
-### Proprietário (Owner)
-- **Email**: owner@example.com
-- **Senha**: testes123456
+## Recursos
 
-### Cliente
-- **Email**: client@example.com
-- **Senha**: testes123456
-
+- [Vitest Docs](https://vitest.dev/)
+- [React Testing Library](https://testing-library.com/react)
+- [Testing Library Queries](https://testing-library.com/docs/queries/about/)

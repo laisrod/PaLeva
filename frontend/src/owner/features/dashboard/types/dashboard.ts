@@ -1,4 +1,4 @@
-import { Establishment } from './establishment'
+import { Establishment } from '../../establishments/types/establishment'
 
 export interface DashboardContentProps {
   establishment: Establishment
