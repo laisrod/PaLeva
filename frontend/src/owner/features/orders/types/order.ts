@@ -1,4 +1,4 @@
-import type { OrderMenuItem } from '../../../../../shared/types/order'
+import type { OrderMenuItem } from '../../../../shared/types/order'
 
 export type { OrderMenuItem }
 
