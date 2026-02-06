@@ -1,109 +1,16 @@
-import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { api } from '../services/api'
+import { Link } from 'react-router-dom'
+import { useRegister } from '../hooks/useRegister'
 import '../../css/shared/Register.css'
 
 export default function Register() {
-  const [formData, setFormData] = useState({
-    name: '',
-    last_name: '',
-    email: '',
-    cpf: '',
-    password: '',
-    password_confirmation: ''
-  })
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
-
-  const formatCPF = (value: string) => {
-    // Remove tudo que não é dígito
-    const cpf = value.replace(/\D/g, '')
-    
-    // Aplica a formatação
-    if (cpf.length <= 11) {
-      return cpf
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-    }
-    return value
-  }
-
-  const handleCPFChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatCPF(e.target.value)
-    setFormData(prev => ({
-      ...prev,
-      cpf: formatted
-    }))
-  }
-
-  const validateForm = () => {
-    if (!formData.name.trim()) {
-      setError('Nome é obrigatório')
-      return false
-    }
-    if (!formData.last_name.trim()) {
-      setError('Sobrenome é obrigatório')
-      return false
-    }
-    if (!formData.email.trim()) {
-      setError('Email é obrigatório')
-      return false
-    }
-    if (!formData.cpf.trim()) {
-      setError('CPF é obrigatório')
-      return false
-    }
-    if (formData.password.length < 6) {
-      setError('Senha deve ter pelo menos 6 caracteres')
-      return false
-    }
-    if (formData.password !== formData.password_confirmation) {
-      setError('As senhas não coincidem')
-      return false
-    }
-    return true
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-
-    if (!validateForm()) {
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      const response = await api.signUp(formData)
-      
-      if (response.error) {
-        const errorMessage = Array.isArray(response.error) 
-          ? response.error.join(', ') 
-          : response.error
-        setError(errorMessage)
-      } else if (response.data) {
-        // Redirecionar para login após cadastro bem-sucedido
-        navigate('/login', { 
-          state: { message: 'Cadastro realizado com sucesso! Faça login para continuar.' }
-        })
-      }
-    } catch (err) {
-      setError('Erro ao realizar cadastro. Tente novamente.')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const {
+    formData,
+    error,
+    loading,
+    handleChange,
+    handleCPFChange,
+    handleSubmit
+  } = useRegister()
 
   return (
     <div className="register-container">

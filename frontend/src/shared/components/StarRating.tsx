@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useStarRating } from '../hooks/useStarRating'
 import '../../css/shared/StarRating.css'
 
 interface StarRatingProps {
@@ -20,27 +20,17 @@ export default function StarRating({
   showValue = false,
   count
 }: StarRatingProps) {
-  const [hoveredRating, setHoveredRating] = useState(0)
-
-  const handleClick = (value: number) => {
-    if (interactive && onRatingChange) {
-      onRatingChange(value)
-    }
-  }
-
-  const handleMouseEnter = (value: number) => {
-    if (interactive) {
-      setHoveredRating(value)
-    }
-  }
-
-  const handleMouseLeave = () => {
-    if (interactive) {
-      setHoveredRating(0)
-    }
-  }
-
-  const displayRating = hoveredRating || rating
+  const {
+    displayRating,
+    handleClick,
+    handleMouseEnter,
+    handleMouseLeave
+  } = useStarRating({
+    rating,
+    maxRating,
+    interactive,
+    onRatingChange
+  })
 
   return (
     <div className={`star-rating star-rating-${size} ${interactive ? 'star-rating-interactive' : ''}`}>
