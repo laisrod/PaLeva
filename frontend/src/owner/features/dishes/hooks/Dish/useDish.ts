@@ -1,0 +1,32 @@
+import { useState, useEffect, useCallback } from 'react'
+import { ownerApi } from '../../../../shared/services/api'
+import { useApiData } from '../../../../shared/hooks/Api/useApiData'
+import { Dish, UseDishOptions } from '../../types/dish'
+
+//quem fala com api
+export function useDish({ dishId, establishmentCode }: UseDishOptions) {
+  const [dish, setDish] = useState<Dish | null>(null)
+  
+  const { loading, error, executeRequest } = useApiData<Dish>({
+    defaultErrorMessage: 'Erro ao carregar prato',
+    onSuccess: (data) => {
+      setDish(data)
+    }
+  })
+
+  const loadDish = useCallback(async (id: number, code: string) => {
+    await executeRequest(() => ownerApi.getDish(code, id))
+  }, [executeRequest])
+
+  useEffect(() => {
+    if (dishId && establishmentCode) {
+      loadDish(dishId, establishmentCode)
+    }
+  }, [dishId, establishmentCode, loadDish])
+
+  return { 
+    dish, 
+    loading, 
+    error 
+  }
+}

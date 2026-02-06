@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { api } from '../../../../shared/services/api'
-import { useApiData } from '../../../../owner/hooks/Api/useApiData'
+import { useApiData } from '../../../../owner/shared/hooks/Api/useApiData'
 
 export interface OrderHistoryItem {
   id: number

@@ -1,4 +1,5 @@
-import Layout from '../../../../owner/components/Layout/Layout'
+import { useState, useEffect } from 'react'
+import ClientLayout from '../../../shared/layouts/ClientLayout'
 import { useOrderHistoryPage } from '../hooks/useOrderHistoryPage'
 import { ORDER_STATUSES } from '../types/orderHistory'
 import { formatCurrency, formatDate, getStatusLabel, getStatusClass } from '../utils/orderUtils'
@@ -147,10 +148,20 @@ export default function OrderHistory() {
     </div>
   )
 
-  // Se for owner, usa o Layout do owner, senão renderiza sem layout
-  if (isOwner) {
-    return <Layout>{content}</Layout>
+  const [OwnerLayout, setOwnerLayout] = useState<React.ComponentType<{ children: React.ReactNode }> | null>(null)
+
+  useEffect(() => {
+    if (isOwner) {
+      import('../../../../owner/shared/components/Layout/Layout').then((module) => {
+        setOwnerLayout(() => module.default)
+      })
+    }
+  }, [isOwner])
+
+  // Se for owner, usa o Layout do owner, senão usa o ClientLayout
+  if (isOwner && OwnerLayout) {
+    return <OwnerLayout>{content}</OwnerLayout>
   }
 
-  return content
+  return <ClientLayout>{content}</ClientLayout>
 }
