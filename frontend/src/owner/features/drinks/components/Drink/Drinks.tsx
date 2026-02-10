@@ -60,7 +60,7 @@ export default function Drinks() {
               onDelete={deleteDrink}
               deleting={deleting}
             />
-            <div ref={sentinelRef} style={{ height: 1 }} aria-hidden="true" />
+            <div ref={sentinelRef} data-testid="infinite-scroll-sentinel" style={{ height: 1 }} aria-hidden="true" />
           </>
         ) : (
           <DrinksEmpty establishmentCode={establishmentCode} isOwner={isOwner} />

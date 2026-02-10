@@ -53,7 +53,7 @@ export default function Dishes() {
               onDelete={deleteDish}
               deleting={deleting}
             />
-            <div ref={sentinelRef} style={{ height: 1 }} aria-hidden="true" />
+            <div ref={sentinelRef} data-testid="infinite-scroll-sentinel" style={{ height: 1 }} aria-hidden="true" />
           </>
         ) : (
           <DishesEmpty establishmentCode={establishmentCode} isOwner={isOwner} />
