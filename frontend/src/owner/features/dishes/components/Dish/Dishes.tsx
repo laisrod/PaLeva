@@ -6,6 +6,8 @@ import DishesEmpty from './DishesEmpty'
 import DishesLoading from './DishesLoading'
 import OrderSidebar from '../../../orders/components/Orders/OrderSidebar'
 import { useDishesPage } from '../../hooks/Dish/useDishesPage'
+import { useInfiniteScroll } from '../../../../../shared/hooks/useInfiniteScroll'
+import { Dish } from '../../types/dish'
 import '../../../../../css/owner/Dishes.css'
 
 export default function Dishes() {
@@ -22,6 +24,8 @@ export default function Dishes() {
     deleteDish,
     deleting
   } = useDishesPage()
+
+  const { displayedItems, sentinelRef } = useInfiniteScroll<Dish>(dishes, 12)
 
   if (loading) {
     return <DishesLoading />
@@ -41,13 +45,16 @@ export default function Dishes() {
         />
 
         {dishes.length > 0 ? (
-          <DishesList
-            dishes={dishes}
-            establishmentCode={establishmentCode}
-            isOwner={isOwner}
-            onDelete={deleteDish}
-            deleting={deleting}
-          />
+          <>
+            <DishesList
+              dishes={displayedItems}
+              establishmentCode={establishmentCode}
+              isOwner={isOwner}
+              onDelete={deleteDish}
+              deleting={deleting}
+            />
+            <div ref={sentinelRef} style={{ height: 1 }} aria-hidden="true" />
+          </>
         ) : (
           <DishesEmpty establishmentCode={establishmentCode} isOwner={isOwner} />
         )}
