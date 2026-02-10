@@ -6,6 +6,8 @@ import DrinksEmpty from './DrinksEmpty'
 import DrinksLoading from './DrinksLoading'
 import OrderSidebar from '../../../orders/components/Orders/OrderSidebar'
 import { useDrinksPage } from '../../hooks/Drink/useDrinksPage'
+import { useInfiniteScroll } from '../../../../../shared/hooks/useInfiniteScroll'
+import { Drink } from '../../types/drink'
 import '../../../../../css/owner/Drinks.css'
 
 export default function Drinks() {
@@ -23,6 +25,8 @@ export default function Drinks() {
     deleteDrink,
     deleting
   } = useDrinksPage()
+
+  const { displayedItems, sentinelRef } = useInfiniteScroll<Drink>(drinks, 12)
 
   if (loading) {
     return <DrinksLoading />
@@ -48,13 +52,16 @@ export default function Drinks() {
         )}
 
         {drinks.length > 0 ? (
-          <DrinksList
-            drinks={drinks}
-            establishmentCode={establishmentCode}
-            isOwner={isOwner}
-            onDelete={deleteDrink}
-            deleting={deleting}
-          />
+          <>
+            <DrinksList
+              drinks={displayedItems}
+              establishmentCode={establishmentCode}
+              isOwner={isOwner}
+              onDelete={deleteDrink}
+              deleting={deleting}
+            />
+            <div ref={sentinelRef} style={{ height: 1 }} aria-hidden="true" />
+          </>
         ) : (
           <DrinksEmpty establishmentCode={establishmentCode} isOwner={isOwner} />
         )}
