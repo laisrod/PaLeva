@@ -64,6 +64,8 @@ export interface UseOrderHistoryReturn {
   setFilters: (filters: Partial<OrderHistoryFilters>) => void
   fetchOrders: () => Promise<void>
   refetch: () => Promise<void>
+  loadMore: () => Promise<void>
+  hasMore: boolean
 }
 
 export function useOrderHistory(initialFilters?: OrderHistoryFilters): UseOrderHistoryReturn {
@@ -107,9 +109,21 @@ export function useOrderHistory(initialFilters?: OrderHistoryFilters): UseOrderH
     await fetchOrders()
   }, [fetchOrders])
 
+  const loadMore = useCallback(async () => {
+    if (!pagination || pagination.page >= pagination.total_pages || loading) return
+    const nextPage = pagination.page + 1
+    const response = await api.getOrderHistory({ ...filters, page: nextPage })
+    if (response.data?.orders && response.data?.pagination) {
+      setOrders((prev) => [...prev, ...response.data!.orders!])
+      setPagination(response.data.pagination)
+    }
+  }, [filters, pagination, loading])
+
   useEffect(() => {
     fetchOrders()
   }, [fetchOrders])
+
+  const hasMore = pagination ? pagination.page < pagination.total_pages : false
 
   return {
     orders,
@@ -120,5 +134,7 @@ export function useOrderHistory(initialFilters?: OrderHistoryFilters): UseOrderH
     setFilters,
     fetchOrders,
     refetch,
+    loadMore,
+    hasMore,
   }
 }
