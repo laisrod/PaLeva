@@ -647,7 +647,7 @@ export default function Orders() {
                     </tbody>
                   </table>
                 </div>
-                <div ref={sentinelRef} style={{ height: 1 }} aria-hidden="true" />
+                <div ref={sentinelRef} data-testid="infinite-scroll-sentinel" style={{ height: 1 }} aria-hidden="true" />
               </>
             )}
             

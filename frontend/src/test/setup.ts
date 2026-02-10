@@ -29,6 +29,24 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 })
 
+// Mock do IntersectionObserver (usado por useInfiniteScroll)
+class IntersectionObserverMock {
+  observe = () => {}
+  disconnect = () => {}
+  unobserve = () => {}
+  takeRecords = () => []
+  root = null
+  rootMargin = ''
+  thresholds = []
+  constructor(_callback: IntersectionObserverCallback, _options?: IntersectionObserverInit) {}
+}
+
+Object.defineProperty(window, 'IntersectionObserver', {
+  writable: true,
+  configurable: true,
+  value: IntersectionObserverMock,
+})
+
 // Mock do window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

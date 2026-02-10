@@ -126,7 +126,7 @@ export default function OrderHistory() {
           </div>
 
           {/* Sentinel para infinite scroll */}
-          {hasMore && <div ref={sentinelRef} style={{ height: 1 }} aria-hidden="true" />}
+          {hasMore && <div ref={sentinelRef} data-testid="infinite-scroll-sentinel" style={{ height: 1 }} aria-hidden="true" />}
         </>
       )}
     </div>
