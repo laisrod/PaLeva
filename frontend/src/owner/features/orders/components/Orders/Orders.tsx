@@ -2,7 +2,9 @@ import MenuItemsList from '../../../menus/components/Menu/MenuItemsList'
 import Layout from '../../../../shared/components/Layout/Layout'
 import { getStatusBadge } from '../../utils/orderStatus'
 import { useOrdersPage } from '../../hooks/Orders/useOrdersPage'
+import { useInfiniteScroll } from '../../../../../shared/hooks/useInfiniteScroll'
 import type { OrderMenuItem } from '../../types/order'
+import type { Order } from '../../../../../shared/types/order'
 import '../../../../../css/owner/Orders.css'
 
 export default function Orders() {
@@ -56,6 +58,8 @@ export default function Orders() {
     handleSaveOrder,
     handleConfirmSaveOrder,
   } = useOrdersPage()
+
+  const { displayedItems, sentinelRef } = useInfiniteScroll<Order>(orders, 12)
 
   if (loadingOrders && (!orders || orders.length === 0)) {
     return (
@@ -504,7 +508,8 @@ export default function Orders() {
                 Nenhum pedido encontrado
               </div>
             ) : (
-              <div className="orders-table-wrapper">
+              <>
+                <div className="orders-table-wrapper">
                 <table className="orders-table">
                   <thead>
                     <tr>
@@ -638,10 +643,12 @@ export default function Orders() {
                           </td>
                         </tr>
                       )
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <div ref={sentinelRef} style={{ height: 1 }} aria-hidden="true" />
+              </>
             )}
             
             {/* Botão para criar novo pedido */}
