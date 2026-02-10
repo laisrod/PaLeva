@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ClientLayout from '../../../shared/layouts/ClientLayout'
 import { useOrderHistoryPage } from '../hooks/useOrderHistoryPage'
 import { ORDER_STATUSES } from '../types/orderHistory'
@@ -20,8 +20,12 @@ export default function OrderHistory() {
     setStatus,
     handleFilterChange,
     handlePageChange,
-    refetch
+    refetch,
+    loadMore,
+    hasMore,
   } = useOrderHistoryPage()
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   const content = (
     <div className="order-history-container">
@@ -121,28 +125,8 @@ export default function OrderHistory() {
             ))}
           </div>
 
-          {/* Paginação */}
-          {pagination && pagination.total_pages > 1 && (
-            <div className="pagination">
-              <button
-                onClick={() => handlePageChange(pagination.page - 1)}
-                disabled={pagination.page === 1}
-                className="pagination-button"
-              >
-                Anterior
-              </button>
-              <span className="pagination-info">
-                Página {pagination.page} de {pagination.total_pages}
-              </span>
-              <button
-                onClick={() => handlePageChange(pagination.page + 1)}
-                disabled={pagination.page >= pagination.total_pages}
-                className="pagination-button"
-              >
-                Próxima
-              </button>
-            </div>
-          )}
+          {/* Sentinel para infinite scroll */}
+          {hasMore && <div ref={sentinelRef} style={{ height: 1 }} aria-hidden="true" />}
         </>
       )}
     </div>
@@ -157,6 +141,20 @@ export default function OrderHistory() {
       })
     }
   }, [isOwner])
+
+  useEffect(() => {
+    if (!hasMore || loading) return
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadMore()
+      },
+      { rootMargin: '100px', threshold: 0 }
+    )
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [hasMore, loading, loadMore])
 
   // Se for owner, usa o Layout do owner, senão usa o ClientLayout
   if (isOwner && OwnerLayout) {

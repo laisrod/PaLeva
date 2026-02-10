@@ -3,7 +3,7 @@ import { useOrderHistory } from './useOrderHistory'
 import { useAuth } from '../../../../shared/hooks/useAuth'
 
 export function useOrderHistoryPage() {
-  const { orders, pagination, loading, error, filters, setFilters, refetch } = useOrderHistory()
+  const { orders, pagination, loading, error, filters, setFilters, refetch, loadMore, hasMore } = useOrderHistory()
   const { isOwner } = useAuth()
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
@@ -36,6 +36,8 @@ export function useOrderHistoryPage() {
     setStatus,
     handleFilterChange,
     handlePageChange,
-    refetch
+    refetch,
+    loadMore,
+    hasMore,
   }
 }
