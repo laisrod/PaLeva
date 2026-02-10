@@ -3,6 +3,8 @@ import Layout from '../../../../shared/components/Layout/Layout'
 import OrderSidebar from '../../../orders/components/Orders/OrderSidebar'
 import { useMenusPage } from '../../hooks/Menu/useMenusPage'
 import { useMenuCard } from '../../hooks/Menu/useMenuCard'
+import { useInfiniteScroll } from '../../../../../shared/hooks/useInfiniteScroll'
+import { Menu } from '../../types/menu'
 import MenusListLoading from './MenusListLoading'
 import '../../../../../css/owner/MenusList.css'
 
@@ -15,6 +17,8 @@ export default function MenusList() {
     error,
     deleteMenu
   } = useMenusPage()
+
+  const { displayedItems, sentinelRef } = useInfiniteScroll<Menu>(menus, 12)
 
   if (loading) {
     return <MenusListLoading />
@@ -59,17 +63,20 @@ export default function MenusList() {
             <p>Nenhum cardápio cadastrado</p>
           </div>
         ) : (
-          <div className="menus-grid">
-            {menus.map(menu => (
-              <MenuCard
-                key={menu.id}
-                menu={menu}
-                establishmentCode={establishmentCode}
-                isOwner={isOwner}
-                onDelete={deleteMenu}
-              />
-            ))}
-          </div>
+          <>
+            <div className="menus-grid">
+              {displayedItems.map(menu => (
+                <MenuCard
+                  key={menu.id}
+                  menu={menu}
+                  establishmentCode={establishmentCode}
+                  isOwner={isOwner}
+                  onDelete={deleteMenu}
+                />
+              ))}
+            </div>
+            <div ref={sentinelRef} style={{ height: 1 }} aria-hidden="true" />
+          </>
         )}
       </div>
       
