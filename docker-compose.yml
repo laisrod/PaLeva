@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Backend Rails
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: paleva_backend
+    ports:
+      - "3000:3000"
+    volumes:
+      # Montar código para hot-reload
+      - ./backend:/app
+      # Persistir gems e node_modules
+      - backend_gems:/usr/local/bundle
+      - backend_node_modules:/app/node_modules
+      # Persistir banco de dados
+      - backend_db:/app/storage
+    environment:
+      - RAILS_ENV=development
+      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY:-}
+    command: bin/rails server -b 0.0.0.0
+    stdin_open: true
+    tty: true
+    networks:
+      - paleva_network
+
+  # Frontend React/Vite
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: paleva_frontend
+    ports:
+      - "5176:5176"
+    volumes:
+      # Montar código para hot-reload
+      - ./frontend:/app
+      # Persistir node_modules
+      - frontend_node_modules:/app/node_modules
+    environment:
+      - VITE_API_URL=/api/v1
+      - VITE_DOCKER=true
+    command: npm run dev -- --host 0.0.0.0
+    depends_on:
+      - backend
+    networks:
+      - paleva_network
+
+volumes:
+  backend_gems:
+  backend_node_modules:
+  backend_db:
+  frontend_node_modules:
+
+networks:
+  paleva_network:
+    driver: bridge
