@@ -1,11 +1,7 @@
-# Logs
-log/*
-tmp/*
-*.log
-
 # Dependências
 node_modules/
-vendor/bundle/
+dist/
+build/
 
 # Arquivos de sistema
 .DS_Store
@@ -27,17 +23,8 @@ docker-compose*
 .env.local
 .env.*.local
 
-# Arquivos de build
-public/assets
-public/packs
-public/vite-dev
-public/vite-test
-
 # Arquivos de teste
 coverage/
-spec/examples.txt
 
 # Arquivos temporários
-tmp/
-storage/*
-!storage/.keep
+*.log
