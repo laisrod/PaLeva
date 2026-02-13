@@ -4,8 +4,8 @@ module Api
       skip_before_action :verify_authenticity_token
       skip_before_action :create_current_order
       skip_before_action :set_active_storage_url_options
-      before_action :skip_session
       before_action :authenticate_api_user!, only: [:destroy]
+      before_action :skip_session
 
       def create
         Rails.logger.info "[SessionsController] Iniciando sign_in com email: #{session_params[:email]}"
@@ -57,6 +57,18 @@ module Api
       end
 
       private
+
+      def authenticate_api_user!
+        email = request.headers['Authorization']&.split&.last
+        @current_user = User.find_by(email: email)
+        return if @current_user
+
+        render json: { error: 'Unauthorized' }, status: :unauthorized
+      end
+
+      def current_api_user
+        @current_user
+      end
 
       def skip_session
         request.session_options[:skip] = true if request.session_options

@@ -8,22 +8,22 @@ export default defineConfig({
   resolve: {
     dedupe: ['react', 'react-dom'],
   },
-  // Base path para GitHub Pages (ajuste se seu repositório não for a raiz)
-  // Se o repositório for username.github.io/repo-name, use: base: '/repo-name/'
-  // Se for username.github.io (repositório raiz), deixe base: '/'
+  
   base: process.env.GITHUB_PAGES ? '/PaLeva/' : '/',
   server: {
     port: 5176,
+    host: '0.0.0.0',
     proxy: {
       // Proxy para API do Rails backend
-      '/api': {
-        target: 'http://localhost:3000',
+      // Em Docker, usa o nome do serviço; localmente, usa localhost
+      '^/api/.*': {
+        target: process.env.VITE_DOCKER === 'true' ? 'http://backend:3000' : 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
       },
       // Proxy para WebSocket (Action Cable)
-      '/cable': {
-        target: 'ws://localhost:3000',
+      '^/cable.*': {
+        target: process.env.VITE_DOCKER === 'true' ? 'ws://backend:3000' : 'ws://localhost:3000',
         ws: true,
         changeOrigin: true,
       }
