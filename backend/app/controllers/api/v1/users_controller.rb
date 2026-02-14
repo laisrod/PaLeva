@@ -10,7 +10,7 @@ module Api
         @user.role = true unless @user.role.present?
         
         if @user.save
-          session[:user_id] = @user.id
+          # Não usar session em API - pode causar problemas no Render
           render json: {
             status: :created,
             user: @user.as_json(except: [:encrypted_password, :reset_password_token])
@@ -22,10 +22,18 @@ module Api
           }, status: :unprocessable_entity
         end
       rescue ActionController::ParameterMissing => e
+        Rails.logger.error "[UsersController] Parâmetros faltando: #{e.param}"
         render json: {
           status: :bad_request,
           error: ["Parâmetros faltando: #{e.param}"]
         }, status: :bad_request
+      rescue => e
+        Rails.logger.error "[UsersController] Erro ao criar usuário: #{e.class} - #{e.message}"
+        Rails.logger.error "[UsersController] Backtrace: #{e.backtrace.first(10).join("\n")}"
+        render json: {
+          status: :internal_server_error,
+          error: ['Erro interno do servidor']
+        }, status: :internal_server_error
       end
 
       private
