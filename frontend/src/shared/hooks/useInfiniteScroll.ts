@@ -13,16 +13,18 @@ export function useInfiniteScroll<T>(
   const [visibleCount, setVisibleCount] = useState(pageSize)
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
-  const displayedItems = items.slice(0, visibleCount)
-  const hasMore = visibleCount < items.length
+  // Garantir que items seja sempre um array
+  const safeItems = Array.isArray(items) ? items : []
+  const displayedItems = safeItems.slice(0, visibleCount)
+  const hasMore = visibleCount < safeItems.length
 
   const loadMore = useCallback(() => {
-    setVisibleCount((prev) => Math.min(prev + pageSize, items.length))
-  }, [items.length, pageSize])
+    setVisibleCount((prev) => Math.min(prev + pageSize, safeItems.length))
+  }, [safeItems.length, pageSize])
 
   useEffect(() => {
     setVisibleCount(pageSize)
-  }, [items.length, pageSize])
+  }, [safeItems.length, pageSize])
 
   useEffect(() => {
     if (!hasMore) return

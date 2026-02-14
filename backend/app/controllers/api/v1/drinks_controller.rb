@@ -5,7 +5,7 @@ module Api
       before_action :set_establishment
 
       def index
-        @drinks = @establishment.drinks
+        @drinks = @establishment.drinks.includes(:tags, :portions, :ratings)
         
         if params[:tag_ids].present?
           tag_ids = Array(params[:tag_ids]).map(&:to_i)
@@ -14,63 +14,12 @@ module Api
                           .distinct
         end
         
-        drinks_data = @drinks.map { |d| 
-          photo_url = nil
-          begin
-            photo_url = d.photo.attached? ? url_for(d.photo) : nil
-          rescue => e
-            Rails.logger.error "Erro ao gerar photo_url para drink #{d.id}: #{e.message}"
-            photo_url = nil
-          end
-          
-          prices = d.portions.pluck(:price)
-          min_price = prices.min
-          max_price = prices.max
-          
-          {
-            id: d.id,
-            name: d.name,
-            description: d.description,
-            alcoholic: d.alcoholic,
-            calories: d.calories,
-            photo_url: photo_url,
-            tags: d.tags.map { |tag| { id: tag.id, name: tag.name } },
-            min_price: min_price ? min_price.to_f : nil,
-            max_price: max_price ? max_price.to_f : nil,
-            average_rating: d.average_rating,
-            ratings_count: d.ratings_count
-          }
-        }
-        render json: drinks_data, status: :ok
+        render json: @drinks, status: :ok
       end
 
       def show
-        @drink = @establishment.drinks.find(params[:id])
-        prices = @drink.portions.pluck(:price)
-        min_price = prices.min
-        max_price = prices.max
-        
-        photo_url = nil
-        begin
-          photo_url = @drink.photo.attached? ? url_for(@drink.photo) : nil
-        rescue => e
-          Rails.logger.error "Erro ao gerar photo_url: #{e.message}"
-          photo_url = nil
-        end
-        
-        render json: {
-          id: @drink.id,
-          name: @drink.name,
-          description: @drink.description,
-          alcoholic: @drink.alcoholic,
-          calories: @drink.calories,
-          photo_url: photo_url,
-          tags: @drink.tags.map { |tag| { id: tag.id, name: tag.name } },
-          min_price: min_price ? min_price.to_f : nil,
-          max_price: max_price ? max_price.to_f : nil,
-          average_rating: @drink.average_rating,
-          ratings_count: @drink.ratings_count
-        }
+        @drink = @establishment.drinks.includes(:tags, :portions, :ratings).find(params[:id])
+        render json: @drink, status: :ok
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Bebida não encontrada' }, status: :not_found
       end
@@ -83,32 +32,10 @@ module Api
         
         if @drink.save
           @drink.photo.attach(photo_file) if photo_file
-          @drink.reload if photo_file # Recarregar para garantir que a foto está anexada
-          
-          prices = @drink.portions.pluck(:price)
-          min_price = prices.min
-          max_price = prices.max
-          
-          photo_url = nil
-          begin
-            photo_url = @drink.photo.attached? ? url_for(@drink.photo) : nil
-          rescue => e
-            Rails.logger.error "Erro ao gerar photo_url: #{e.message}"
-            photo_url = nil
-          end
+          @drink.reload
           
           render json: {
-            drink: {
-              id: @drink.id,
-              name: @drink.name,
-              description: @drink.description,
-              alcoholic: @drink.alcoholic,
-              calories: @drink.calories,
-              photo_url: photo_url,
-              tags: @drink.tags.map { |tag| { id: tag.id, name: tag.name } },
-              min_price: min_price ? min_price.to_f : nil,
-              max_price: max_price ? max_price.to_f : nil
-            },
+            drink: @drink,
             message: 'Bebida criada com sucesso'
           }, status: :created
         else
@@ -120,38 +47,16 @@ module Api
       end
 
       def update
-        @drink = @establishment.drinks.find(params[:id])
+        @drink = @establishment.drinks.includes(:tags, :portions).find(params[:id])
         permitted_params = drink_params.dup
         photo_file = permitted_params.delete(:photo) if permitted_params[:photo]
         
         if @drink.update(permitted_params)
           @drink.photo.attach(photo_file) if photo_file
-          @drink.reload if photo_file # Recarregar para garantir que a foto está anexada
-          
-          prices = @drink.portions.pluck(:price)
-          min_price = prices.min
-          max_price = prices.max
-          
-          photo_url = nil
-          begin
-            photo_url = @drink.photo.attached? ? url_for(@drink.photo) : nil
-          rescue => e
-            Rails.logger.error "Erro ao gerar photo_url: #{e.message}"
-            photo_url = nil
-          end
+          @drink.reload
           
           render json: {
-            drink: {
-              id: @drink.id,
-              name: @drink.name,
-              description: @drink.description,
-              alcoholic: @drink.alcoholic,
-              calories: @drink.calories,
-              photo_url: photo_url,
-              tags: @drink.tags.map { |tag| { id: tag.id, name: tag.name } },
-              min_price: min_price ? min_price.to_f : nil,
-              max_price: max_price ? max_price.to_f : nil
-            },
+            drink: @drink,
             message: 'Bebida atualizada!'
           }, status: :ok
         else

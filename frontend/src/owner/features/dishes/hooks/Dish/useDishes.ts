@@ -18,7 +18,11 @@ export function useDishes(establishmentCode: string | undefined) {
 
   const { loading, error, executeRequest } = useApiData<Dish[]>({
     defaultErrorMessage: 'Erro ao carregar pratos',
-    onSuccess: (data) => setDishes(data)
+    onSuccess: (data) => {
+      // Garantir que data seja sempre um array
+      const dishesArray = Array.isArray(data) ? data : ((data as any)?.dishes || [])
+      setDishes(dishesArray)
+    }
   })
 
   const loadTags = useCallback(async () => {
@@ -63,10 +67,10 @@ export function useDishes(establishmentCode: string | undefined) {
   }, [])
 
   // Filtrar pratos por nome
-  const filteredDishes = dishes.filter(dish => {
+  const filteredDishes = Array.isArray(dishes) ? dishes.filter(dish => {
     if (!searchTerm.trim()) return true
-    return dish.name.toLowerCase().includes(searchTerm.toLowerCase())
-  })
+    return dish?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  }) : []
 
   return {
     dishes: filteredDishes,

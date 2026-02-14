@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ownerApi } from '../../../../shared/services/api'
-import { Order } from '../../../shared/types/order'
+import { Order } from '../../../../../shared/types/order'
 import { useApiData } from '../../../../shared/hooks/Api/useApiData'
 import { getErrorMessage } from '../../../../shared/hooks/errorHandler'
 import { OrderAction, UseOrdersOptions } from '../../types/order'
@@ -10,7 +10,11 @@ export function useOrders(establishmentCode: string | undefined, options?: UseOr
   
   const { loading, error, executeRequest } = useApiData<Order[]>({
     defaultErrorMessage: 'Erro ao carregar pedidos',
-    onSuccess: (data) => setOrders(data)
+    onSuccess: (data) => {
+      // Garantir que data seja sempre um array
+      const ordersArray = Array.isArray(data) ? data : ((data as any)?.orders || [])
+      setOrders(ordersArray)
+    }
   })
 
   const loadOrders = useCallback(async () => {
