@@ -10,13 +10,26 @@ services:
       echo "Starting Render deployment..."
       echo "Working directory: $(pwd)"
       echo "DATABASE_URL: ${DATABASE_URL:0:50}..."
-      echo "Running migrations..."
-      cd backend || cd /opt/render/project/src/backend || pwd
-      bundle exec rails db:create RAILS_ENV=production || echo "Database may already exist"
-      bundle exec rails db:migrate RAILS_ENV=production || (echo "Migration failed, trying db:prepare..." && bundle exec rails db:prepare RAILS_ENV=production)
-      echo "Migrations completed"
-      echo "Starting Puma..."
-      bundle exec puma -C config/puma.rb
+      # Determinar diretório correto
+      if [ -d "/opt/render/project/src/backend" ]; then
+        cd /opt/render/project/src/backend
+      elif [ -d "backend" ]; then
+        cd backend
+      fi
+      echo "Current directory: $(pwd)"
+      echo "Running database migrations..."
+      # Tentar db:prepare primeiro (cria DB se não existir + migrations)
+      bundle exec rails db:prepare RAILS_ENV=production 2>&1 || {
+        echo "db:prepare failed, trying db:create + db:migrate..."
+        bundle exec rails db:create RAILS_ENV=production 2>&1 || echo "Database may already exist"
+        bundle exec rails db:migrate RAILS_ENV=production 2>&1 || {
+          echo "ERROR: Migrations failed!"
+          exit 1
+        }
+      }
+      echo "✅ Migrations completed successfully!"
+      echo "Starting Puma server..."
+      exec bundle exec puma -C config/puma.rb
     envVars:
       - key: RAILS_ENV
         value: production
