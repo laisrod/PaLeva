@@ -117,13 +117,13 @@ class WebSocketService {
       this.ws = new WebSocket(url)
 
             this.ws.onopen = () => {
-              console.log('[WebSocket] ✅ Connected successfully')
+              console.log('[WebSocket] Connected successfully')
               this.isConnecting = false
               this.reconnectAttempts = 0
 
               // Aguardar um pouco antes de resubscribir (ActionCable precisa de tempo para processar welcome)
               setTimeout(() => {
-                console.log('[WebSocket] 🔄 Resubscribing to all channels...')
+                console.log('[WebSocket] Resubscribing to all channels...')
                 this.resubscribeAll()
               }, 100)
 
@@ -253,67 +253,60 @@ class WebSocketService {
       return
     }
 
-    // ActionCable envia mensagens de broadcast diretamente (sem identifier)
-    // Verificar se é uma mensagem de broadcast direto (notificação)
-    // O ActionCable pode enviar como objeto direto ou dentro de uma propriedade message
-    // Primeiro, verificar se é uma mensagem de broadcast direto (sem identifier)
     if (!message.identifier) {
-      // Pode ser uma notificação direta
-      // Verificar diferentes formatos possíveis do ActionCable
       let notificationData = null
       
-      // Formato 1: Objeto direto com type e title (formato mais comum do ActionCable)
       if (message.type && message.title) {
         notificationData = message
-        console.log('[WebSocket] 📨 Detected notification format 1 (direct object):', notificationData)
+        console.log('[WebSocket] Detected notification format 1 (direct object):', notificationData)
       }
-      // Formato 2: Dentro de message.message
+
       else if (message.message && typeof message.message === 'object' && message.message.type && message.message.title) {
         notificationData = message.message
-        console.log('[WebSocket] 📨 Detected notification format 2 (nested in message.message):', notificationData)
+        console.log('[WebSocket] Detected notification format 2 (nested in message.message):', notificationData)
       }
       // Formato 3: Objeto direto sem message wrapper mas com title
       else if (message.title) {
         notificationData = message
-        console.log('[WebSocket] 📨 Detected notification format 3 (has title):', notificationData)
+        console.log('[WebSocket] Detected notification format 3 (has title):', notificationData)
       }
       
       if (notificationData) {
         // É uma notificação direta do ActionCable (broadcast)
-        console.log('[WebSocket] 📨 ✅ Confirmed notification broadcast:', notificationData)
-        console.log('[WebSocket] 🔍 Current subscriptions:', Array.from(this.subscriptions.keys()))
+        console.log('[WebSocket]  Confirmed notification broadcast:', notificationData)
+        console.log('[WebSocket] Current subscriptions:', Array.from(this.subscriptions.keys()))
         
         // Buscar subscription do NotificationsChannel
         let found = false
         for (const [key, sub] of this.subscriptions.entries()) {
           if (sub.channel === 'NotificationsChannel') {
-            console.log('[WebSocket] ✅ Found NotificationsChannel subscription, key:', key)
-            console.log('[WebSocket] 📤 Calling received callback with:', notificationData)
+            console.log('[WebSocket] Found NotificationsChannel subscription, key:', key)
+            console.log('[WebSocket] Calling received callback with:', notificationData)
             if (sub.callbacks.received) {
               try {
                 sub.callbacks.received(notificationData)
                 found = true
-                console.log('[WebSocket] ✅ Successfully called received callback')
+                console.log('[WebSocket] Successfully called received callback')
               } catch (error) {
-                console.error('[WebSocket] ❌ Error calling received callback:', error)
+                console.error('[WebSocket] Error calling received callback:', error)
               }
             } else {
-              console.warn('[WebSocket] ⚠️ Subscription found but no received callback!')
+              console.warn('[WebSocket] Subscription found but no received callback!')
             }
             break
           }
         }
         
         if (!found) {
-          console.warn('[WebSocket] ⚠️ Notification received but no NotificationsChannel subscription found!')
-          console.warn('[WebSocket] ⚠️ Active subscriptions:', Array.from(this.subscriptions.keys()))
+          console.warn('[WebSocket] Notification received but no NotificationsChannel subscription found!')
+          console.warn('[WebSocket] Active subscriptions:', Array.from(this.subscriptions.keys()))
         }
         return
       }
       
       // Se não for notificação, pode ser outro tipo de broadcast - logar para debug
       if (message.type && message.type !== 'ping' && message.type !== 'welcome') {
-        console.log('[WebSocket] 📬 Received broadcast message (not notification):', message)
+        console.log('[WebSocket]  Received broadcast message (not notification):', message)
       }
     }
 
@@ -362,11 +355,11 @@ class WebSocketService {
   ): () => void {
     const subscriptionKey = `${channel}_${JSON.stringify(params)}`
     
-    console.log('[WebSocket] 📝 Subscribe called for channel:', channel, 'params:', params, 'key:', subscriptionKey)
+    console.log('[WebSocket] Subscribe called for channel:', channel, 'params:', params, 'key:', subscriptionKey)
     
     // Se já existe subscrição, apenas atualizar callbacks
     if (this.subscriptions.has(subscriptionKey)) {
-      console.log('[WebSocket] ⚠️ Subscription already exists, updating callbacks')
+      console.log('[WebSocket] Subscription already exists, updating callbacks')
       const existing = this.subscriptions.get(subscriptionKey)!
       existing.callbacks = { ...existing.callbacks, ...callbacks }
       return () => this.unsubscribe(channel, params)
@@ -379,7 +372,7 @@ class WebSocketService {
     }
 
     this.subscriptions.set(subscriptionKey, subscription)
-    console.log('[WebSocket] ✅ Subscription added. Total subscriptions:', this.subscriptions.size)
+    console.log('[WebSocket] Subscription added. Total subscriptions:', this.subscriptions.size)
 
     // Se já estiver conectado, enviar comando de subscrição
     if (this.ws?.readyState === WebSocket.OPEN) {
@@ -418,7 +411,7 @@ class WebSocketService {
       channel,
       ...params
     }
-    console.log('[WebSocket] 📤 Subscribing to channel:', channel, 'with params:', params)
+    console.log('[WebSocket] Subscribing to channel:', channel, 'with params:', params)
     this.send({
       command: 'subscribe',
       identifier: JSON.stringify(identifier)

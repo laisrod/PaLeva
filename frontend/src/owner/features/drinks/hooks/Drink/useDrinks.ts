@@ -17,7 +17,11 @@ export function useDrinks(establishmentCode: string | undefined) {
 
   const { loading, error, executeRequest } = useApiData<Drink[]>({
     defaultErrorMessage: 'Erro ao carregar bebidas',
-    onSuccess: (data) => setDrinks(data)
+    onSuccess: (data) => {
+      // Garantir que data seja sempre um array
+      const drinksArray = Array.isArray(data) ? data : ((data as any)?.drinks || [])
+      setDrinks(drinksArray)
+    }
   })
 
   const loadTags = useCallback(async () => {
@@ -62,10 +66,10 @@ export function useDrinks(establishmentCode: string | undefined) {
   }, [])
 
   // Filtrar bebidas por nome
-  const filteredDrinks = drinks.filter(drink => {
+  const filteredDrinks = Array.isArray(drinks) ? drinks.filter(drink => {
     if (!searchTerm.trim()) return true
-    return drink.name.toLowerCase().includes(searchTerm.toLowerCase())
-  })
+    return drink?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  }) : []
 
   return {
     drinks: filteredDrinks,

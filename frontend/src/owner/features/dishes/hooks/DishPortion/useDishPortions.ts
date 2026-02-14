@@ -9,7 +9,9 @@ export function useDishPortions(establishmentCode: string | undefined, dishId: n
   const { loading, error, executeRequest } = useApiData<Portion[]>({
     defaultErrorMessage: 'Erro ao carregar porções',
     onSuccess: (data) => {
-      setPortions(data)
+      // Garantir que data seja sempre um array
+      const portionsArray = Array.isArray(data) ? data : ((data as any)?.portions || [])
+      setPortions(portionsArray)
     }
   })
 
