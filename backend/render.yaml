@@ -4,17 +4,17 @@ services:
     env: ruby
     buildCommand: |
       bundle install
-      echo "Running migrations during build..."
-      cd backend || cd /opt/render/project/src/backend || pwd
-      bundle exec rails db:migrate RAILS_ENV=production || echo "Migrations will run on start"
+      echo "Build completed"
     startCommand: |
       echo "=========================================="
       echo "Starting Render deployment..."
       echo "Working directory: $(pwd)"
       echo "DATABASE_URL: ${DATABASE_URL:0:50}..."
-      echo "Running migrations again to ensure they're applied..."
+      echo "Running migrations..."
       cd backend || cd /opt/render/project/src/backend || pwd
-      bundle exec rails db:migrate RAILS_ENV=production || bundle exec rails db:prepare RAILS_ENV=production || echo "Migration failed, but continuing..."
+      bundle exec rails db:create RAILS_ENV=production || echo "Database may already exist"
+      bundle exec rails db:migrate RAILS_ENV=production || (echo "Migration failed, trying db:prepare..." && bundle exec rails db:prepare RAILS_ENV=production)
+      echo "Migrations completed"
       echo "Starting Puma..."
       bundle exec puma -C config/puma.rb
     envVars:
