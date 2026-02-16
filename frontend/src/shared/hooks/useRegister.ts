@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../services/api'
+import { useAuth } from './useAuth'
 import { RegisterFormData, validateRegisterForm } from '../utils/registerValidation'
 import { formatCPF } from '../utils/cpfUtils'
 
@@ -16,6 +17,7 @@ export function useRegister() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -53,11 +55,29 @@ export function useRegister() {
           ? response.error.join(', ') 
           : response.error
         setError(errorMessage)
-      } else if (response.data) {
-        // Redirecionar para login após cadastro bem-sucedido
-        navigate('/login', { 
-          state: { message: 'Cadastro realizado com sucesso! Faça login para continuar.' }
-        })
+        return
+      }
+
+      if (response.data) {
+        // Fazer login automático após cadastro bem-sucedido
+        const loginResult = await login(formData.email, formData.password)
+        
+        if (loginResult.success && loginResult.user) {
+          const establishmentCode = loginResult.user.establishment?.code
+          
+          // Redirecionar para o dashboard se tiver estabelecimento
+          if (establishmentCode) {
+            navigate(`/establishment/${establishmentCode}`)
+          } else {
+            // Se não tiver estabelecimento, redirecionar para criar
+            navigate('/establishments/new')
+          }
+        } else {
+          // Se o login automático falhar, redirecionar para login
+          navigate('/login', { 
+            state: { message: 'Cadastro realizado com sucesso! Faça login para continuar.' }
+          })
+        }
       }
     } catch (err) {
       setError('Erro ao realizar cadastro. Tente novamente.')

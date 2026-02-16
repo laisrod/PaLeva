@@ -20,6 +20,7 @@ class WebSocketService {
   private reconnectDelay = 3000
   private reconnectTimer: number | null = null
   private isConnecting = false
+  private shouldReconnect = true
   private connectionCallbacks: {
     onOpen?: ConnectionCallback
     onClose?: ConnectionCallback
@@ -101,14 +102,21 @@ class WebSocketService {
       return
     }
 
-    this.isConnecting = true
+    // Verificar se há email antes de tentar conectar
     const email = this.getUserEmail()
-    
     if (!email) {
-      console.warn('[WebSocket] No user email found, cannot connect')
+      // Não logar warning repetidamente
+      if (this.reconnectAttempts === 0) {
+        console.warn('[WebSocket] No user email found, cannot connect')
+      }
       this.isConnecting = false
+      this.shouldReconnect = false
       return
     }
+
+    // Resetar flag de reconexão ao iniciar nova conexão
+    this.shouldReconnect = true
+    this.isConnecting = true
 
     const url = this.getWebSocketUrl()
     console.log('[WebSocket] Connecting to:', url, 'with email:', email)
@@ -120,6 +128,7 @@ class WebSocketService {
               console.log('[WebSocket] Connected successfully')
               this.isConnecting = false
               this.reconnectAttempts = 0
+              this.shouldReconnect = true
 
               // Aguardar um pouco antes de resubscribir (ActionCable precisa de tempo para processar welcome)
               setTimeout(() => {
@@ -153,7 +162,10 @@ class WebSocketService {
       }
 
       this.ws.onerror = (error) => {
-        console.error('[WebSocket] Error:', error)
+        // Log apenas na primeira tentativa ou a cada 5 tentativas para não poluir o console
+        if (this.reconnectAttempts === 0 || this.reconnectAttempts % 5 === 0) {
+          console.error('[WebSocket] Connection error:', error)
+        }
         this.isConnecting = false
         
         if (this.connectionCallbacks.onError) {
@@ -161,8 +173,11 @@ class WebSocketService {
         }
       }
 
-      this.ws.onclose = () => {
-        console.log('[WebSocket] Disconnected')
+      this.ws.onclose = (event) => {
+        // Log apenas se não for uma tentativa de reconexão
+        if (this.reconnectAttempts === 0) {
+          console.log('[WebSocket] Disconnected', event.code !== 1000 ? `(code: ${event.code})` : '')
+        }
         this.isConnecting = false
         this.ws = null
 
@@ -170,9 +185,17 @@ class WebSocketService {
           this.connectionCallbacks.onClose()
         }
 
-        // Tentar reconectar se não foi um fechamento intencional
-        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+        // Tentar reconectar apenas se:
+        // 1. Não foi um fechamento intencional (shouldReconnect = true)
+        // 2. Não excedeu o número máximo de tentativas
+        // 3. Ainda há um email de usuário disponível
+        if (this.shouldReconnect && 
+            this.reconnectAttempts < this.maxReconnectAttempts && 
+            this.getUserEmail()) {
           this.scheduleReconnect()
+        } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+          console.warn('[WebSocket] Max reconnection attempts reached. Stopping reconnection attempts.')
+          this.shouldReconnect = false
         }
       }
     } catch (error) {
@@ -183,33 +206,49 @@ class WebSocketService {
 
 
   disconnect(): void {
+    // Marcar que não deve tentar reconectar
+    this.shouldReconnect = false
+    
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer)
       this.reconnectTimer = null
     }
 
     if (this.ws) {
-      this.ws.close()
+      this.ws.close(1000, 'Intentional disconnect')
       this.ws = null
     }
 
     this.subscriptions.clear()
+    this.reconnectAttempts = 0
   }
 
 
   private scheduleReconnect(): void {
-    if (this.reconnectTimer) {
+    if (this.reconnectTimer || !this.shouldReconnect) {
+      return
+    }
+
+    // Verificar se ainda há email antes de agendar reconexão
+    if (!this.getUserEmail()) {
+      console.warn('[WebSocket] No user email available, stopping reconnection attempts')
+      this.shouldReconnect = false
       return
     }
 
     this.reconnectAttempts++
-    const delay = this.reconnectDelay * this.reconnectAttempts
+    const delay = Math.min(this.reconnectDelay * this.reconnectAttempts, 30000) // Max 30s
 
-    console.log(`[WebSocket] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`)
+    // Log apenas a cada 3 tentativas para não poluir o console
+    if (this.reconnectAttempts === 1 || this.reconnectAttempts % 3 === 0) {
+      console.log(`[WebSocket] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`)
+    }
 
     this.reconnectTimer = window.setTimeout(() => {
       this.reconnectTimer = null
-      this.connect()
+      if (this.shouldReconnect && this.reconnectAttempts <= this.maxReconnectAttempts) {
+        this.connect()
+      }
     }, delay)
   }
 
