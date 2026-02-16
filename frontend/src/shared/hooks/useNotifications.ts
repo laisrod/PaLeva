@@ -23,7 +23,11 @@ export function useNotifications() {
     }
 
     if (!isAuthenticated || !user) {
-      console.log('[useNotifications] Not authenticated or no user, skipping subscription. isAuthenticated:', isAuthenticated, 'user:', user)
+      console.log('[useNotifications] Not authenticated or no user, disconnecting WebSocket. isAuthenticated:', isAuthenticated, 'user:', user)
+      // Desconectar WebSocket se não estiver autenticado
+      if (websocketService.isConnected()) {
+        websocketService.disconnect()
+      }
       return
     }
 
