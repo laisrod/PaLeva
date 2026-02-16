@@ -199,7 +199,7 @@ export function useCreateDish({ establishmentCode, onSuccess }: UseCreateDishOpt
         setErrors([errorToShow])
       } else if (response.data) {
         // Manter o ID do prato criado para permitir gerenciar porções
-        const dishId = response.data.dish?.id || response.data.id || (response.data as any)?.dish_id
+        const dishId = response.data.dish?.id
         if (dishId) {
           setCreatedDishId(dishId)
           // Não redirecionar, permitir gerenciar porções na mesma página
