@@ -102,6 +102,23 @@ class WebSocketService {
       return
     }
 
+    // Em produção, verificar se WebSocket está disponível/configurado
+    if (!import.meta.env.DEV) {
+      const wsUrl = import.meta.env.VITE_WS_URL
+      const apiUrl = import.meta.env.VITE_API_URL
+      
+      // Se não houver VITE_WS_URL e a API_URL for do Render, desabilitar WebSocket
+      // Render free plan pode não suportar WebSocket
+      if (!wsUrl && apiUrl && apiUrl.includes('onrender.com')) {
+        if (this.reconnectAttempts === 0) {
+          console.warn('[WebSocket] WebSocket não configurado para produção no Render. Notificações em tempo real desabilitadas.')
+        }
+        this.shouldReconnect = false
+        this.isConnecting = false
+        return
+      }
+    }
+
     // Verificar se há email antes de tentar conectar
     const email = this.getUserEmail()
     if (!email) {
@@ -163,8 +180,11 @@ class WebSocketService {
 
       this.ws.onerror = (error) => {
         // Log apenas na primeira tentativa ou a cada 5 tentativas para não poluir o console
+        // Mas não logar se já sabemos que WebSocket não está disponível
         if (this.reconnectAttempts === 0 || this.reconnectAttempts % 5 === 0) {
-          console.error('[WebSocket] Connection error:', error)
+          if (this.shouldReconnect) {
+            console.error('[WebSocket] Connection error:', error)
+          }
         }
         this.isConnecting = false
         
