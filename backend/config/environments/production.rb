@@ -89,4 +89,12 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  
+  # ActionCable configuration for WebSocket support
+  # Allow WebSocket connections from any origin (CORS is handled separately)
+  config.action_cable.allowed_request_origins = [/http:\/\/.*/, /https:\/\/.*/]
+  
+  # Mount ActionCable at /cable (already configured in routes.rb)
+  # The async adapter works for single-server deployments (like Render free plan)
+  # For multi-server deployments, you would need Redis or PostgreSQL adapter
 end

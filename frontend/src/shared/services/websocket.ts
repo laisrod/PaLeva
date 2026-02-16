@@ -108,13 +108,14 @@ class WebSocketService {
       const apiUrl = import.meta.env.VITE_API_URL
       
       // Se não houver VITE_WS_URL e a API_URL for do Render, desabilitar WebSocket
-      // Render free plan pode não suportar WebSocket
+      // Render free plan pode não suportar WebSocket adequadamente
       if (!wsUrl && apiUrl && apiUrl.includes('onrender.com')) {
         if (this.reconnectAttempts === 0) {
-          console.warn('[WebSocket] WebSocket não configurado para produção no Render. Notificações em tempo real desabilitadas.')
+          console.info('[WebSocket] WebSocket não configurado para produção no Render. Notificações em tempo real desabilitadas. A aplicação funcionará normalmente, mas sem atualizações em tempo real.')
         }
         this.shouldReconnect = false
         this.isConnecting = false
+        this.reconnectAttempts = this.maxReconnectAttempts // Marcar como se já tivesse tentado o máximo
         return
       }
     }
