@@ -20,6 +20,7 @@ class WebSocketService {
   private reconnectDelay = 3000
   private reconnectTimer: number | null = null
   private isConnecting = false
+  private shouldReconnect = true
   private connectionCallbacks: {
     onOpen?: ConnectionCallback
     onClose?: ConnectionCallback
@@ -101,14 +102,39 @@ class WebSocketService {
       return
     }
 
-    this.isConnecting = true
+    // Em produção, verificar se WebSocket está disponível/configurado
+    if (!import.meta.env.DEV) {
+      const wsUrl = import.meta.env.VITE_WS_URL
+      const apiUrl = import.meta.env.VITE_API_URL
+      
+      // Se não houver VITE_WS_URL e a API_URL for do Render, desabilitar WebSocket
+      // Render free plan pode não suportar WebSocket adequadamente
+      if (!wsUrl && apiUrl && apiUrl.includes('onrender.com')) {
+        if (this.reconnectAttempts === 0) {
+          console.info('[WebSocket] WebSocket não configurado para produção no Render. Notificações em tempo real desabilitadas. A aplicação funcionará normalmente, mas sem atualizações em tempo real.')
+        }
+        this.shouldReconnect = false
+        this.isConnecting = false
+        this.reconnectAttempts = this.maxReconnectAttempts // Marcar como se já tivesse tentado o máximo
+        return
+      }
+    }
+
+    // Verificar se há email antes de tentar conectar
     const email = this.getUserEmail()
-    
     if (!email) {
-      console.warn('[WebSocket] No user email found, cannot connect')
+      // Não logar warning repetidamente
+      if (this.reconnectAttempts === 0) {
+        console.warn('[WebSocket] No user email found, cannot connect')
+      }
       this.isConnecting = false
+      this.shouldReconnect = false
       return
     }
+
+    // Resetar flag de reconexão ao iniciar nova conexão
+    this.shouldReconnect = true
+    this.isConnecting = true
 
     const url = this.getWebSocketUrl()
     console.log('[WebSocket] Connecting to:', url, 'with email:', email)
@@ -117,13 +143,14 @@ class WebSocketService {
       this.ws = new WebSocket(url)
 
             this.ws.onopen = () => {
-              console.log('[WebSocket] ✅ Connected successfully')
+              console.log('[WebSocket] Connected successfully')
               this.isConnecting = false
               this.reconnectAttempts = 0
+              this.shouldReconnect = true
 
               // Aguardar um pouco antes de resubscribir (ActionCable precisa de tempo para processar welcome)
               setTimeout(() => {
-                console.log('[WebSocket] 🔄 Resubscribing to all channels...')
+                console.log('[WebSocket] Resubscribing to all channels...')
                 this.resubscribeAll()
               }, 100)
 
@@ -153,7 +180,13 @@ class WebSocketService {
       }
 
       this.ws.onerror = (error) => {
-        console.error('[WebSocket] Error:', error)
+        // Log apenas na primeira tentativa ou a cada 5 tentativas para não poluir o console
+        // Mas não logar se já sabemos que WebSocket não está disponível
+        if (this.reconnectAttempts === 0 || this.reconnectAttempts % 5 === 0) {
+          if (this.shouldReconnect) {
+            console.error('[WebSocket] Connection error:', error)
+          }
+        }
         this.isConnecting = false
         
         if (this.connectionCallbacks.onError) {
@@ -161,8 +194,11 @@ class WebSocketService {
         }
       }
 
-      this.ws.onclose = () => {
-        console.log('[WebSocket] Disconnected')
+      this.ws.onclose = (event) => {
+        // Log apenas se não for uma tentativa de reconexão
+        if (this.reconnectAttempts === 0) {
+          console.log('[WebSocket] Disconnected', event.code !== 1000 ? `(code: ${event.code})` : '')
+        }
         this.isConnecting = false
         this.ws = null
 
@@ -170,9 +206,17 @@ class WebSocketService {
           this.connectionCallbacks.onClose()
         }
 
-        // Tentar reconectar se não foi um fechamento intencional
-        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+        // Tentar reconectar apenas se:
+        // 1. Não foi um fechamento intencional (shouldReconnect = true)
+        // 2. Não excedeu o número máximo de tentativas
+        // 3. Ainda há um email de usuário disponível
+        if (this.shouldReconnect && 
+            this.reconnectAttempts < this.maxReconnectAttempts && 
+            this.getUserEmail()) {
           this.scheduleReconnect()
+        } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+          console.warn('[WebSocket] Max reconnection attempts reached. Stopping reconnection attempts.')
+          this.shouldReconnect = false
         }
       }
     } catch (error) {
@@ -183,33 +227,49 @@ class WebSocketService {
 
 
   disconnect(): void {
+    // Marcar que não deve tentar reconectar
+    this.shouldReconnect = false
+    
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer)
       this.reconnectTimer = null
     }
 
     if (this.ws) {
-      this.ws.close()
+      this.ws.close(1000, 'Intentional disconnect')
       this.ws = null
     }
 
     this.subscriptions.clear()
+    this.reconnectAttempts = 0
   }
 
 
   private scheduleReconnect(): void {
-    if (this.reconnectTimer) {
+    if (this.reconnectTimer || !this.shouldReconnect) {
+      return
+    }
+
+    // Verificar se ainda há email antes de agendar reconexão
+    if (!this.getUserEmail()) {
+      console.warn('[WebSocket] No user email available, stopping reconnection attempts')
+      this.shouldReconnect = false
       return
     }
 
     this.reconnectAttempts++
-    const delay = this.reconnectDelay * this.reconnectAttempts
+    const delay = Math.min(this.reconnectDelay * this.reconnectAttempts, 30000) // Max 30s
 
-    console.log(`[WebSocket] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`)
+    // Log apenas a cada 3 tentativas para não poluir o console
+    if (this.reconnectAttempts === 1 || this.reconnectAttempts % 3 === 0) {
+      console.log(`[WebSocket] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`)
+    }
 
     this.reconnectTimer = window.setTimeout(() => {
       this.reconnectTimer = null
-      this.connect()
+      if (this.shouldReconnect && this.reconnectAttempts <= this.maxReconnectAttempts) {
+        this.connect()
+      }
     }, delay)
   }
 
@@ -253,67 +313,60 @@ class WebSocketService {
       return
     }
 
-    // ActionCable envia mensagens de broadcast diretamente (sem identifier)
-    // Verificar se é uma mensagem de broadcast direto (notificação)
-    // O ActionCable pode enviar como objeto direto ou dentro de uma propriedade message
-    // Primeiro, verificar se é uma mensagem de broadcast direto (sem identifier)
     if (!message.identifier) {
-      // Pode ser uma notificação direta
-      // Verificar diferentes formatos possíveis do ActionCable
       let notificationData = null
       
-      // Formato 1: Objeto direto com type e title (formato mais comum do ActionCable)
       if (message.type && message.title) {
         notificationData = message
-        console.log('[WebSocket] 📨 Detected notification format 1 (direct object):', notificationData)
+        console.log('[WebSocket] Detected notification format 1 (direct object):', notificationData)
       }
-      // Formato 2: Dentro de message.message
+
       else if (message.message && typeof message.message === 'object' && message.message.type && message.message.title) {
         notificationData = message.message
-        console.log('[WebSocket] 📨 Detected notification format 2 (nested in message.message):', notificationData)
+        console.log('[WebSocket] Detected notification format 2 (nested in message.message):', notificationData)
       }
       // Formato 3: Objeto direto sem message wrapper mas com title
       else if (message.title) {
         notificationData = message
-        console.log('[WebSocket] 📨 Detected notification format 3 (has title):', notificationData)
+        console.log('[WebSocket] Detected notification format 3 (has title):', notificationData)
       }
       
       if (notificationData) {
         // É uma notificação direta do ActionCable (broadcast)
-        console.log('[WebSocket] 📨 ✅ Confirmed notification broadcast:', notificationData)
-        console.log('[WebSocket] 🔍 Current subscriptions:', Array.from(this.subscriptions.keys()))
+        console.log('[WebSocket]  Confirmed notification broadcast:', notificationData)
+        console.log('[WebSocket] Current subscriptions:', Array.from(this.subscriptions.keys()))
         
         // Buscar subscription do NotificationsChannel
         let found = false
         for (const [key, sub] of this.subscriptions.entries()) {
           if (sub.channel === 'NotificationsChannel') {
-            console.log('[WebSocket] ✅ Found NotificationsChannel subscription, key:', key)
-            console.log('[WebSocket] 📤 Calling received callback with:', notificationData)
+            console.log('[WebSocket] Found NotificationsChannel subscription, key:', key)
+            console.log('[WebSocket] Calling received callback with:', notificationData)
             if (sub.callbacks.received) {
               try {
                 sub.callbacks.received(notificationData)
                 found = true
-                console.log('[WebSocket] ✅ Successfully called received callback')
+                console.log('[WebSocket] Successfully called received callback')
               } catch (error) {
-                console.error('[WebSocket] ❌ Error calling received callback:', error)
+                console.error('[WebSocket] Error calling received callback:', error)
               }
             } else {
-              console.warn('[WebSocket] ⚠️ Subscription found but no received callback!')
+              console.warn('[WebSocket] Subscription found but no received callback!')
             }
             break
           }
         }
         
         if (!found) {
-          console.warn('[WebSocket] ⚠️ Notification received but no NotificationsChannel subscription found!')
-          console.warn('[WebSocket] ⚠️ Active subscriptions:', Array.from(this.subscriptions.keys()))
+          console.warn('[WebSocket] Notification received but no NotificationsChannel subscription found!')
+          console.warn('[WebSocket] Active subscriptions:', Array.from(this.subscriptions.keys()))
         }
         return
       }
       
       // Se não for notificação, pode ser outro tipo de broadcast - logar para debug
       if (message.type && message.type !== 'ping' && message.type !== 'welcome') {
-        console.log('[WebSocket] 📬 Received broadcast message (not notification):', message)
+        console.log('[WebSocket]  Received broadcast message (not notification):', message)
       }
     }
 
@@ -362,11 +415,11 @@ class WebSocketService {
   ): () => void {
     const subscriptionKey = `${channel}_${JSON.stringify(params)}`
     
-    console.log('[WebSocket] 📝 Subscribe called for channel:', channel, 'params:', params, 'key:', subscriptionKey)
+    console.log('[WebSocket] Subscribe called for channel:', channel, 'params:', params, 'key:', subscriptionKey)
     
     // Se já existe subscrição, apenas atualizar callbacks
     if (this.subscriptions.has(subscriptionKey)) {
-      console.log('[WebSocket] ⚠️ Subscription already exists, updating callbacks')
+      console.log('[WebSocket] Subscription already exists, updating callbacks')
       const existing = this.subscriptions.get(subscriptionKey)!
       existing.callbacks = { ...existing.callbacks, ...callbacks }
       return () => this.unsubscribe(channel, params)
@@ -379,7 +432,7 @@ class WebSocketService {
     }
 
     this.subscriptions.set(subscriptionKey, subscription)
-    console.log('[WebSocket] ✅ Subscription added. Total subscriptions:', this.subscriptions.size)
+    console.log('[WebSocket] Subscription added. Total subscriptions:', this.subscriptions.size)
 
     // Se já estiver conectado, enviar comando de subscrição
     if (this.ws?.readyState === WebSocket.OPEN) {
@@ -418,7 +471,7 @@ class WebSocketService {
       channel,
       ...params
     }
-    console.log('[WebSocket] 📤 Subscribing to channel:', channel, 'with params:', params)
+    console.log('[WebSocket] Subscribing to channel:', channel, 'with params:', params)
     this.send({
       command: 'subscribe',
       identifier: JSON.stringify(identifier)

@@ -20,7 +20,11 @@ export function useTags(establishmentCodeOrOptions: string | undefined | UseTags
   
   const { loading, error, executeRequest } = useApiData<Tag[]>({
     defaultErrorMessage: 'Erro ao carregar características',
-    onSuccess: (data) => setTags(data)
+    onSuccess: (data) => {
+      // Garantir que data seja sempre um array
+      const tagsArray = Array.isArray(data) ? data : ((data as any)?.tags || [])
+      setTags(tagsArray)
+    }
   })
 
   const loadTags = useCallback(async () => {

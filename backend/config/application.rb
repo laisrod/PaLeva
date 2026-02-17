@@ -30,9 +30,9 @@ module TakeAway
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use config.session_store, config.session_options
 
-    # Autoload paths for services and concerns
     config.autoload_paths += %W[
       #{config.root}/app/services
+      #{config.root}/app/serializers
     ]
   end
 end

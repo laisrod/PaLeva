@@ -11,7 +11,7 @@ class NotificationsChannel < ApplicationCable::Channel
     stream_name = "notifications:#{current_user.id}"
     stream_from stream_name
     
-    Rails.logger.info "[NotificationsChannel] ✅ User #{current_user.email} (ID: #{current_user.id}) subscribed to #{stream_name}"
+    Rails.logger.info "[NotificationsChannel] User #{current_user.email} (ID: #{current_user.id}) subscribed to #{stream_name}"
     
     # Enviar uma notificação de teste para confirmar a conexão
     ActionCable.server.broadcast(

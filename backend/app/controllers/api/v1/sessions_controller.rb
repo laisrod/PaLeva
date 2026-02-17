@@ -82,34 +82,16 @@ module Api
       end
 
       def format_user_data(user)
-        begin
-          user_data = {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            role: user.role
-          }
-
-          if user.establishment.present?
-            user_data[:establishment] = {
-              id: user.establishment.id,
-              code: user.establishment.code,
-              name: user.establishment.name
-            }
-          end
-
-          user_data
-        rescue => e
-          Rails.logger.error "[SessionsController] Erro ao formatar dados do usuário: #{e.class} - #{e.message}"
-          Rails.logger.error "[SessionsController] Backtrace: #{e.backtrace.first(5).join("\n")}"
-          # Retorna dados básicos mesmo se houver erro
-          {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            role: user.role
-          }
-        end
+        Api::V1::UserSerializer.new(user, scope: self).as_json
+      rescue => e
+        Rails.logger.error "[SessionsController] Erro ao formatar dados do usuário: #{e.class} - #{e.message}"
+        Rails.logger.error "[SessionsController] Backtrace: #{e.backtrace.first(5).join("\n")}"
+        {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role
+        }
       end
     end
   end

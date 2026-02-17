@@ -23,18 +23,22 @@ export function useNotifications() {
     }
 
     if (!isAuthenticated || !user) {
-      console.log('[useNotifications] Not authenticated or no user, skipping subscription. isAuthenticated:', isAuthenticated, 'user:', user)
+      console.log('[useNotifications] Not authenticated or no user, disconnecting WebSocket. isAuthenticated:', isAuthenticated, 'user:', user)
+      // Desconectar WebSocket se não estiver autenticado
+      if (websocketService.isConnected()) {
+        websocketService.disconnect()
+      }
       return
     }
 
-    console.log('[useNotifications] ✅ Setting up notifications for user:', user.email, 'ID:', user.id)
+    console.log('[useNotifications] Setting up notifications for user:', user.email, 'ID:', user.id)
 
     let unsubscribeFn: (() => void) | null = null
     let connectionCheckInterval: number | null = null
 
     // Função para fazer a subscription
     const doSubscribe = () => {
-      console.log('[useNotifications] 📤 Attempting to subscribe to NotificationsChannel...')
+      console.log('[useNotifications] Attempting to subscribe to NotificationsChannel...')
       
       // Subscrever ao canal de notificações
       unsubscribeFn = websocketService.subscribe(
@@ -42,7 +46,7 @@ export function useNotifications() {
         {},
         {
           received: (message: NotificationMessage) => {
-            console.log('[useNotifications] 📨 Received notification:', message)
+            console.log('[useNotifications] Received notification:', message)
             // Mapear o tipo da notificação do backend para o tipo do frontend
             const notificationType = message.type === 'error' ? 'error' :
                                      message.type === 'success' ? 'success' :
@@ -58,10 +62,10 @@ export function useNotifications() {
             })
           },
           connected: () => {
-            console.log('[useNotifications] ✅ Subscribed to NotificationsChannel')
+            console.log('[useNotifications] Subscribed to NotificationsChannel')
           },
           disconnected: () => {
-            console.log('[useNotifications] ❌ Disconnected from NotificationsChannel')
+            console.log('[useNotifications] Disconnected from NotificationsChannel')
           },
         }
       )

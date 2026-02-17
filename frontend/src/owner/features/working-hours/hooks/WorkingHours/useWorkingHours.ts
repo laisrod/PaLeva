@@ -13,7 +13,11 @@ export function useWorkingHours({ code, onSuccess }: UseWorkingHoursOptions) {
   
   const { loading, error, executeRequest, setError } = useApiData<WorkingHour[]>({
     defaultErrorMessage: 'Erro ao carregar horários de funcionamento',
-    onSuccess: (data) => setWorkingHours(data)
+    onSuccess: (data) => {
+      // Garantir que data seja sempre um array
+      const workingHoursArray = Array.isArray(data) ? data : ((data as any)?.working_hours || [])
+      setWorkingHours(workingHoursArray)
+    }
   })
 
   const loadWorkingHours = useCallback(async () => {

@@ -6,19 +6,12 @@ module Api
       
       def index
         @establishments = Establishment.all
-        render json: @establishments.as_json(only: [:id, :name, :code, :city, :state])
+        render json: @establishments, status: :ok
       end
 
       def show
-        @establishment = Establishment.find_by!(code: params[:code])
-        render json: @establishment.as_json(
-          only: [:id, :name, :code, :city, :state, :full_address, :phone_number, :email],
-          include: {
-            working_hours: {
-              only: [:id, :week_day, :opening_hour, :closing_hour, :open]
-            }
-          }
-        )
+        @establishment = Establishment.includes(:working_hours).find_by!(code: params[:code])
+        render json: @establishment, status: :ok
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Estabelecimento não encontrado' }, status: :not_found
       end
@@ -29,7 +22,7 @@ module Api
 
         if @establishment.save
           render json: {
-            establishment: @establishment.as_json(only: [:id, :name, :code, :city, :state]),
+            establishment: @establishment,
             message: 'Estabelecimento criado com sucesso'
           }, status: :created
         else
@@ -49,7 +42,7 @@ module Api
         @establishment = Establishment.find_by!(code: params[:code])
         if @establishment.update(establishment_params)
           render json: {
-            establishment: @establishment.as_json(only: [:id, :name, :code, :city, :state, :phone_number, :email, :full_address]),
+            establishment: @establishment,
             message: 'Estabelecimento atualizado com sucesso'
           }, status: :ok
         else

@@ -5,7 +5,7 @@ module Api
       before_action :set_establishment
 
       def index
-        @dishes = @establishment.dishes
+        @dishes = @establishment.dishes.includes(:tags, :portions, :ratings)
         
         if params[:tag_ids].present?
           tag_ids = Array(params[:tag_ids]).map(&:to_i)
@@ -14,45 +14,12 @@ module Api
                           .distinct
         end
         
-        dishes_with_tags = @dishes.map { |d| 
-          prices = d.portions.pluck(:price)
-          min_price = prices.min
-          max_price = prices.max
-          
-          {
-            id: d.id,
-            name: d.name,
-            description: d.description,
-            calories: d.calories,
-            photo_url: d.photo.attached? ? url_for(d.photo) : nil,
-            tags: d.tags.map { |tag| { id: tag.id, name: tag.name } },
-            min_price: min_price ? min_price.to_f : nil,
-            max_price: max_price ? max_price.to_f : nil,
-            average_rating: d.average_rating,
-            ratings_count: d.ratings_count
-          }
-        }
-        render json: dishes_with_tags, status: :ok
+        render json: @dishes, status: :ok
       end
 
       def show
-        @dish = @establishment.dishes.find(params[:id])
-        prices = @dish.portions.pluck(:price)
-        min_price = prices.min
-        max_price = prices.max
-        
-        render json: {
-          id: @dish.id,
-          name: @dish.name,
-          description: @dish.description,
-          calories: @dish.calories,
-          photo_url: @dish.photo.attached? ? url_for(@dish.photo) : nil,
-          tags: @dish.tags.map { |tag| { id: tag.id, name: tag.name } },
-          min_price: min_price ? min_price.to_f : nil,
-          max_price: max_price ? max_price.to_f : nil,
-          average_rating: @dish.average_rating,
-          ratings_count: @dish.ratings_count
-        }
+        @dish = @establishment.dishes.includes(:tags, :portions, :ratings).find(params[:id])
+        render json: @dish, status: :ok
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Prato não encontrado' }, status: :not_found
       end
@@ -65,23 +32,10 @@ module Api
         
         if @dish.save! 
           @dish.photo.attach(photo_file) if photo_file
-          
-          prices = @dish.portions.pluck(:price)
-          min_price = prices.min
-          max_price = prices.max
+          @dish.reload
           
           render json: {
-            dish: {
-              id: @dish.id,
-              name: @dish.name,
-              description: @dish.description,
-              calories: @dish.calories,
-              status: @dish.status,
-              photo_url: @dish.photo.attached? ? url_for(@dish.photo) : nil,
-              tags: @dish.tags.map { |tag| { id: tag.id, name: tag.name } },
-              min_price: min_price ? min_price.to_f : nil,
-              max_price: max_price ? max_price.to_f : nil
-            },
+            dish: @dish,
             message: 'Prato criado!'
           }, status: :created
         else
@@ -90,29 +44,16 @@ module Api
       end
 
       def update
-        @dish = @establishment.dishes.find(params[:id])
+        @dish = @establishment.dishes.includes(:tags, :portions).find(params[:id])
         permitted_params = dish_params
         photo_file = permitted_params.delete(:photo) if permitted_params[:photo]
         
         if @dish.update(permitted_params)
           @dish.photo.attach(photo_file) if photo_file
-          
-          prices = @dish.portions.pluck(:price)
-          min_price = prices.min
-          max_price = prices.max
+          @dish.reload
           
           render json: {
-            dish: {
-              id: @dish.id,
-              name: @dish.name,
-              description: @dish.description,
-              calories: @dish.calories,
-              status: @dish.status,
-              photo_url: @dish.photo.attached? ? url_for(@dish.photo) : nil,
-              tags: @dish.tags.map { |tag| { id: tag.id, name: tag.name } },
-              min_price: min_price ? min_price.to_f : nil,
-              max_price: max_price ? max_price.to_f : nil
-            },
+            dish: @dish,
             message: 'Prato atualizado!'
           }, status: :ok
         else

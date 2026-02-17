@@ -16,14 +16,9 @@ module Api
         @order.user = current_api_user if current_api_user
 
         if @order.save
+          @order.reload
           render json: {
-            order: {
-              id: @order.id,
-              code: @order.code,
-              status: @order.status,
-              total_price: @order.total_price.to_f,
-              customer_name: @order.customer_name
-            },
+            order: @order,
             message: 'Pedido criado com sucesso'
           }, status: :created
         else
@@ -35,11 +30,11 @@ module Api
       end
 
       def index
-        @orders = @establishment.orders.recent
+        @orders = @establishment.orders.includes(:order_menu_items).recent
         @orders = @orders.with_status(params[:status]) if params[:status].present?
 
-        render json: @orders.map { |order|
-          # Recalcular total_price se necessário
+        # Recalcular total_price se necessário
+        @orders.each do |order|
           begin
             if order.total_price.nil? || order.total_price.zero?
               order.update_total_price
@@ -47,23 +42,10 @@ module Api
             end
           rescue => e
             Rails.logger.error "Erro ao calcular total_price para pedido #{order.id}: #{e.message}"
-            # Continua mesmo se houver erro no cálculo
           end
-          
-          {
-            id: order.id,
-            code: order.code,
-            status: order.status,
-            total_price: (order.total_price || 0).to_f,
-            customer_name: order.customer_name,
-            customer_email: order.customer_email,
-            customer_phone: order.customer_phone,
-            customer_cpf: order.customer_cpf,
-            created_at: order.created_at,
-            updated_at: order.updated_at,
-            establishment_id: order.establishment_id
-          }
-        }
+        end
+
+        render json: @orders, status: :ok
       end
 
       def show
@@ -75,82 +57,13 @@ module Api
           @order.save if @order.changed?
         end
 
-        # Usar associação já eager-loaded por set_order; ordenar por id em memória (JSON estável)
-        items = @order.order_menu_items.to_a.sort_by(&:id)
-
-        order_data = {
-          id: @order.id,
-          code: @order.code,
-          status: @order.status,
-          total_price: @order.total_price.to_f,
-          customer_name: @order.customer_name,
-          customer_email: @order.customer_email,
-          customer_phone: @order.customer_phone,
-          customer_cpf: @order.customer_cpf,
-          created_at: @order.created_at,
-          updated_at: @order.updated_at,
-          establishment_id: @order.establishment_id,
-          cancellation_reason: @order.cancellation_reason,
-          order_menu_items: items.map { |item|
-            # Se o item tem menu_id direto, é um menu completo
-            if item.menu_id
-              menu = Menu.find_by(id: item.menu_id)
-              {
-                id: item.id,
-                quantity: item.quantity,
-                menu_id: item.menu_id,
-                menu: menu ? {
-                  id: menu.id,
-                  name: menu.name,
-                  description: menu.description,
-                  price: menu.price.to_f
-                } : nil,
-                menu_item: nil,
-                portion: nil
-              }
-            else
-              # Item individual (menu_item + portion)
-            menu_item_name = nil
-            menu_item_description = nil
-            
-            if item.menu_item
-              if item.menu_item.dish
-                menu_item_name = item.menu_item.dish.name
-                menu_item_description = item.menu_item.dish.description
-              elsif item.menu_item.drink
-                menu_item_name = item.menu_item.drink.name
-                menu_item_description = item.menu_item.drink.description
-              end
-            end
-            
-            {
-              id: item.id,
-              quantity: item.quantity,
-              menu_item_id: item.menu_item_id,
-              portion_id: item.portion_id,
-                menu_id: nil,
-                menu: nil,
-              menu_item: item.menu_item ? {
-                id: item.menu_item.id,
-                name: menu_item_name,
-                description: menu_item_description
-              } : nil,
-              portion: item.portion ? {
-                id: item.portion.id,
-                description: item.portion.description,
-                price: item.portion.price.to_f
-              } : nil
-            }
-            end
-          }
-        }
-        
-        render json: order_data
+        render json: @order, status: :ok
       end
 
       def update
         if @order.update(order_params)
-          render json: @order.reload
+          @order.reload
+          render json: @order, status: :ok
         else
           render json: { error: @order.errors.full_messages.join(', ') }, status: :unprocessable_entity
         end
@@ -164,7 +77,8 @@ module Api
         result = service.progress!
 
         if result[:success] && result[:status] == 'preparing'
-          render json: @order.reload
+          @order.reload
+          render json: @order, status: :ok
         else
           render json: { error: result[:message] }, status: :unprocessable_entity
         end
@@ -173,7 +87,7 @@ module Api
       def ready_order
         if @order.status == 'preparing' && @order.update(status: 'ready')
           @order.update_total_price
-          render json: @order
+          render json: @order, status: :ok
         else
           render json: { error: 'Não foi possível atualizar o status' }, status: :unprocessable_entity
         end
@@ -193,7 +107,7 @@ module Api
 
         if @order.update(status: 'pending')
           @order.update_total_price
-          render json: @order
+          render json: @order, status: :ok
         else
           error_message = @order.errors.full_messages.join(', ')
           render json: { error: error_message.presence || 'Erro ao confirmar pedido' }, status: :unprocessable_entity
@@ -202,7 +116,7 @@ module Api
 
       def deliver
         if @order.status == 'ready' && @order.update(status: 'delivered')
-          render json: @order
+          render json: @order, status: :ok
         else
           render json: { error: 'Apenas pedidos prontos podem ser marcados como entregues' }, status: :unprocessable_entity
         end
@@ -213,7 +127,8 @@ module Api
         result = service.cancel!(params[:cancellation_reason])
 
         if result[:success]
-          render json: @order.reload
+          @order.reload
+          render json: @order, status: :ok
         else
           render json: { error: result[:message] }, status: :unprocessable_entity
         end
