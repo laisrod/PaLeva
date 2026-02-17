@@ -5,9 +5,34 @@ module Api
       before_action :skip_session
       
       def create
-        @user = User.new(user_params)
-        # Define role como true (owner) por padrão para novos usuários
-        @user.role = true unless @user.role.present?
+        user_params_hash = user_params.to_h
+        Rails.logger.info "[UsersController] Parâmetros recebidos: #{user_params_hash.inspect}"
+        
+        # Converter role para boolean se necessário
+        if user_params_hash.key?('role')
+          # Se role foi enviado (mesmo que seja false), usar o valor enviado
+          role_value = user_params_hash['role']
+          Rails.logger.info "[UsersController] Role recebido: #{role_value.inspect} (#{role_value.class})"
+          
+          # Converter para boolean - Rails pode receber como string "false" ou "true"
+          case role_value
+          when true, 'true', '1', 1
+            user_params_hash['role'] = true
+          when false, 'false', '0', 0, nil
+            user_params_hash['role'] = false
+          else
+            # Tentar converter usando ActiveModel::Type::Boolean
+            user_params_hash['role'] = ActiveModel::Type::Boolean.new.cast(role_value)
+          end
+        else
+          # Define role como true (owner) por padrão se não foi enviado
+          user_params_hash['role'] = true
+          Rails.logger.info "[UsersController] Role não foi enviado, definindo como true (owner) por padrão"
+        end
+        
+        Rails.logger.info "[UsersController] Role final antes de criar usuário: #{user_params_hash['role'].inspect} (#{user_params_hash['role'].class})"
+        
+        @user = User.new(user_params_hash)
         
         if @user.save
           # Não usar session em API - pode causar problemas no Render
@@ -43,7 +68,7 @@ module Api
       end
       
       def user_params
-        params.require(:user).permit(:name, :email, :last_name, :cpf, :password, :password_confirmation)
+        params.require(:user).permit(:name, :email, :last_name, :cpf, :password, :password_confirmation, :role)
       end
     end
   end
