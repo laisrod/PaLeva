@@ -48,6 +48,38 @@
   transform: translateY(0);
 }
 
+.back-to-login-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.back-to-login-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.back-to-login-btn:active {
+  transform: translateY(0);
+}
+
+.back-to-login-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
 .restaurants-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -123,6 +155,10 @@
   }
 
   .create-establishment-btn {
+    width: 100%;
+  }
+
+  .back-to-login-btn {
     width: 100%;
   }
 
