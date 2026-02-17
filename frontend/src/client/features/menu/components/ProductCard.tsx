@@ -11,12 +11,20 @@ export default function ProductCard({ item, onAddToCart }: ProductCardProps) {
     handleAddToCart
   } = useProductCard({ item, onAddToCart })
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.target as HTMLImageElement
+    if (target.src !== 'https://via.placeholder.com/200x150?text=Product') {
+      target.src = 'https://via.placeholder.com/200x150?text=Product'
+    }
+  }
+
   return (
     <div className="product-card">
       <div className="product-image">
         <img
           src={item.image || 'https://via.placeholder.com/200x150?text=Product'}
           alt={item.name}
+          onError={handleImageError}
         />
       </div>
       <div className="product-info">
