@@ -11,18 +11,24 @@ export default function ProductCard({ item, onAddToCart }: ProductCardProps) {
     handleAddToCart
   } = useProductCard({ item, onAddToCart })
 
+  // Placeholder SVG inline para evitar dependência de serviços externos
+  const placeholderImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM4ODg4ODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Qcm9kdXRvPC90ZXh0Pjwvc3ZnPg=='
+
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.target as HTMLImageElement
-    if (target.src !== 'https://via.placeholder.com/200x150?text=Product') {
-      target.src = 'https://via.placeholder.com/200x150?text=Product'
+    if (target.src !== placeholderImage) {
+      target.src = placeholderImage
     }
   }
+
+  // Verificar se a imagem existe antes de tentar carregar
+  const imageSrc = item.image && item.image.trim() !== '' ? item.image : placeholderImage
 
   return (
     <div className="product-card">
       <div className="product-image">
         <img
-          src={item.image || 'https://via.placeholder.com/200x150?text=Product'}
+          src={imageSrc}
           alt={item.name}
           onError={handleImageError}
         />
