@@ -30,6 +30,8 @@ class User < ApplicationRecord
     invitation = EmployeeInvitation.find_by(email: email, cpf: cpf)
     if invitation.present?
       self.establishment_id = invitation.establishment_id
+      # Só sobrescrever role se não foi explicitamente definido
+      # (role já foi definido pelo controller baseado no parâmetro enviado)
       self.role = false
     end
   end

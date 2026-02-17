@@ -22,21 +22,13 @@ export default function DashboardStats({ establishmentCode }: DashboardStatsProp
     )
   }
 
-  if (error) {
-    return (
-      <div className="dashboard-stats-container">
-        <div className="stats-error">Erro ao carregar estatísticas: {error}</div>
-      </div>
-    )
-  }
+  // O hook sempre retorna stats (mesmo que vazios), então não precisamos verificar null
+  // stats sempre existirá
 
-  if (!stats) {
-    return (
-      <div className="dashboard-stats-container">
-        <div className="stats-empty">Nenhuma estatística disponível</div>
-      </div>
-    )
-  }
+  // Verificar se há dados reais (não apenas zeros)
+  const hasData = stats.total_orders > 0 || 
+                  parseFloat(stats.total_revenue.toString()) > 0 ||
+                  Object.keys(stats.orders_by_status).length > 0
 
   return (
     <div className="dashboard-stats-container">
@@ -65,10 +57,25 @@ export default function DashboardStats({ establishmentCode }: DashboardStatsProp
         </div>
       </div>
 
+      {/* Mensagem de erro se houver */}
+      {error && (
+        <div className="stats-error-message">
+          <p>⚠️ {error}</p>
+        </div>
+      )}
+
       {/* Cards de Métricas */}
       <StatsCards stats={stats} />
 
-      {/* Gráficos e Listas */}
+      {/* Mensagem quando não há dados */}
+      {!hasData && (
+        <div className="stats-no-data-message">
+          <p>Nenhum pedido registrado no período selecionado.</p>
+          <p className="stats-hint">As estatísticas aparecerão automaticamente quando houver pedidos.</p>
+        </div>
+      )}
+
+      {/* Gráficos e Listas - sempre mostrar */}
       <div className="stats-charts-grid">
         {/* Gráfico de Vendas */}
         <div className="stats-chart-card">

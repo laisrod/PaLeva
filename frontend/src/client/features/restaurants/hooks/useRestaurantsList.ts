@@ -9,18 +9,30 @@ export function useRestaurantsList() {
   const { restaurants, loading, error } = useRestaurants()
 
   useEffect(() => {
+    console.log('[useRestaurantsList] Estado atual:', {
+      authLoading,
+      isAuthenticated,
+      isOwner,
+      isClient,
+      hasUser: !!user,
+      userRole: user?.role
+    })
+
     if (authLoading) {
+      console.log('[useRestaurantsList] Aguardando verificação de autenticação...')
       return // Aguardar verificação de autenticação
     }
 
     // Verificar autenticação
     if (!isAuthenticated || !user) {
+      console.log('[useRestaurantsList] Usuário não autenticado, redirecionando para login')
       navigate('/login')
       return
     }
 
     // Verificar se é proprietário - redirecionar para gestão
     if (isOwner) {
+      console.log('[useRestaurantsList] Usuário é proprietário, redirecionando...')
       const establishmentCode = user.establishment?.code
       if (establishmentCode) {
         navigate(`/establishment/${establishmentCode}/menus`)
@@ -31,17 +43,16 @@ export function useRestaurantsList() {
     }
 
     if (!isClient) {
+      console.log('[useRestaurantsList] Usuário não é cliente, redirecionando para login')
       navigate('/login')
       return
     }
+
+    console.log('[useRestaurantsList] Usuário é cliente, permitindo acesso à lista de restaurantes')
   }, [navigate, user, authLoading, isAuthenticated, isOwner, isClient])
 
   const handleSelectRestaurant = (code: string) => {
     navigate(`/menu/${code}`)
-  }
-
-  const handleCreateEstablishment = () => {
-    navigate('/establishments/new')
   }
 
   return {
@@ -49,7 +60,6 @@ export function useRestaurantsList() {
     loading,
     error,
     authLoading,
-    handleSelectRestaurant,
-    handleCreateEstablishment
+    handleSelectRestaurant
   }
 }

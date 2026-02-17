@@ -127,6 +127,7 @@ class ApiService {
     cpf: string
     password: string
     password_confirmation: string
+    role?: boolean
   }) {
     try {
       const response = await fetch(`${API_BASE_URL}/users`, {

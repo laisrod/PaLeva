@@ -7,8 +7,7 @@ export default function RestaurantsList() {
     loading,
     error,
     authLoading,
-    handleSelectRestaurant,
-    handleCreateEstablishment
+    handleSelectRestaurant
   } = useRestaurantsList()
 
   // Não renderizar nada enquanto verifica autenticação
@@ -24,12 +23,6 @@ export default function RestaurantsList() {
     <div className="restaurants-container">
       <div className="restaurants-header">
         <h1 className="restaurants-title">Restaurantes</h1>
-        <button
-          onClick={handleCreateEstablishment}
-          className="create-establishment-btn"
-        >
-          Criar Meu Estabelecimento
-        </button>
       </div>
 
       {loading && <p>Carregando restaurantes...</p>}
@@ -43,13 +36,7 @@ export default function RestaurantsList() {
       {!loading && !error && restaurants.length === 0 && (
         <div className="empty-state">
           <p>Nenhum restaurante encontrado.</p>
-          <p className="empty-subtitle">Seja o primeiro a criar um estabelecimento!</p>
-          <button
-            onClick={handleCreateEstablishment}
-            className="create-establishment-btn"
-          >
-            Criar Meu Estabelecimento
-          </button>
+          <p className="empty-subtitle">Aguarde enquanto novos estabelecimentos são cadastrados.</p>
         </div>
       )}
 
