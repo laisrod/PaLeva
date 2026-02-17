@@ -7,12 +7,14 @@ export function useHomeRedirect() {
   const { user, loading, isAuthenticated, isOwner, isClient } = useAuth()
 
   useEffect(() => {
-    if (loading) return
-
-    if (!isAuthenticated || !user) {
-      navigate('/login')
+    // Se não estiver autenticado, redirecionar imediatamente para login
+    if (!loading && (!isAuthenticated || !user)) {
+      navigate('/login', { replace: true })
       return
     }
+
+    // Se ainda estiver carregando, aguardar
+    if (loading) return
 
     const establishmentCode = user.establishment?.code
 
