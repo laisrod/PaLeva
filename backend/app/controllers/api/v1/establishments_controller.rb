@@ -10,13 +10,18 @@ module Api
       end
 
       def show
-        @establishment = Establishment.includes(:working_hours).find_by!(code: params[:code])
+        @establishment = Establishment.includes(:working_hours).find_by(code: params[:code])
+        
+        unless @establishment
+          render json: { error: 'Estabelecimento não encontrado' }, status: :not_found
+          return
+        end
         
         # Serializar manualmente para evitar problemas de referência circular
         establishment_data = {
           id: @establishment.id,
-          name: @establishment.name,
-          code: @establishment.code,
+          name: @establishment.name || '',
+          code: @establishment.code || '',
           city: @establishment.city,
           state: @establishment.state,
           full_address: @establishment.full_address,
@@ -28,19 +33,18 @@ module Api
           working_hours: @establishment.working_hours.map do |wh|
             {
               id: wh.id,
-              week_day: wh.week_day,
+              week_day: wh.week_day || '',
               opening_hour: wh.opening_hour,
               closing_hour: wh.closing_hour,
-              open: wh.open
+              open: wh.open.nil? ? false : wh.open
             }
           end
         }
         
         render json: establishment_data, status: :ok
-      rescue ActiveRecord::RecordNotFound
-        render json: { error: 'Estabelecimento não encontrado' }, status: :not_found
       rescue => e
         Rails.logger.error "[EstablishmentsController#show] Erro: #{e.class} - #{e.message}"
+        Rails.logger.error "[EstablishmentsController#show] Params: #{params.inspect}"
         Rails.logger.error e.backtrace.join("\n")
         render json: {
           error: 'Erro ao buscar estabelecimento',
