@@ -10,6 +10,7 @@ module Api
       # Para manter compatibilidade com o frontend, adiciona campos calculados
       attribute :menu_item_name, if: :has_menu_item?
       attribute :menu_item_description, if: :has_menu_item?
+      attribute :portion_price, if: :has_portion?
       
       def has_menu?
         object.menu_id.present?
@@ -31,6 +32,11 @@ module Api
       def menu_item_description
         return nil unless object.menu_item
         object.menu_item.dish&.description || object.menu_item.drink&.description
+      end
+      
+      def portion_price
+        return nil unless object.portion
+        object.portion.price ? object.portion.price.to_f : 0.0
       end
     end
   end

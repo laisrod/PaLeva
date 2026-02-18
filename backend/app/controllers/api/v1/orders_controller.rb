@@ -49,7 +49,7 @@ module Api
       end
 
       def show
-        Rails.logger.info "[Orders#show] GET order code=#{params[:code]} order_id=#{@order.id} items_count=#{@order.order_menu_items.size}"
+        @order.reload
 
         # Recalcular total_price se necessário
         if @order.total_price.nil? || @order.total_price.zero?
@@ -57,7 +57,57 @@ module Api
           @order.save if @order.changed?
         end
 
-        render json: @order, status: :ok
+        # Garantir que o código está presente antes de serializar
+        unless @order.code.present?
+          render json: { error: 'Pedido sem código válido' }, status: :internal_server_error
+          return
+        end
+
+        # Renderizar com serializer - Rails deve usar automaticamente o OrderSerializer
+        # Mas vamos garantir explicitamente
+        begin
+          serialized = ActiveModel::SerializableResource.new(@order, serializer: Api::V1::OrderSerializer)
+          serialized_json = serialized.as_json
+          render json: serialized_json, status: :ok
+        rescue => e
+          Rails.logger.error "[Orders#show] Error rendering order: #{e.class} - #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
+          # Fallback: renderizar sem serializer (usando as_json padrão)
+          render json: {
+            id: @order.id,
+            code: @order.code,
+            status: @order.status,
+            total_price: @order.total_price.to_f,
+            customer_name: @order.customer_name,
+            customer_email: @order.customer_email,
+            customer_phone: @order.customer_phone,
+            customer_cpf: @order.customer_cpf,
+            created_at: @order.created_at,
+            updated_at: @order.updated_at,
+            establishment_id: @order.establishment_id,
+            order_menu_items: @order.order_menu_items.includes(:portion, menu_item: [:dish, :drink]).map do |item|
+              {
+                id: item.id,
+                quantity: item.quantity,
+                menu_id: item.menu_id,
+                menu_item_id: item.menu_item_id,
+                portion_id: item.portion_id,
+                portion: item.portion ? {
+                  id: item.portion.id,
+                  name: item.portion.name,
+                  description: item.portion.description,
+                  price: item.portion.price ? item.portion.price.to_f : 0.0
+                } : nil,
+                portion_price: item.portion ? (item.portion.price ? item.portion.price.to_f : 0.0) : nil,
+                menu_item: item.menu_item ? {
+                  id: item.menu_item.id,
+                  name: item.menu_item.dish&.name || item.menu_item.drink&.name,
+                  description: item.menu_item.dish&.description || item.menu_item.drink&.description
+                } : nil
+              }
+            end
+          }, status: :ok
+        end
       end
 
       def update
@@ -151,7 +201,17 @@ module Api
       private
 
       def set_order
-        @order = @establishment.orders.includes(:order_menu_items, order_menu_items: [:portion, menu_item: [:dish, :drink]]).find_by!(code: params[:code])
+        # Carregar todas as associações necessárias para o serializer
+        @order = @establishment.orders
+          .includes(
+            :order_menu_items,
+            order_menu_items: [
+              :portion,
+              :menu,
+              menu_item: [:dish, :drink]
+            ]
+          )
+          .find_by!(code: params[:code])
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Pedido não encontrado' }, status: :not_found
       rescue => e

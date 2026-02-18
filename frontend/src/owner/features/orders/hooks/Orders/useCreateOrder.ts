@@ -9,7 +9,8 @@ export function useCreateOrder({ establishmentCode, onSuccess }: UseCreateOrderO
 
   const createOrder = useCallback(async (customerName?: string) => {
     if (!establishmentCode) {
-      setError('Código do estabelecimento não encontrado')
+      const errorMsg = 'Código do estabelecimento não encontrado'
+      setError(errorMsg)
       return null
     }
 
@@ -34,6 +35,7 @@ export function useCreateOrder({ establishmentCode, onSuccess }: UseCreateOrderO
 
       return null
     } catch (err) {
+      console.error('[useCreateOrder] Exception:', err)
       setError('Erro ao criar pedido. Tente novamente.')
       return null
     } finally {

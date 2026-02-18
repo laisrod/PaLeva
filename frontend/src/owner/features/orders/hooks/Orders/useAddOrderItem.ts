@@ -8,14 +8,16 @@ export function useAddOrderItem({ establishmentCode, orderCode, onSuccess }: Use
   const [error, setError] = useState<string | null>(null)
 
   const addItem = useCallback(async (
-    options: AddOrderItemOptions
+    options: AddOrderItemOptions,
+    overrideOrderCode?: string
   ) => {
-    console.log('[useAddOrderItem] addItem called:', { establishmentCode, orderCode, options })
+    const orderCodeToUse = overrideOrderCode || orderCode
     
-    if (!establishmentCode || !orderCode) {
+    // Validar se o orderCode é válido (não undefined, null, ou string vazia)
+    if (!establishmentCode || !orderCodeToUse || orderCodeToUse === 'undefined' || orderCodeToUse === 'null' || orderCodeToUse.trim() === '') {
       const errorMsg = 'Código do estabelecimento ou pedido não encontrado'
-      console.error('[useAddOrderItem]', errorMsg)
       setError(errorMsg)
+      alert(errorMsg)
       return false
     }
 
@@ -25,28 +27,24 @@ export function useAddOrderItem({ establishmentCode, orderCode, onSuccess }: Use
     try {
       const response = await ownerApi.addOrderItem(
         establishmentCode,
-        orderCode,
+        orderCodeToUse,
         options
       )
 
-      console.log('[useAddOrderItem] Response:', response)
-
       if (response.error || response.errors) {
         const errorMessage = getErrorMessage(response)
-        console.error('[useAddOrderItem] Error from API:', errorMessage, response)
         setError(errorMessage || 'Erro ao adicionar item ao pedido')
         alert(errorMessage || 'Erro ao adicionar item ao pedido')
         return false
       }
 
       if (response.data) {
-        console.log('[useAddOrderItem] Item added successfully:', response.data)
-        ownerApi.invalidateOrderCache(establishmentCode, orderCode)
-        onSuccess?.()
+        ownerApi.invalidateOrderCache(establishmentCode, orderCodeToUse)
+        // Passar o orderCode usado para o onSuccess
+        onSuccess?.(orderCodeToUse)
         return true
       }
 
-      console.warn('[useAddOrderItem] No data in response:', response)
       const errorMsg = 'Resposta inválida do servidor'
       setError(errorMsg)
       alert(errorMsg)

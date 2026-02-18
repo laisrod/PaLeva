@@ -7,6 +7,10 @@ module Api
       
       has_many :order_menu_items, serializer: Api::V1::OrderMenuItemSerializer
       
+      def code
+        object.code
+      end
+      
       def total_price
         object.total_price ? object.total_price.to_f : 0.0
       end

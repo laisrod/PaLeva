@@ -4,7 +4,7 @@ import {
   OrderSidebarProps,
   OrderSidebarItemProps
 } from '../../types/order'
-import { OrderMenuItem } from '../../../shared/types/order'
+import type { OrderMenuItem } from '../../types/order'
 import '../../../../../css/owner/OrderSidebar.css'
 
 export default function OrderSidebar(props: OrderSidebarProps) {
@@ -17,6 +17,8 @@ export default function OrderSidebar(props: OrderSidebarProps) {
     handleGoToOrders,
     handleRemoveItem,
     removingId,
+    activeOrders,
+    activeOrdersTotal,
   } = useOrderSidebar(props)
 
   if (loading) {
@@ -29,18 +31,73 @@ export default function OrderSidebar(props: OrderSidebarProps) {
     )
   }
 
-  if (!currentOrder || itemsCount === 0) {
+  // Só mostrar lista de pedidos ativos se realmente não houver currentOrder
+  if (!currentOrder) {
+    console.log('[OrderSidebar] No currentOrder, showing active orders list')
     return (
       <aside className="order-sidebar">
-        <div className="order-sidebar-empty">
-          <p>Nenhum pedido ativo</p>
-          <Link
-            to={establishmentCode ? `/establishment/${establishmentCode}/orders` : '#'}
-            className="order-sidebar-link-btn"
-          >
-            Ver Todos os Pedidos
-          </Link>
-        </div>
+        {activeOrders && activeOrders.length > 0 ? (
+          <>
+            <div className="order-sidebar-header">
+              <h2 className="order-sidebar-title">Pedidos Ativos</h2>
+            </div>
+            
+            <div className="order-sidebar-items">
+              <div className="order-sidebar-items-header">
+                <span>Código</span>
+                <span>Status</span>
+                <span>Total</span>
+              </div>
+
+              {activeOrders.map((order) => (
+                <div key={order.id} className="order-sidebar-item">
+                  <div className="order-sidebar-item-content">
+                    <div className="order-sidebar-item-main">
+                      <div className="order-sidebar-item-info">
+                        <div className="order-sidebar-item-name">#{order.code}</div>
+                        <div className="order-sidebar-item-unit-price">
+                          {order.status === 'draft' ? 'Rascunho' : 'Pendente'}
+                        </div>
+                      </div>
+                      <div className="order-sidebar-item-row">
+                        <div className="order-sidebar-item-total">
+                          R$ {typeof order.total_price === 'number' 
+                            ? order.total_price.toFixed(2) 
+                            : Number(order.total_price || 0).toFixed(2)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="order-sidebar-summary">
+              <div className="order-sidebar-summary-row order-sidebar-summary-total">
+                <span>Total Geral</span>
+                <span>R$ {activeOrdersTotal.toFixed(2)}</span>
+              </div>
+            </div>
+
+            <Link
+              to={establishmentCode ? `/establishment/${establishmentCode}/orders` : '#'}
+              className="order-sidebar-link-btn"
+              style={{ display: 'block', textAlign: 'center', marginTop: '1rem' }}
+            >
+              Ver Todos os Pedidos
+            </Link>
+          </>
+        ) : (
+          <div className="order-sidebar-empty">
+            <p>Nenhum pedido ativo</p>
+            <Link
+              to={establishmentCode ? `/establishment/${establishmentCode}/orders` : '#'}
+              className="order-sidebar-link-btn"
+            >
+              Ver Todos os Pedidos
+            </Link>
+          </div>
+        )}
       </aside>
     )
   }
@@ -75,14 +132,23 @@ export default function OrderSidebar(props: OrderSidebarProps) {
           <span>Price</span>
         </div>
 
-        {currentOrder.order_menu_items?.map((item: OrderMenuItem) => (
-          <OrderSidebarItem
-            key={item.id}
-            item={item}
-            onRemove={handleRemoveItem}
-            removing={removingId === item.id}
-          />
-        ))}
+        {itemsCount === 0 ? (
+          <div className="order-sidebar-empty-items">
+            <p>Nenhum item no pedido</p>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+              Adicione itens ao pedido
+            </p>
+          </div>
+        ) : (
+          currentOrder.order_menu_items?.map((item: OrderMenuItem) => (
+            <OrderSidebarItem
+              key={item.id}
+              item={item}
+              onRemove={handleRemoveItem}
+              removing={removingId === item.id}
+            />
+          ))
+        )}
       </div>
 
       <div className="order-sidebar-summary">
@@ -165,11 +231,23 @@ function OrderSidebarItem({ item, onRemove, removing }: OrderSidebarItemProps) {
   }
 
   // Item individual (menu_item + portion)
-  const itemName = item.menu_item?.name ?? 'Item'
-  const portionName = item.portion?.name ?? item.portion?.description ?? ''
+  // O backend pode retornar menu_item_name diretamente ou dentro de menu_item
+  const itemName = (item as any).menu_item_name || item.menu_item?.name || 'Item'
+  const portionName = item.portion?.name || item.portion?.description || ''
   const displayName = portionName ? `${itemName} - ${portionName}` : itemName
-  const unitPrice = typeof item.portion?.price === 'number' ? item.portion.price : Number(item.portion?.price) || 0
-  const totalPrice = unitPrice * item.quantity
+  
+  // O preço pode estar em portion.price ou em portion_price (atributo calculado do serializer)
+  const hasPortion = !!item.portion
+  const portionPrice = item.portion?.price || (item as any).portion_price
+  const portionPriceType = typeof portionPrice
+  const portionPriceNumber = portionPriceType === 'number' 
+    ? portionPrice as number
+    : (portionPrice ? Number(portionPrice) : null)
+  
+  const unitPrice: number = portionPriceNumber !== null && !isNaN(portionPriceNumber) && portionPriceNumber > 0
+    ? portionPriceNumber 
+    : 0
+  const totalPrice: number = unitPrice * item.quantity
 
   return (
     <div className="order-sidebar-item">
@@ -181,7 +259,7 @@ function OrderSidebarItem({ item, onRemove, removing }: OrderSidebarItemProps) {
           <div className="order-sidebar-item-info">
             <div className="order-sidebar-item-name">{displayName}</div>
             <div className="order-sidebar-item-unit-price">
-              R$ {Number(unitPrice).toFixed(2)}
+              {unitPrice > 0 ? `R$ ${Number(unitPrice).toFixed(2)}` : 'Preço não disponível'}
             </div>
           </div>
           <div className="order-sidebar-item-row">
@@ -196,7 +274,7 @@ function OrderSidebarItem({ item, onRemove, removing }: OrderSidebarItemProps) {
               />
             </div>
             <div className="order-sidebar-item-total">
-              R$ {Number(totalPrice).toFixed(2)}
+              {totalPrice > 0 ? `R$ ${Number(totalPrice).toFixed(2)}` : 'R$ 0,00'}
             </div>
             <button
               type="button"

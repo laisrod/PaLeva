@@ -26,23 +26,19 @@ export function useDrinkCard({ drink, establishmentCode }: UseDrinkCardProps) {
   const { addItem, loading: addingItem, error: addItemError } = useAddOrderItem({
     establishmentCode,
     orderCode: currentOrder?.code,
-    onSuccess: () => {
+    onSuccess: (orderCode: string) => {
       setShowPortionModal(false)
       setSelectedPortionId(null)
       setPendingAdd(null)
       setSuccessMessage('Item adicionado ao pedido!')
       setTimeout(() => setSuccessMessage(null), 2000)
       
-      // Recarregar o pedido para atualizar o OrderSidebar
+      // Recarregar o pedido para atualizar o OrderSidebar usando o orderCode recebido
       // Usar setTimeout para garantir que o backend processou
       setTimeout(() => {
-        const savedOrderCode = localStorage.getItem(`current_order_${establishmentCode}`)
-        if (savedOrderCode) {
-          loadOrder(savedOrderCode)
-        } else if (currentOrder?.code) {
-          loadOrder(currentOrder.code)
-        }
-      }, 300)
+        console.log('[useDrinkCard] onSuccess: Reloading order after item added:', orderCode)
+        loadOrder(orderCode, false) // false = não silencioso, força atualização
+      }, 500) // Aumentar timeout para garantir que backend processou
     }
   })
 
