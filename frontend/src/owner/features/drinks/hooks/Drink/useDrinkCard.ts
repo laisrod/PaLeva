@@ -91,11 +91,14 @@ export function useDrinkCard({ drink, establishmentCode }: UseDrinkCardProps) {
     }
 
     if (portions.length === 1) {
-      await addItem({ 
+      const result = await addItem({ 
         drinkId: drink.id, 
         portionId: portions[0].id, 
         quantity: 1 
       })
+      if (!result && addItemError) {
+        alert(`Erro ao adicionar item: ${addItemError}`)
+      }
       return
     }
 
@@ -122,11 +125,14 @@ export function useDrinkCard({ drink, establishmentCode }: UseDrinkCardProps) {
       return
     }
 
-    await addItem({ 
+    const result = await addItem({ 
       drinkId: drink.id, 
       portionId: selectedPortionId, 
       quantity: 1 
     })
+    if (!result && addItemError) {
+      alert(`Erro ao adicionar item: ${addItemError}`)
+    }
   }
 
   return {

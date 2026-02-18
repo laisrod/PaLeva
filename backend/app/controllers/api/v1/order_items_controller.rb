@@ -10,6 +10,9 @@ module Api
 
       def create
         begin
+          Rails.logger.info "[OrderItemsController] Create called with params: #{params.inspect}"
+          Rails.logger.info "[OrderItemsController] Order code: #{params[:order_code]}, Establishment code: #{params[:establishment_code]}"
+          
           # Se menu_id foi fornecido, criar um único order_item representando o menu completo
           if params[:order_item] && params[:order_item][:menu_id].present?
             menu = @establishment.menus.find_by(id: params[:order_item][:menu_id].to_i)
@@ -128,6 +131,7 @@ module Api
 
           if @order_item.save
             @order.reload
+            Rails.logger.info "[OrderItemsController] Item saved successfully. Order total: #{@order.total_price}"
             render json: {
               order_item: {
                 id: @order_item.id,
@@ -153,6 +157,7 @@ module Api
               message: 'Item adicionado ao pedido com sucesso'
             }, status: :created
           else
+            Rails.logger.error "[OrderItemsController] Failed to save item: #{@order_item.errors.full_messages.join(', ')}"
             render json: {
               status: :unprocessable_entity,
               error: @order_item.errors.full_messages
