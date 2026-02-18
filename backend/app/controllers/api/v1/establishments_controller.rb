@@ -11,9 +11,41 @@ module Api
 
       def show
         @establishment = Establishment.includes(:working_hours).find_by!(code: params[:code])
-        render json: @establishment, status: :ok
+        
+        # Serializar manualmente para evitar problemas de referência circular
+        establishment_data = {
+          id: @establishment.id,
+          name: @establishment.name,
+          code: @establishment.code,
+          city: @establishment.city,
+          state: @establishment.state,
+          full_address: @establishment.full_address,
+          phone_number: @establishment.phone_number,
+          email: @establishment.email,
+          social_name: @establishment.social_name,
+          cnpj: @establishment.cnpj,
+          postal_code: @establishment.postal_code,
+          working_hours: @establishment.working_hours.map do |wh|
+            {
+              id: wh.id,
+              week_day: wh.week_day,
+              opening_hour: wh.opening_hour,
+              closing_hour: wh.closing_hour,
+              open: wh.open
+            }
+          end
+        }
+        
+        render json: establishment_data, status: :ok
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Estabelecimento não encontrado' }, status: :not_found
+      rescue => e
+        Rails.logger.error "[EstablishmentsController#show] Erro: #{e.class} - #{e.message}"
+        Rails.logger.error e.backtrace.join("\n")
+        render json: {
+          error: 'Erro ao buscar estabelecimento',
+          message: e.message
+        }, status: :internal_server_error
       end
 
       def create
