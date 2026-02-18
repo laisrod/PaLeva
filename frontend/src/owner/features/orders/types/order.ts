@@ -21,7 +21,7 @@ export interface UseCreateOrderOptions {
 export interface UseAddOrderItemOptions {
   establishmentCode: string | undefined
   orderCode: string | undefined
-  onSuccess?: () => void
+  onSuccess?: (orderCode: string) => void
 }
 
 export interface AddOrderItemOptions {

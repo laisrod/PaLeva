@@ -11,6 +11,9 @@ const POLL_COOLDOWN_MS = 3000
 export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
   const navigate = useNavigate()
   const [removingId, setRemovingId] = useState<number | null>(null)
+  const [activeOrders, setActiveOrders] = useState<Order[]>([])
+  const [loadingActiveOrders, setLoadingActiveOrders] = useState(false)
+  
   const {
     currentOrder,
     loading,
@@ -27,6 +30,30 @@ export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
     loadOrderRef.current = loadOrder
   }, [loadOrder])
 
+  // Buscar pedidos ativos quando não houver currentOrder
+  const loadActiveOrders = useCallback(async () => {
+    if (!establishmentCode || currentOrder) {
+      setActiveOrders([])
+      return
+    }
+
+    setLoadingActiveOrders(true)
+    try {
+      const response = await ownerApi.getOrders(establishmentCode)
+      if (response.data && Array.isArray(response.data)) {
+        // Filtrar apenas pedidos ativos (draft ou pending)
+        const active = response.data.filter((order: Order) => 
+          order.status === 'draft' || order.status === 'pending'
+        )
+        setActiveOrders(active)
+      }
+    } catch (error) {
+      console.error('[useOrderSidebar] Erro ao carregar pedidos ativos:', error)
+    } finally {
+      setLoadingActiveOrders(false)
+    }
+  }, [establishmentCode, currentOrder])
+
   useEffect(() => {
     if (!establishmentCode) return
 
@@ -37,17 +64,36 @@ export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
       if (now - lastReload < POLL_COOLDOWN_MS) return
 
       const saved = localStorage.getItem(`current_order_${establishmentCode}`)
-      if (!saved) return
+      // Validar se o valor salvo é válido (não 'undefined', null, ou vazio)
+      if (!saved || saved === 'undefined' || saved === 'null' || saved.trim() === '') {
+        // Se não há pedido salvo válido, limpar e carregar pedidos ativos
+        if (saved && (saved === 'undefined' || saved === 'null')) {
+          localStorage.removeItem(`current_order_${establishmentCode}`)
+        }
+        loadActiveOrders()
+        return
+      }
 
       const same = currentOrder?.code === saved
       lastReload = now
-      loadOrderRef.current(saved, same)
+      // Se for o mesmo pedido, usar silent: true para evitar loading desnecessário
+      // Se for diferente, usar silent: false para forçar atualização
+      loadOrderRef.current(saved, same) // same = silent (true se for o mesmo, false se for diferente)
     }
 
     run()
     const t = setInterval(run, POLL_COOLDOWN_MS)
     return () => clearInterval(t)
-  }, [establishmentCode, currentOrder?.code])
+  }, [establishmentCode, currentOrder?.code, loadActiveOrders])
+
+  // Carregar pedidos ativos quando não houver currentOrder
+  useEffect(() => {
+    if (!currentOrder && establishmentCode) {
+      loadActiveOrders()
+    } else {
+      setActiveOrders([])
+    }
+  }, [currentOrder, establishmentCode, loadActiveOrders])
 
   useEffect(() => {
     if (!establishmentCode) return
@@ -106,14 +152,22 @@ export function useOrderSidebar({ establishmentCode }: OrderSidebarProps) {
     [establishmentCode, currentOrder?.code, loadOrder]
   )
 
+  // Calcular soma total dos pedidos ativos
+  const activeOrdersTotal = activeOrders.reduce((sum, order) => {
+    const total = typeof order.total_price === 'number' ? order.total_price : Number(order.total_price) || 0
+    return sum + total
+  }, 0)
+
   return {
     establishmentCode,
     currentOrder,
-    loading,
+    loading: loading || loadingActiveOrders,
     totals,
     itemsCount,
     handleGoToOrders,
     handleRemoveItem,
     removingId,
+    activeOrders,
+    activeOrdersTotal,
   }
 }

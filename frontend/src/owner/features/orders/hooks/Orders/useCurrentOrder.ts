@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { ownerApi } from '../../../../shared/services/api'
-import { Order, OrderMenuItem } from '../../../shared/types/order'
+import { Order, OrderMenuItem } from '../../../../../shared/types/order'
 import { useCreateOrder } from './useCreateOrder'
 import { UseCurrentOrderOptions } from '../../types/order'
 
@@ -45,11 +45,47 @@ export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCu
     try {
       const response = await ownerApi.getOrder(establishmentCode, orderCode)
 
+
       if (response.error) {
         setError(response.error as string)
         setCurrentOrder(null)
       } else if (response.data) {
-        const newOrder = response.data
+        // A API pode retornar os dados diretamente ou dentro de uma chave 'order'
+        // Verificar se os dados estão dentro de uma chave 'order'
+        let newOrder = response.data
+        if (response.data.order && typeof response.data.order === 'object') {
+          newOrder = response.data.order
+        } else if (!response.data.code && !response.data.id) {
+          // Tentar encontrar a chave que contém o pedido
+          const possibleOrderKey = Object.keys(response.data).find(key => 
+            response.data[key] && 
+            typeof response.data[key] === 'object' && 
+            (response.data[key].code || response.data[key].id)
+          )
+          if (possibleOrderKey) {
+            newOrder = response.data[possibleOrderKey]
+          }
+        }
+        
+        // Validar se o newOrder tem code, se não tiver, usar o orderCode do parâmetro
+        if (!newOrder.code) {
+          // Usar o orderCode do parâmetro como fallback
+          newOrder.code = orderCode
+        }
+        
+        // Converter order_menu_items para array se necessário
+        // O ActiveModel::Serializer com adapter :json pode retornar como objeto
+        if (newOrder.order_menu_items && !Array.isArray(newOrder.order_menu_items)) {
+          // Se for um objeto, converter valores para array
+          if (typeof newOrder.order_menu_items === 'object' && newOrder.order_menu_items !== null) {
+            newOrder.order_menu_items = Object.values(newOrder.order_menu_items)
+          } else {
+            newOrder.order_menu_items = []
+          }
+        } else if (!newOrder.order_menu_items) {
+          // Se não existir, inicializar como array vazio
+          newOrder.order_menu_items = []
+        }
         const cur = currentOrderRef.current
         const curCode = cur?.code
         const curCount = cur?.order_menu_items?.length ?? 0
@@ -64,7 +100,31 @@ export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCu
           .join(',')
         const changed =
           curCode !== newOrder.code || curCount !== newCount || curSig !== newSig
-        if (changed) setCurrentOrder(newOrder)
+        
+        
+        // Se não for silent, SEMPRE atualizar para garantir sincronização
+        // Se for silent, só atualizar se houver mudanças detectadas
+        // IMPORTANTE: Se for o mesmo pedido mas com contagem diferente, sempre atualizar
+        const shouldUpdate = !silent || changed || (curCode === newOrder.code && curCount !== newCount)
+        
+        if (shouldUpdate) {
+          // Garantir que o code está presente antes de atualizar
+          if (!newOrder.code && orderCode) {
+            newOrder.code = orderCode
+          }
+          
+          // Garantir que order_menu_items é um array
+          if (!Array.isArray(newOrder.order_menu_items)) {
+            newOrder.order_menu_items = []
+          }
+          
+          setCurrentOrder(newOrder)
+        } else {
+          // Mesmo em modo silencioso, se não há currentOrder mas há um novo, atualizar
+          if (!currentOrderRef.current && newOrder) {
+            setCurrentOrder(newOrder)
+          }
+        }
       }
     } catch {
       if (!silent) setError('Erro ao carregar pedido')
@@ -81,8 +141,12 @@ export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCu
   // Criar novo pedido draft
   const createNewOrder = useCallback(async (customerName?: string) => {
     const order = await createOrderHook(customerName)
+    if (order && order.code && order.code !== 'undefined') {
+      localStorage.setItem(`current_order_${establishmentCode}`, order.code)
+      await loadOrder(order.code, false) // false = não silencioso, força atualização
+    }
     return order
-  }, [createOrderHook])
+  }, [createOrderHook, establishmentCode, loadOrder])
 
   // Limpar pedido atual
   const clearOrder = useCallback(() => {
@@ -104,7 +168,7 @@ export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCu
       }
     }
 
-    const subtotal = currentOrder.order_menu_items.reduce((sum, item) => {
+    const subtotal = currentOrder.order_menu_items.reduce((sum: number, item: OrderMenuItem) => {
       const itemPrice = item.portion?.price || 0
       return sum + (itemPrice * item.quantity)
     }, 0)
@@ -136,13 +200,18 @@ export function useCurrentOrder({ establishmentCode, autoCreate = false }: UseCu
     loadedForEstablishment.current = establishmentCode
 
     const saved = localStorage.getItem(`current_order_${establishmentCode}`)
-    if (saved) loadOrder(saved)
+    // Validar se o valor salvo é válido
+    if (saved && saved !== 'undefined' && saved !== 'null' && saved.trim() !== '') {
+      loadOrder(saved, false) // false = não silencioso na inicialização
+    } else if (saved && (saved === 'undefined' || saved === 'null')) {
+      localStorage.removeItem(`current_order_${establishmentCode}`)
+    }
   }, [establishmentCode, loadOrder])
 
   // Salvar código do pedido no localStorage quando tiver pedido (não remover ao montar com null)
   useEffect(() => {
     if (!establishmentCode) return
-    if (currentOrder) {
+    if (currentOrder && currentOrder.code && currentOrder.code !== 'undefined' && currentOrder.code !== 'null') {
       localStorage.setItem(`current_order_${establishmentCode}`, currentOrder.code)
     }
     // Só removemos no clearOrder(); não apagar aqui evita perder o pedido ao trocar de tela

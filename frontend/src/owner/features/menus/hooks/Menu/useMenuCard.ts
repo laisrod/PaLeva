@@ -30,7 +30,7 @@ export function useMenuCard({ menuId, establishmentCode }: UseMenuCardProps) {
   const { addItem, loading: addingItem, error: addItemError } = useAddOrderItem({
     establishmentCode,
     orderCode: currentOrder?.code,
-    onSuccess: () => {
+    onSuccess: (orderCode: string) => {
       setShowItemModal(false)
       setSelectedMenuItemId(null)
       setSelectedPortionId(null)
@@ -38,14 +38,11 @@ export function useMenuCard({ menuId, establishmentCode }: UseMenuCardProps) {
       setSuccessMessage('Item adicionado ao pedido!')
       setTimeout(() => setSuccessMessage(null), 2000)
       
+      // Recarregar o pedido para atualizar o OrderSidebar usando o orderCode recebido
       setTimeout(() => {
-        const savedOrderCode = localStorage.getItem(`current_order_${establishmentCode}`)
-        if (savedOrderCode) {
-          loadOrder(savedOrderCode)
-        } else if (currentOrder?.code) {
-          loadOrder(currentOrder.code)
-        }
-      }, 300)
+        console.log('[useMenuCard] onSuccess: Reloading order after item added:', orderCode)
+        loadOrder(orderCode, false) // false = não silencioso, força atualização
+      }, 500) // Aumentar timeout para garantir que backend processou
     }
   })
 
@@ -59,8 +56,9 @@ export function useMenuCard({ menuId, establishmentCode }: UseMenuCardProps) {
       }).then(() => {
         if (currentOrder?.code) {
           setTimeout(() => {
-            loadOrder(currentOrder.code)
-          }, 300)
+            console.log('[useMenuCard] Reloading order after pending add:', currentOrder.code)
+            loadOrder(currentOrder.code, false) // false = não silencioso, força atualização
+          }, 500)
         }
       })
     }
