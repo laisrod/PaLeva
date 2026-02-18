@@ -21,11 +21,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([])
 
   const addToCart = (item: Product, portion?: ProductPortion) => {
+    console.log('[CartContext] addToCart called:', { item: item.name, portion: portion?.name, itemId: item.id })
+    
     const cartItem: CartItem = {
       id: item.id,
       name: item.name,
       description: item.description,
-      price: portion?.price || item.price,
+      price: portion?.price || item.price || 0,
       quantity: 1,
       portion: portion?.name,
       portionId: portion?.id,
@@ -40,14 +42,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
       )
 
       if (existingItem) {
-        return prevCart.map(item =>
+        const updatedCart = prevCart.map(item =>
           item.id === existingItem.id && item.portion === existingItem.portion
             ? { ...item, quantity: item.quantity + 1 }
             : item
         )
+        console.log('[CartContext] Item existente atualizado. Novo carrinho:', updatedCart)
+        return updatedCart
       }
 
-      return [...prevCart, cartItem]
+      const newCart = [...prevCart, cartItem]
+      console.log('[CartContext] Novo item adicionado. Novo carrinho:', newCart)
+      return newCart
     })
   }
 
