@@ -94,11 +94,14 @@ export function useDishCard({ dish, establishmentCode }: UseDishCardProps) {
     }
 
     if (portions.length === 1) {
-      await addItem({ 
+      const result = await addItem({ 
         dishId: dish.id, 
         portionId: portions[0].id, 
         quantity: 1 
       })
+      if (!result && addItemError) {
+        alert(`Erro ao adicionar item: ${addItemError}`)
+      }
       return
     }
 
@@ -125,11 +128,14 @@ export function useDishCard({ dish, establishmentCode }: UseDishCardProps) {
       return
     }
 
-    await addItem({ 
+    const result = await addItem({ 
       dishId: dish.id, 
       portionId: selectedPortionId, 
       quantity: 1 
     })
+    if (!result && addItemError) {
+      alert(`Erro ao adicionar item: ${addItemError}`)
+    }
   }
 
   return {
