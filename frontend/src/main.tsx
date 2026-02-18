@@ -29,10 +29,10 @@ function initReact() {
     try {
       const root = createRoot(rootElement)
       root.render(
-        <StrictMode>
-          <App />
-        </StrictMode>,
-      )
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
       
       // Limpeza periódica para remover conteúdo do backend que possa ser injetado
       setTimeout(() => {

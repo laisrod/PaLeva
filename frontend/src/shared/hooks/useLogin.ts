@@ -101,13 +101,13 @@ export function useLogin() {
       
       // Usar requestAnimationFrame para garantir que o estado seja atualizado antes do redirecionamento
       requestAnimationFrame(() => {
-        if (establishmentCode) {
+      if (establishmentCode) {
           console.log('[useLogin] Navegando para /menu/' + establishmentCode)
           navigate(`/menu/${establishmentCode}`, { replace: true })
-        } else {
+      } else {
           console.log('[useLogin] Navegando para /restaurants')
           navigate('/restaurants', { replace: true })
-        }
+      }
       })
     } catch (err) {
       setError('Erro ao fazer login. Tente novamente.')

@@ -33,7 +33,7 @@ module Api
         @orders = @establishment.orders.includes(:order_menu_items).recent
         @orders = @orders.with_status(params[:status]) if params[:status].present?
 
-        # Recalcular total_price se necessário
+          # Recalcular total_price se necessário
         @orders.each do |order|
           begin
             if order.total_price.nil? || order.total_price.zero?
@@ -43,8 +43,8 @@ module Api
           rescue => e
             Rails.logger.error "Erro ao calcular total_price para pedido #{order.id}: #{e.message}"
           end
-        end
-
+          end
+          
         render json: @orders, status: :ok
       end
 
