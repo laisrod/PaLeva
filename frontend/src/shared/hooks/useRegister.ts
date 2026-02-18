@@ -116,9 +116,9 @@ export function useRegister() {
           }
         } else {
           // Se o login automático falhar, redirecionar para login
-          navigate('/login', { 
-            state: { message: 'Cadastro realizado com sucesso! Faça login para continuar.' }
-          })
+        navigate('/login', { 
+          state: { message: 'Cadastro realizado com sucesso! Faça login para continuar.' }
+        })
         }
       }
     } catch (err) {

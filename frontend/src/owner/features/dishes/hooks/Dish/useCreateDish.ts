@@ -206,7 +206,7 @@ export function useCreateDish({ establishmentCode, onSuccess }: UseCreateDishOpt
         } else {
           // Se não conseguir obter o ID, redirecionar normalmente
           console.warn('Não foi possível obter o ID do prato criado, redirecionando...')
-          navigate(`/establishment/${establishmentCode}/dishes`)
+        navigate(`/establishment/${establishmentCode}/dishes`)
         }
         onSuccess?.()
       }

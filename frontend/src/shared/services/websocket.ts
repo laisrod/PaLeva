@@ -125,7 +125,7 @@ class WebSocketService {
     if (!email) {
       // Não logar warning repetidamente
       if (this.reconnectAttempts === 0) {
-        console.warn('[WebSocket] No user email found, cannot connect')
+      console.warn('[WebSocket] No user email found, cannot connect')
       }
       this.isConnecting = false
       this.shouldReconnect = false
@@ -268,7 +268,7 @@ class WebSocketService {
     this.reconnectTimer = window.setTimeout(() => {
       this.reconnectTimer = null
       if (this.shouldReconnect && this.reconnectAttempts <= this.maxReconnectAttempts) {
-        this.connect()
+      this.connect()
       }
     }, delay)
   }

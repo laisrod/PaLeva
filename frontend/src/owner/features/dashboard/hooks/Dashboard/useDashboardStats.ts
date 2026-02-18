@@ -41,7 +41,7 @@ export function useDashboardStats(establishmentCode: string | undefined, period:
           top_items: [],
           sales_chart_data: []
         })
-
+        
         if (response.error) {
           console.error('[useDashboardStats] Error:', response.error)
           setError(Array.isArray(response.error) ? response.error.join(', ') : response.error)
