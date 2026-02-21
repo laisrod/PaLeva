@@ -48,6 +48,7 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ], require: "debug/prelude"
   gem "rspec-rails"
   gem "capybara"
+  gem "dotenv-rails"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
@@ -74,3 +75,9 @@ gem "cpf_cnpj"
 gem "vite_rails", "~> 3.0"
 gem 'active_storage_validations'
 gem 'active_model_serializers', '~> 0.10.13'
+
+# OAuth
+# Nota: OmniAuth removido - OAuth implementado manualmente no OmniauthCallbacksController
+# gem 'omniauth', '~> 2.1'
+# gem 'omniauth-google-oauth2', '~> 1.1'
+gem 'jwt', '~> 2.7' # Mantido para gerar tokens JWT

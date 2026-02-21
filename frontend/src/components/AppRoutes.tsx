@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Login from '../shared/components/Login'
 import Register from '../shared/components/Register'
 import Home from '../shared/components/Home'
+import OAuthCallback from '../shared/components/OAuthCallback'
 import Menu from '../client/features/menu/pages/Menu'
 import RestaurantsList from '../client/features/restaurants/pages/RestaurantsList'
 import OrderHistory from '../client/features/orders/pages/OrderHistory'
@@ -38,6 +39,7 @@ export default function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/auth/callback" element={<OAuthCallback />} />
       <Route path="/restaurants" element={<RestaurantsList />} />
       <Route path="/orders/history" element={<OrderHistory />} />
       <Route path="/establishments/new" element={<CreateEstablishment />} />

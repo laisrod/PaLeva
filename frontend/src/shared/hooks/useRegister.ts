@@ -64,13 +64,6 @@ export function useRegister() {
         role: roleValue
       }
       
-      console.log('[useRegister] Dados de registro:', {
-        userType,
-        role: roleValue,
-        roleType: typeof roleValue,
-        email: formData.email
-      })
-      
       const response = await api.signUp(registerData)
       
       if (response.error) {
@@ -83,14 +76,6 @@ export function useRegister() {
 
       if (response.data) {
         const user = response.data.user
-        
-        console.log('[useRegister] Usuário criado:', {
-          id: user?.id,
-          email: user?.email,
-          role: user?.role,
-          roleType: typeof user?.role,
-          userType
-        })
         
         // Verificar se o usuário é cliente baseado no role selecionado
         if (userType === 'client' || (user && isClient(user.role))) {

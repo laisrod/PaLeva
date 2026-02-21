@@ -1,12 +1,38 @@
 module Api
   module V1
     class MenusController < ApplicationController
+      include ApiEstablishmentScoped
       skip_before_action :verify_authenticity_token
-      before_action :set_establishment
 
       def index
+        unless @establishment
+          Rails.logger.error "[MenusController#index] @establishment é nil"
+          render json: { error: 'Estabelecimento não encontrado' }, status: :not_found
+          return
+        end
+
         @menus = @establishment.menus
-        render json: @menus.as_json(only: [:id, :name, :description, :price])
+        menus_data = @menus.map do |menu|
+          {
+            id: menu.id,
+            name: menu.name || '',
+            description: menu.description || '',
+            price: menu.price ? menu.price.to_f : 0.0,
+            active: menu.active.nil? ? true : menu.active
+          }
+        end
+        
+        response.headers['Content-Type'] = 'application/json'
+        render json: menus_data.to_json, status: :ok
+      rescue => e
+        Rails.logger.error "[MenusController#index] Erro: #{e.class} - #{e.message}"
+        Rails.logger.error "[MenusController#index] Params: #{params.inspect}"
+        Rails.logger.error "[MenusController#index] @establishment: #{@establishment.inspect}"
+        Rails.logger.error e.backtrace.join("\n")
+        render json: {
+          error: 'Erro ao buscar cardápios',
+          message: e.message
+        }, status: :internal_server_error
       end
 
       def create
@@ -133,12 +159,6 @@ module Api
       end
 
       private
-
-      def set_establishment
-        @establishment = Establishment.find_by!(code: params[:establishment_code])
-      rescue ActiveRecord::RecordNotFound
-        render json: { error: 'Estabelecimento não encontrado' }, status: :not_found
-      end
 
       def menu_params
         params.require(:menu).permit(:name, :description, :price)
