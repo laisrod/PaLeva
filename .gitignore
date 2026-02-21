@@ -60,3 +60,4 @@ node_modules
 
 # Arquivos duplicados removidos - usar apenas backend/
 # .rubocop.yml, .ruby-version, Dockerfile, .dockerignore agora só em backend/
+/md/*

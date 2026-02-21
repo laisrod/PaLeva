@@ -18,12 +18,10 @@ export function useNotifications() {
   useEffect(() => {
     // Aguardar até que a autenticação seja verificada
     if (loading) {
-      console.log('[useNotifications] Auth still loading, waiting...')
       return
     }
 
     if (!isAuthenticated || !user) {
-      console.log('[useNotifications] Not authenticated or no user, disconnecting WebSocket. isAuthenticated:', isAuthenticated, 'user:', user)
       // Desconectar WebSocket se não estiver autenticado
       if (websocketService.isConnected()) {
         websocketService.disconnect()
@@ -31,22 +29,17 @@ export function useNotifications() {
       return
     }
 
-    console.log('[useNotifications] Setting up notifications for user:', user.email, 'ID:', user.id)
-
     let unsubscribeFn: (() => void) | null = null
     let connectionCheckInterval: number | null = null
 
     // Função para fazer a subscription
     const doSubscribe = () => {
-      console.log('[useNotifications] Attempting to subscribe to NotificationsChannel...')
-      
       // Subscrever ao canal de notificações
       unsubscribeFn = websocketService.subscribe(
         'NotificationsChannel',
         {},
         {
           received: (message: NotificationMessage) => {
-            console.log('[useNotifications] Received notification:', message)
             // Mapear o tipo da notificação do backend para o tipo do frontend
             const notificationType = message.type === 'error' ? 'error' :
                                      message.type === 'success' ? 'success' :
@@ -62,10 +55,10 @@ export function useNotifications() {
             })
           },
           connected: () => {
-            console.log('[useNotifications] Subscribed to NotificationsChannel')
+            // Subscribed to NotificationsChannel
           },
           disconnected: () => {
-            console.log('[useNotifications] Disconnected from NotificationsChannel')
+            // Disconnected from NotificationsChannel
           },
         }
       )
@@ -73,7 +66,6 @@ export function useNotifications() {
 
     // Conectar ao WebSocket se ainda não estiver conectado
     if (!websocketService.isConnected()) {
-      console.log('[useNotifications] WebSocket not connected, connecting...')
       websocketService.connect()
       
       // Aguardar conexão antes de subscrever
@@ -83,7 +75,6 @@ export function useNotifications() {
             clearInterval(connectionCheckInterval)
             connectionCheckInterval = null
           }
-          console.log('[useNotifications] WebSocket connected, subscribing...')
           doSubscribe()
         }
       }, 100)
@@ -96,13 +87,11 @@ export function useNotifications() {
         }
       }, 5000)
     } else {
-      console.log('[useNotifications] WebSocket already connected, subscribing immediately...')
       doSubscribe()
     }
 
     // Cleanup: unsubscribe quando componente desmontar ou dependências mudarem
     return () => {
-      console.log('[useNotifications] Cleaning up subscription')
       if (connectionCheckInterval) {
         clearInterval(connectionCheckInterval)
       }

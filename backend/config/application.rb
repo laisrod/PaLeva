@@ -29,6 +29,9 @@ module TakeAway
     config.session_store :cookie_store, key: '_pa_leva_session'
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use config.session_store, config.session_options
+    
+    # OmniAuth precisa de sessão, então será inserido depois do session_store
+    # via config/initializers/omniauth.rb
 
     config.autoload_paths += %W[
       #{config.root}/app/services

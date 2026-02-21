@@ -33,7 +33,6 @@ export default function OrderSidebar(props: OrderSidebarProps) {
 
   // Só mostrar lista de pedidos ativos se realmente não houver currentOrder
   if (!currentOrder) {
-    console.log('[OrderSidebar] No currentOrder, showing active orders list')
     return (
       <aside className="order-sidebar">
         {activeOrders && activeOrders.length > 0 ? (

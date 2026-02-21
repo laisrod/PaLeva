@@ -88,6 +88,15 @@ Rails.application.routes.draw do
       delete '/sign_out', to: 'sessions#destroy'
       get '/is_signed_in', to: 'sessions#is_signed_in?'
       
+      # OAuth routes
+      # Usar rotas completamente diferentes para evitar que o middleware OmniAuth intercepte
+      # O OmniAuth intercepta automaticamente qualquer rota que comece com /auth/
+      get '/login/google', to: 'omniauth_callbacks#initiate', as: :google_oauth2_initiate
+      
+      # Callback do OAuth
+      match '/login/:provider/callback', to: 'omniauth_callbacks#google_oauth2', via: [:get, :post], as: :omniauth_callback
+      match '/login/failure', to: 'omniauth_callbacks#failure', via: [:get, :post], as: :omniauth_failure
+      
       # Histórico de pedidos do cliente
       get '/orders/history', to: 'order_history#index'
       get '/orders/history/:id', to: 'order_history#show'
