@@ -33,7 +33,11 @@ export default function StarRating({
   })
 
   return (
-    <div className={`star-rating star-rating-${size} ${interactive ? 'star-rating-interactive' : ''}`}>
+    <div
+      className={`star-rating star-rating-${size} ${interactive ? 'star-rating-interactive' : ''}`}
+      role="group"
+      aria-label={`Avaliação ${rating.toFixed(1)} de ${maxRating}`}
+    >
       <div className="stars-container">
         {Array.from({ length: maxRating }, (_, index) => {
           const value = index + 1

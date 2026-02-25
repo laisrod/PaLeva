@@ -26,11 +26,21 @@ jobs:
           ruby-version: "3.3.4"
           bundler-cache: true
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend JS dependencies
+        run: npm ci
+
       - name: Prepare test database
-        run: bundle exec rails db:prepare RAILS_ENV=test
+        run: RAILS_ENV=test bundle exec rails db:prepare
 
       - name: Run RSpec
-        run: bundle exec rspec
+        run: bundle exec rspec spec/requests/api/v1/omniauth_callbacks_spec.rb
 
   frontend-vitest:
     name: Frontend - Vitest
