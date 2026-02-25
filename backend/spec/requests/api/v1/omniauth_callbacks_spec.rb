@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'securerandom'
 
 RSpec.describe 'API::V1::OmniauthCallbacks', type: :request do
   describe 'GET /api/v1/login/google' do
@@ -52,10 +53,12 @@ RSpec.describe 'API::V1::OmniauthCallbacks', type: :request do
     let(:code) { 'valid-auth-code-123' }
     let(:access_token) { 'valid-access-token-456' }
     let(:frontend_url) { 'http://localhost:5177' }
+    let(:unique_suffix) { SecureRandom.hex(6) }
+    let(:unique_cpf) { CPF.generate(true) }
     let(:user_info) do
       {
-        'sub' => 'google-user-id-123',
-        'email' => 'user@example.com',
+        'sub' => "google-user-id-#{unique_suffix}",
+        'email' => "user-#{unique_suffix}@example.com",
         'given_name' => 'João',
         'family_name' => 'Silva',
         'name' => 'João Silva'
@@ -165,7 +168,7 @@ RSpec.describe 'API::V1::OmniauthCallbacks', type: :request do
             provider: 'google_oauth2',
             uid: user_info['sub'],
             role: true,
-            cpf: '483.556.180-50' # CPF válido temporário para testes
+            cpf: unique_cpf
           )
         end
 
@@ -195,7 +198,7 @@ RSpec.describe 'API::V1::OmniauthCallbacks', type: :request do
             name: 'Nome Antigo',
             last_name: 'Sobrenome Antigo',
             password: 'senha123456789', # Mínimo 12 caracteres
-            cpf: '483.556.180-50', # CPF válido necessário quando não é OAuth
+            cpf: unique_cpf, # CPF único para evitar conflito com dados preexistentes
             role: true
           )
         end
@@ -215,8 +218,8 @@ RSpec.describe 'API::V1::OmniauthCallbacks', type: :request do
       context 'quando o nome não tem given_name e family_name' do
         let(:user_info_without_names) do
           {
-            'sub' => 'google-user-id-456',
-            'email' => 'user2@example.com',
+            'sub' => "google-user-id-no-names-#{unique_suffix}",
+            'email' => "user-no-names-#{unique_suffix}@example.com",
             'name' => 'João Silva'
           }
         end
