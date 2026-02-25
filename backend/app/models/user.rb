@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  require 'securerandom'
   devise :database_authenticatable, :registerable,
          :rememberable, :validatable
   # OAuth configurado manualmente via OmniAuth::Builder (não via Devise)
@@ -37,9 +38,18 @@ class User < ApplicationRecord
       user.role = true # Default: owner (pode ajustar conforme necessário)
       user.provider = 'google_oauth2'
       user.uid = user_info['sub']
-      user.cpf ||= '000.000.000-00'
+      user.cpf ||= generate_unique_oauth_cpf
     end
   end
+
+  def self.generate_unique_oauth_cpf
+    loop do
+      digits = SecureRandom.random_number(10**11).to_s.rjust(11, '0')
+      formatted_cpf = "#{digits[0..2]}.#{digits[3..5]}.#{digits[6..8]}-#{digits[9..10]}"
+      return formatted_cpf unless exists?(cpf: formatted_cpf)
+    end
+  end
+  private_class_method :generate_unique_oauth_cpf
 
   # Método para atualizar dados do usuário OAuth do Google (JSON)
   def update_google_oauth_data(user_info)
