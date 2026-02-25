@@ -94,7 +94,7 @@ describe('Dishes Component', () => {
       </BrowserRouter>
     )
 
-    expect(screen.queryByText(/carregando/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/nenhum prato cadastrado/i)).toBeInTheDocument()
   })
 
   describe('Infinite Scroll', () => {

@@ -521,7 +521,7 @@ export default function Orders() {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.map((order) => {
+                    {displayedItems.map((order) => {
                       const statusBadge = getStatusBadge(order.status)
                       return (
                         <tr key={order.id}>
