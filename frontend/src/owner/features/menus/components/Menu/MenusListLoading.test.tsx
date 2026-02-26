@@ -1,7 +1,14 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import MenusListLoading from './MenusListLoading'
 
-describe('frontend/src/owner/features/menus/components/Menu/MenusListLoading.tsx', () => {
-  it('has a placeholder test', () => {
-    expect(true).toBe(true)
+vi.mock('../../../../shared/components/Layout/Layout', () => ({
+  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}))
+
+describe('MenusListLoading', () => {
+  it('renders loading feedback', () => {
+    render(<MenusListLoading />)
+    expect(screen.getByText('Carregando...')).toBeInTheDocument()
   })
 })
