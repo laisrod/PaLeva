@@ -12,6 +12,7 @@ export default function OrderHistory() {
     loading,
     error,
     isOwner,
+    authLoading,
     startDate,
     setStartDate,
     endDate,
@@ -156,7 +157,27 @@ export default function OrderHistory() {
     return () => observer.disconnect()
   }, [hasMore, loading, loadMore])
 
+  if (authLoading) {
+    return (
+      <div style={{ background: '#f8f2df', minHeight: '100vh', padding: '2rem' }}>
+        <div className="order-history-container">
+          <div className="loading-message">Carregando pedidos...</div>
+        </div>
+      </div>
+    )
+  }
+
   // Se for owner, usa o Layout do owner, senão usa o ClientLayout
+  if (isOwner && !OwnerLayout) {
+    return (
+      <div style={{ background: '#5a3005', minHeight: '100vh', padding: '2rem' }}>
+        <div className="order-history-container">
+          <div className="loading-message">Carregando pedidos...</div>
+        </div>
+      </div>
+    )
+  }
+
   if (isOwner && OwnerLayout) {
     return <OwnerLayout>{content}</OwnerLayout>
   }

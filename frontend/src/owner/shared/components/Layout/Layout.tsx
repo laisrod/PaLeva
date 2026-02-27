@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLayout } from '../../hooks/Layout/useLayout'
 import { LayoutProps } from '../../types/layout'
@@ -12,6 +13,8 @@ import LogoutIcon from '../../../../assets/logout.svg'
 import '../../../../css/owner/Layout.css'
 
 export default function Layout({ children }: LayoutProps) {
+  const [isMobileActionsOpen, setIsMobileActionsOpen] = useState(false)
+
   const {
     isAuthenticated,
     user,
@@ -98,18 +101,33 @@ export default function Layout({ children }: LayoutProps) {
           </div>
 
           <div className="owner-nav-right">
-            <div className="owner-nav-actions">
+            <button
+              type="button"
+              className="owner-nav-actions-toggle"
+              aria-label="Abrir menu de ações"
+              aria-expanded={isMobileActionsOpen}
+              onClick={() => setIsMobileActionsOpen((prev) => !prev)}
+            >
+              ☰
+            </button>
+            <div className={`owner-nav-actions ${isMobileActionsOpen ? 'mobile-open' : ''}`}>
               {isAuthenticated && user && establishmentCode ? (
                 <>
                   <button
-                    onClick={handleNavigateToProfile}
+                    onClick={() => {
+                      setIsMobileActionsOpen(false)
+                      handleNavigateToProfile()
+                    }}
                     className="owner-action-btn owner-user-btn"
                     title={user.email}
                   >
                     <img src={UserIcon} alt="Perfil" className="nav-icon" />
                   </button>
                   <button
-                    onClick={handleLogout}
+                    onClick={() => {
+                      setIsMobileActionsOpen(false)
+                      handleLogout()
+                    }}
                     className="owner-action-btn owner-logout-btn"
                     title="Sair"
                   >
@@ -122,10 +140,16 @@ export default function Layout({ children }: LayoutProps) {
                     to="/login"
                     className="owner-action-btn"
                     title="Entrar"
+                    onClick={() => setIsMobileActionsOpen(false)}
                   >
                     🔑
                   </Link>
-                  <Link to="/register" className="owner-action-btn owner-primary-btn" title="Criar conta">
+                  <Link
+                    to="/register"
+                    className="owner-action-btn owner-primary-btn"
+                    title="Criar conta"
+                    onClick={() => setIsMobileActionsOpen(false)}
+                  >
                     Criar conta
                   </Link>
                 </>
