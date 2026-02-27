@@ -1,10 +1,19 @@
 @import '../shared/variables.css';
 
 .orders-container {
+  --color-primary: #6b5a2b;
+  --color-primary-dark: #4b3f1f;
+  --color-bg-primary: #fffdf7;
+  --color-bg-secondary: #faf8f3;
+  --color-bg-tertiary: #f3ecdf;
+  --text-primary: #2f2a25;
+  --text-secondary: rgba(47, 42, 37, 0.72);
   max-width: 100%;
   margin: 0;
   padding: 0;
-  background: var(--color-bg-primary);
+  background: #f8f2df;
+  color: var(--text-primary);
+  border-radius: var(--border-radius-lg);
 }
 
 .orders-header {
@@ -31,15 +40,15 @@
 
 .orders-card {
   background: var(--color-bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e7e0d4;
   border-radius: var(--border-radius-xl);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 16px rgba(20, 20, 20, 0.05);
   overflow: hidden;
 }
 
 .orders-card-header {
   padding: var(--spacing-xl);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #e5dfd3;
   background: var(--color-bg-secondary);
 }
 
@@ -88,12 +97,12 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid #ddd5c8;
 }
 
 .orders-table td {
   padding: var(--spacing-md);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid #ece6dc;
   font-size: var(--font-size-sm);
   color: var(--text-primary);
 }
@@ -103,7 +112,7 @@
 }
 
 .orders-table tbody tr:hover {
-  background: var(--color-bg-tertiary);
+  background: #fbf8f1;
 }
 
 .order-code {

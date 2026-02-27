@@ -1,10 +1,19 @@
 @import '../shared/variables.css';
 
 .edit-working-hours-container {
+  --color-primary: #6b5a2b;
+  --color-primary-dark: #4b3f1f;
+  --color-bg-primary: #fffdf7;
+  --color-bg-secondary: #faf8f3;
+  --color-bg-tertiary: #f3ecdf;
+  --text-primary: #2f2a25;
+  --text-secondary: rgba(47, 42, 37, 0.72);
   max-width: 100%;
   width: 100%;
   padding: var(--spacing-md);
-  background: var(--color-bg-primary);
+  background: #f8f2df;
+  color: var(--text-primary);
+  border-radius: var(--border-radius-lg);
 }
 
 .edit-working-hours-header {
@@ -27,7 +36,7 @@
   padding: var(--spacing-sm) var(--spacing-md);
   text-decoration: none;
   color: var(--text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #d8cfbf;
   border-radius: var(--border-radius-md);
   transition: all var(--transition-base);
   display: inline-flex;
@@ -37,7 +46,7 @@
 }
 
 .edit-working-hours-container .btn-back:hover {
-  background: var(--color-bg-tertiary);
+  background: #fbf8f1;
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
@@ -46,8 +55,8 @@
   background: var(--color-bg-secondary);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-xl);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 16px rgba(20, 20, 20, 0.05);
+  border: 1px solid #e7e0d4;
 }
 
 .working-hours-grid {
@@ -58,7 +67,7 @@
 }
 
 .working-hour-card {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e2d9c9;
   border-radius: var(--border-radius-md);
   padding: var(--spacing-md);
   background: var(--color-bg-secondary);
@@ -70,7 +79,7 @@
   align-items: center;
   margin-bottom: var(--spacing-md);
   padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #e5dfd3;
 }
 
 .working-hour-header h3 {
@@ -96,7 +105,7 @@
   position: relative;
   cursor: pointer;
   transition: background var(--transition-base);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #d8cfbf;
 }
 
 .toggle-switch input[type="checkbox"]:checked {
@@ -149,7 +158,7 @@
 .time-input-group input[type="time"] {
   width: 100%;
   padding: var(--spacing-sm);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #d8cfbf;
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-base);
   transition: border-color var(--transition-base);
@@ -167,7 +176,7 @@
   gap: var(--spacing-md);
   justify-content: flex-end;
   padding-top: var(--spacing-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #e5dfd3;
 }
 
 .btn-primary,
@@ -202,13 +211,13 @@
 }
 
 .edit-working-hours-container .btn-secondary {
-  background: var(--color-bg-tertiary);
+  background: transparent;
   color: var(--text-primary);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: #d8cfbf;
 }
 
 .edit-working-hours-container .btn-secondary:hover {
-  background: var(--color-bg-primary);
+  background: #fbf8f1;
   border-color: var(--color-primary);
   color: var(--color-primary);
 }

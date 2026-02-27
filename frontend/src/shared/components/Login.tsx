@@ -27,7 +27,7 @@ export default function Login() {
       {/* Header */}
       <header className="login-header">
         <div className="login-header-content">
-          <h1 className="login-brand">PÁLEVÁ</h1>
+          <h1 className="login-brand">Palevá</h1>
           <Link to="/register" className="login-header-btn">
             Cadastre-se
           </Link>
@@ -39,10 +39,6 @@ export default function Login() {
         <h2 className="login-hero-title">
           Seus pratos favoritos, entregues com rapidez
         </h2>
-        <p className="login-hero-subtitle">
-          Explore cardápios, faça pedidos e acompanhe tudo em tempo real.
-        </p>
-
         {/* Card do formulário */}
         <div className="login-form-card">
           <h3 className="login-form-title">Entrar na sua conta</h3>

@@ -1,10 +1,24 @@
 @import '../shared/variables.css';
 
 .ratings-container {
+  --color-card-bg: #faf8f3;
+  --color-border: #e5dfd3;
+  --color-text-primary: #2f2a25;
+  --color-text-secondary: rgba(47, 42, 37, 0.72);
+  --color-button-text: #ffffff;
+  --color-danger: #b42318;
+  --color-status-delivered: #059669;
+  --color-status-pending: #f59e0b;
+  --color-status-preparing: #3b82f6;
+  --color-status-ready: #10b981;
+  --color-status-cancelled: #ef4444;
+  --box-shadow-sm: 0 6px 16px rgba(20, 20, 20, 0.05);
+  --box-shadow-md: 0 10px 24px rgba(20, 20, 20, 0.08);
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--spacing-xl);
-  background: var(--color-bg-primary);
+  background: #f8f2df;
+  border-radius: var(--border-radius-lg);
   min-height: 100vh;
 }
 
@@ -185,6 +199,13 @@
   color: var(--color-text-secondary);
   margin-top: var(--spacing-xl);
   padding: var(--spacing-xl);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+}
+
+.empty-message {
+  background: #fffdf7;
 }
 
 .error-message {

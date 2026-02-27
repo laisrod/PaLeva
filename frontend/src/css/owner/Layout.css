@@ -4,8 +4,9 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--color-bg-primary);
+  background: #5a3005;
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Header Superior - Estilo Food Magic */
@@ -14,7 +15,7 @@
   top: 70px;
   left: 0;
   right: 0;
-  background: var(--color-bg-secondary);
+  background: #5a3005;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: var(--spacing-lg) var(--spacing-2xl);
   z-index: 99;
@@ -52,7 +53,7 @@
 
 /* Navbar Horizontal Superior */
 .owner-navbar {
-  background: var(--color-bg-primary);
+  background: #544823;
   width: 100%;
   height: auto;
   position: fixed;
@@ -65,6 +66,8 @@
   align-items: center;
   padding: var(--spacing-md) var(--spacing-lg);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .owner-nav-top {
@@ -75,6 +78,7 @@
   flex: 1;
   width: 100%;
   padding: 0;
+  min-width: 0;
 }
 
 .owner-nav-left {
@@ -84,6 +88,7 @@
   gap: var(--spacing-lg);
   width: auto;
   flex: 1;
+  min-width: 0;
 }
 
 .owner-logo {
@@ -129,13 +134,13 @@
 }
 
 .owner-nav-link:hover {
-  color: var(--color-primary);
-  background: var(--color-bg-secondary);
+  color: #f5f5dc;
+  background: #33221c;
 }
 
 .owner-nav-link.active {
   color: var(--color-white);
-  background: var(--color-primary);
+  background: #33221c;
   font-weight: var(--font-weight-semibold);
 }
 
@@ -151,7 +156,7 @@
 }
 
 .owner-nav-link:hover .nav-icon {
-  filter: brightness(0) saturate(100%) invert(56%) sepia(82%) saturate(1057%) hue-rotate(341deg) brightness(101%) contrast(101%);
+  filter: brightness(0) invert(1);
 }
 
 .owner-nav-link.active .nav-icon {
@@ -179,7 +184,7 @@
 
 .owner-nav-phone {
   font-weight: var(--font-weight-semibold);
-  color: var(--color-primary);
+  color: #f5f5dc;
 }
 
 .owner-nav-actions {
@@ -188,6 +193,10 @@
   align-items: center;
   gap: var(--spacing-sm);
   width: auto;
+}
+
+.owner-nav-actions-toggle {
+  display: none;
 }
 
 .owner-action-btn {
@@ -210,8 +219,8 @@
 }
 
 .owner-action-btn:hover {
-  color: var(--color-primary);
-  background: var(--color-bg-secondary);
+  color: #f5f5dc;
+  background: #33221c;
 }
 
 .owner-icon {
@@ -219,26 +228,26 @@
 }
 
 .owner-primary-btn {
-  background: var(--color-primary);
+  background: #33221c;
   color: var(--color-white);
-  border-color: var(--color-primary);
+  border-color: #33221c;
 }
 
 .owner-primary-btn:hover {
-  background: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
+  background: #221610;
+  border-color: #221610;
   color: var(--color-white);
 }
 
 .owner-user-btn {
-  background: var(--color-primary);
+  background: #33221c;
   color: var(--color-white);
-  border-color: var(--color-primary);
+  border-color: #33221c;
 }
 
 .owner-user-btn:hover {
-  background: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
+  background: #221610;
+  border-color: #221610;
   color: var(--color-white);
 }
 
@@ -256,13 +265,13 @@
 .owner-main-content {
   flex: 1;
   padding-top: 150px;
-  padding-left: var(--spacing-2xl);
+  padding-left: var(--spacing-lg);
   padding-right: var(--spacing-2xl);
   padding-bottom: var(--spacing-xl);
   max-width: 100%;
-  width: calc(100% - 80px);
-  margin-left: 80px;
-  background: var(--color-bg-primary);
+  width: 100%;
+  margin-left: 0;
+  background: #5a3005;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -277,8 +286,8 @@
   right: 360px; /* Espaço para OrderSidebar */
 }
 
-/* Mobile */
-@media (max-width: 768px) {
+/* Mobile e tablets pequenos */
+@media (max-width: 1024px) {
   .layout {
     flex-direction: column;
   }
@@ -296,6 +305,8 @@
     position: relative;
     flex-direction: row;
     padding: var(--spacing-sm) var(--spacing-md);
+    overflow-x: clip;
+    overflow-y: visible;
   }
 
   .owner-nav-top {
@@ -322,6 +333,17 @@
   .owner-nav-links {
     flex-direction: row;
     gap: var(--spacing-xs);
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    touch-action: pan-x;
+    overscroll-behavior-y: contain;
+  }
+
+  .owner-nav-links::-webkit-scrollbar {
+    display: none;
   }
 
   .owner-nav-link {
@@ -332,24 +354,60 @@
   }
 
   .owner-nav-right {
+    position: relative;
     flex-direction: row;
     margin-top: 0;
     padding-top: 0;
     border-top: none;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    padding-left: var(--spacing-md);
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .owner-nav-actions-toggle {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--border-radius-md);
+    background: #33221c;
+    color: #f5f5dc;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0;
   }
 
   .owner-nav-actions {
-    flex-direction: row;
+    display: none;
+    position: absolute;
+    top: calc(100% + var(--spacing-xs));
+    right: 0;
+    flex-direction: column;
     gap: var(--spacing-xs);
+    background: #544823;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-xs);
+    z-index: 130;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+  }
+
+  .owner-nav-actions.mobile-open {
+    display: flex;
   }
 
   .owner-action-btn {
-    width: auto;
-    height: auto;
-    padding: var(--spacing-xs) var(--spacing-sm);
+    width: 40px;
+    height: 40px;
+    padding: 0;
     font-size: var(--font-size-sm);
+  }
+
+  .owner-nav-actions .owner-primary-btn {
+    width: auto;
+    min-width: 120px;
+    padding: 0 var(--spacing-sm);
   }
 
   .owner-main-content {
@@ -359,15 +417,15 @@
     padding-right: var(--spacing-md);
     padding-top: var(--spacing-md);
   }
+
+  /* No mobile, neutraliza o deslocamento lateral da versão com sidebar */
+  .layout:has(.order-sidebar) .owner-main-content {
+    padding-right: var(--spacing-md);
+  }
+
+  .layout:has(.order-sidebar) .owner-header {
+    right: 0;
+  }
 }
 
 /* Tablet */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .owner-nav-top {
-    padding: var(--spacing-md);
-  }
-
-  .owner-nav-info {
-    font-size: var(--font-size-xs);
-  }
-}

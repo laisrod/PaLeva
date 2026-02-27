@@ -1,12 +1,21 @@
 @import '../shared/variables.css';
 
 .order-history-container {
+  --color-primary: #6b5a2b;
+  --color-primary-dark: #4b3f1f;
+  --color-bg-primary: #fffdf7;
+  --color-bg-secondary: #faf8f3;
+  --color-bg-tertiary: #f3ecdf;
+  --text-primary: #2f2a25;
+  --text-secondary: rgba(47, 42, 37, 0.72);
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--spacing-xl);
-  background: var(--color-bg-primary);
+  background: #f8f2df;
   min-height: calc(100vh - 200px);
   width: 100%;
+  color: var(--text-primary);
+  border-radius: var(--border-radius-lg);
 }
 
 .order-history-header {
@@ -27,6 +36,7 @@
   margin-bottom: var(--spacing-xl);
   padding: var(--spacing-lg);
   background: var(--color-bg-secondary);
+  border: 1px solid #e7e0d4;
   border-radius: var(--border-radius-lg);
   flex-wrap: wrap;
   align-items: flex-end;
@@ -49,7 +59,7 @@
 .filter-select,
 .filter-input {
   padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #ddd5c8;
   border-radius: var(--border-radius-md);
   background: var(--color-bg-primary);
   color: var(--text-primary);
@@ -61,7 +71,7 @@
 .filter-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+  box-shadow: 0 0 0 2px rgba(107, 90, 43, 0.14);
 }
 
 .filter-button {
@@ -95,14 +105,14 @@
 
 .order-card {
   background: var(--color-bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e7e0d4;
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-lg);
   transition: all var(--transition-base);
 }
 
 .order-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(20, 20, 20, 0.08);
   transform: translateY(-2px);
   border-color: var(--color-primary);
 }
@@ -187,7 +197,7 @@
   display: flex;
   justify-content: flex-end;
   padding-top: var(--spacing-md);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #e5dfd3;
 }
 
 .order-total {
@@ -204,7 +214,13 @@
   color: var(--text-secondary);
   background: var(--color-bg-secondary);
   border-radius: var(--border-radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e5dfd3;
+}
+
+.empty-message {
+  background: #fffdf7;
+  border-color: #252524;
+
 }
 
 .error-message {
@@ -236,7 +252,7 @@
   padding: var(--spacing-sm) var(--spacing-lg);
   background: var(--color-bg-secondary);
   color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #ddd5c8;
   border-radius: var(--border-radius-md);
   cursor: pointer;
   font-size: var(--font-size-base);
