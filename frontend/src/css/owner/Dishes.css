@@ -87,7 +87,26 @@
 }
 
 .dishes-category-tab:hover {
+  background: transparent;
   color: var(--text-primary);
+}
+
+.dishes-category-tab:hover::after {
+  content: '';
+  position: absolute;
+  bottom: -17px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--dish-primary);
+}
+
+.dishes-category-tab:focus,
+.dishes-category-tab:focus-visible,
+.dishes-category-tab:active {
+  background: transparent;
+  outline: none;
+  box-shadow: none;
 }
 
 .dishes-category-tab.active {
