@@ -1,48 +1,60 @@
-import { useState, useEffect, useCallback } from 'react'
+import { createContext, createElement, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { api } from '../services/api'
-import { 
-  User, 
-  isOwner, 
-  isClient, 
-  saveUserData, 
+import {
+  User,
+  isOwner,
+  isClient,
+  saveUserData,
   clearAuthStorage,
-  getStoredUserData 
+  getStoredUserData
 } from '../utils/auth'
 
-export function useAuth() {
+interface AuthContextValue {
+  user: User | null
+  loading: boolean
+  isAuthenticated: boolean
+  isOwner: boolean
+  isClient: boolean
+  login: (email: string, password: string) => Promise<{
+    success: boolean
+    user?: User
+    error?: string | string[]
+  }>
+  logout: () => Promise<void>
+  checkAuth: () => Promise<void>
+  refreshUser: () => Promise<User | null>
+}
+
+const AuthContext = createContext<AuthContextValue | undefined>(undefined)
+
+function useProvideAuth(): AuthContextValue {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  /**
-   * Sincroniza dados do usuário com o backend
-   * Sempre busca dados atualizados do servidor
-   */
   const syncUserFromBackend = useCallback(async (): Promise<User | null> => {
     const token = localStorage.getItem('auth_token')
-    
+
     if (!token) {
       return null
     }
 
     try {
       const response = await api.isSignedIn()
-      
+
       if (response.data?.signed_in && response.data.user) {
         const backendUser: User = {
           id: response.data.user.id,
           email: response.data.user.email,
           name: response.data.user.name,
-          role: response.data.user.role === true, // Garantir boolean
+          role: response.data.user.role === true,
           establishment: response.data.user.establishment,
         }
-        
-        // Salvar dados atualizados no localStorage
+
         saveUserData(backendUser)
-        
         return backendUser
       }
-      
+
       return null
     } catch (error) {
       console.error('Erro ao sincronizar usuário:', error)
@@ -50,12 +62,9 @@ export function useAuth() {
     }
   }, [])
 
-  /**
-   * Verifica autenticação e sincroniza dados do usuário
-   */
   const checkAuth = useCallback(async () => {
     const token = localStorage.getItem('auth_token')
-    
+
     if (!token) {
       setUser(null)
       setIsAuthenticated(false)
@@ -63,63 +72,57 @@ export function useAuth() {
       return
     }
 
-    // Sempre sincronizar com backend
     const backendUser = await syncUserFromBackend()
-    
+
     if (backendUser) {
       setUser(backendUser)
       setIsAuthenticated(true)
     } else {
-      // Token inválido ou expirado
       clearAuthStorage()
       setUser(null)
       setIsAuthenticated(false)
     }
-    
+
     setLoading(false)
   }, [syncUserFromBackend])
 
   useEffect(() => {
+    const storedUser = getStoredUserData()
+    if (storedUser) {
+      setUser(storedUser)
+      setIsAuthenticated(true)
+    }
+
     checkAuth()
   }, [checkAuth])
 
-  /**
-   * Faz login e sincroniza dados do usuário
-   */
   const login = useCallback(async (email: string, password: string): Promise<{
     success: boolean
     user?: User
     error?: string | string[]
   }> => {
     const response = await api.signIn(email, password)
-    
+
     if (response.data && response.data.user) {
       const userData: User = {
         id: response.data.user.id,
         email: response.data.user.email,
         name: response.data.user.name,
-        role: response.data.user.role === true, // Garantir boolean
+        role: response.data.user.role === true,
         establishment: response.data.user.establishment,
       }
-      
-      // Salvar dados no localStorage
+
       saveUserData(userData)
-      
-      // Atualizar estado
       setUser(userData)
       setIsAuthenticated(true)
-      
+
       return { success: true, user: userData }
     }
-    
-    // Retornar erro com mensagem padrão se não houver mensagem específica
+
     const errorMessage = response.error || response.message || 'Email ou senha inválidos'
     return { success: false, error: errorMessage }
   }, [])
 
-  /**
-   * Faz logout e limpa dados
-   */
   const logout = useCallback(async () => {
     try {
       await api.signOut()
@@ -132,13 +135,10 @@ export function useAuth() {
     }
   }, [])
 
-  /**
-   * Força sincronização com backend (útil após mudanças no servidor)
-   */
   const refreshUser = useCallback(async () => {
     setLoading(true)
     const backendUser = await syncUserFromBackend()
-    
+
     if (backendUser) {
       setUser(backendUser)
       setIsAuthenticated(true)
@@ -147,7 +147,7 @@ export function useAuth() {
       setUser(null)
       setIsAuthenticated(false)
     }
-    
+
     setLoading(false)
     return backendUser
   }, [syncUserFromBackend])
@@ -165,3 +165,17 @@ export function useAuth() {
   }
 }
 
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const value = useProvideAuth()
+  return createElement(AuthContext.Provider, { value }, children)
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext)
+
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+
+  return context
+}
