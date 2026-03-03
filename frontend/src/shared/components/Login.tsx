@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { useLogin } from '../hooks/useLogin'
-import { useOAuth } from '../hooks/useOAuth'
 import '../../css/shared/Login.css'
 
 export default function Login() {
@@ -18,7 +17,8 @@ export default function Login() {
     handleDemoAccess
   } = useLogin()
 
-  const { loginWithGoogle, loading: oauthLoading } = useOAuth()
+  // TODO: Reativar quando for retomar o fluxo de OAuth Google
+  // const { loginWithGoogle, loading: oauthLoading } = useOAuth()
 
   return (
     <div className="login-page">
@@ -130,7 +130,7 @@ export default function Login() {
             <span>ou</span>
           </div>
 
-          {/* Botão OAuth */}
+          {/* TODO: Reativar botão OAuth Google depois de corrigir conectividade/configuração
           <button
             type="button"
             onClick={loginWithGoogle}
@@ -145,6 +145,7 @@ export default function Login() {
             </svg>
             <span>Entrar com Google</span>
           </button>
+          */}
 
           <div className="login-register-options">
             <span className="login-register-options-label">Entrar sem cadastro (demo)</span>
@@ -153,7 +154,7 @@ export default function Login() {
                 type="button"
                 className="login-register-option-btn"
                 onClick={() => handleDemoAccess('owner')}
-                disabled={loading || oauthLoading}
+                disabled={loading}
               >
                 Ver seção de Proprietário
               </button>
@@ -161,7 +162,7 @@ export default function Login() {
                 type="button"
                 className="login-register-option-btn"
                 onClick={() => handleDemoAccess('client')}
-                disabled={loading || oauthLoading}
+                disabled={loading}
               >
                 Ver seção de Cliente
               </button>
