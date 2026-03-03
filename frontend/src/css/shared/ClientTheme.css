@@ -1,0 +1,19 @@
+.client-theme {
+  --color-primary: #6b5a2b;
+  --color-primary-dark: #4b3f1f;
+  --color-primary-light: #8b7440;
+  --color-bg-primary: #fffdf7;
+  --color-bg-secondary: #faf8f3;
+  --color-bg-tertiary: #f3ecdf;
+  --text-primary: #2f2a25;
+  --text-secondary: rgba(47, 42, 37, 0.72);
+  --text-muted: rgba(47, 42, 37, 0.58);
+  background: #f8f2df;
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+body.client-theme-active {
+  background: #f8f2df;
+  color: #2f2a25;
+}

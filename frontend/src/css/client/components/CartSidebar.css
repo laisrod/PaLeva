@@ -58,12 +58,12 @@
   width: 100%;
   max-height: calc(100vh - var(--spacing-xl));
   background: var(--color-bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e7e0d4;
   border-radius: var(--border-radius-xl);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(20, 20, 20, 0.08);
 }
 
 /* Desktop: sempre visível, ignora showCart */
@@ -120,7 +120,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(20, 20, 20, 0.35);
     z-index: 1000;
     backdrop-filter: blur(2px);
     display: block;
@@ -129,7 +129,7 @@
 
 .cart-header {
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #e5dfd3;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -208,7 +208,7 @@
   display: flex;
   gap: var(--spacing-md);
   padding: var(--spacing-md);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #ece6dc;
 }
 
 .cart-item-image {
@@ -248,7 +248,7 @@
 .quantity-btn {
   width: 28px;
   height: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #d8cfbf;
   background: var(--color-bg-primary);
   border-radius: var(--border-radius-sm);
   cursor: pointer;
@@ -309,8 +309,8 @@
 
 .add-to-order {
   padding: var(--spacing-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #e5dfd3;
+  border-bottom: 1px solid #e5dfd3;
   background: var(--color-bg-tertiary);
 }
 
@@ -329,7 +329,7 @@
 .suggestion-item {
   flex: 1;
   padding: var(--spacing-sm);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #d8cfbf;
   background: var(--color-bg-primary);
   border-radius: var(--border-radius-md);
   cursor: pointer;
@@ -366,7 +366,7 @@
 
 .order-pickup {
   padding: var(--spacing-lg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #e5dfd3;
 }
 
 .order-pickup h3 {
@@ -385,7 +385,7 @@
 .pickup-btn {
   flex: 1;
   padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #d8cfbf;
   background: var(--color-bg-primary);
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-sm);
@@ -408,7 +408,7 @@
 .promo-code {
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #d8cfbf;
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-sm);
   background: var(--color-bg-primary);
@@ -422,7 +422,7 @@
 
 .order-summary {
   padding: var(--spacing-lg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #e5dfd3;
   background: var(--color-bg-secondary);
 }
 
@@ -437,7 +437,7 @@
 .summary-row.total {
   margin-top: var(--spacing-md);
   padding-top: var(--spacing-md);
-  border-top: 2px solid rgba(255, 255, 255, 0.1);
+  border-top: 2px solid #ddd5c8;
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);

@@ -4,13 +4,13 @@
   left: 0;
   right: 0;
   background: var(--color-bg-secondary);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #ddd5c8;
   display: flex;
   justify-content: space-around;
   align-items: center;
   padding: var(--spacing-sm) 0;
   z-index: 1000;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 -4px 14px rgba(20, 20, 20, 0.08);
 }
 
 .nav-item {

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../services/api'
 import { useAuth } from './useAuth'
 import { RegisterFormData, validateRegisterForm } from '../utils/registerValidation'
@@ -8,6 +8,13 @@ import { isClient } from '../utils/auth'
 import { UserType } from './useLogin'
 
 export function useRegister() {
+  const [searchParams] = useSearchParams()
+  const userTypeFromQuery = searchParams.get('type')
+  const initialUserType: UserType =
+    userTypeFromQuery === 'owner' || userTypeFromQuery === 'client'
+      ? userTypeFromQuery
+      : null
+
   const [formData, setFormData] = useState<RegisterFormData>({
     name: '',
     last_name: '',
@@ -16,7 +23,7 @@ export function useRegister() {
     password: '',
     password_confirmation: ''
   })
-  const [userType, setUserType] = useState<UserType>(null)
+  const [userType, setUserType] = useState<UserType>(initialUserType)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()

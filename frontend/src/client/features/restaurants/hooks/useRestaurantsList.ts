@@ -5,51 +5,23 @@ import { useRestaurants } from './useRestaurants'
 
 export function useRestaurantsList() {
   const navigate = useNavigate()
-  const { user, loading: authLoading, isAuthenticated, isOwner, isClient } = useAuth()
+  const { user, loading: authLoading, isAuthenticated, isOwner } = useAuth()
   const { restaurants, loading, error } = useRestaurants()
 
   useEffect(() => {
-    console.log('[useRestaurantsList] Estado atual:', {
-      authLoading,
-      isAuthenticated,
-      isOwner,
-      isClient,
-      hasUser: !!user,
-      userRole: user?.role
-    })
+    if (authLoading) return
 
-    if (authLoading) {
-      console.log('[useRestaurantsList] Aguardando verificação de autenticação...')
-      return // Aguardar verificação de autenticação
-    }
-
-    // Verificar autenticação
-    if (!isAuthenticated || !user) {
-      console.log('[useRestaurantsList] Usuário não autenticado, redirecionando para login')
-      navigate('/login')
-      return
-    }
-
-    // Verificar se é proprietário - redirecionar para gestão
-    if (isOwner) {
-      console.log('[useRestaurantsList] Usuário é proprietário, redirecionando...')
+    // Visitantes e clientes podem acessar a lista livremente (modo demo).
+    // Apenas proprietário autenticado vai para a área de gestão.
+    if (isAuthenticated && user && isOwner) {
       const establishmentCode = user.establishment?.code
       if (establishmentCode) {
         navigate(`/establishment/${establishmentCode}/menus`)
       } else {
         navigate('/establishments/new')
       }
-      return
     }
-
-    if (!isClient) {
-      console.log('[useRestaurantsList] Usuário não é cliente, redirecionando para login')
-      navigate('/login')
-      return
-    }
-
-    console.log('[useRestaurantsList] Usuário é cliente, permitindo acesso à lista de restaurantes')
-  }, [navigate, user, authLoading, isAuthenticated, isOwner, isClient])
+  }, [navigate, user, authLoading, isAuthenticated, isOwner])
 
   const handleSelectRestaurant = (code: string) => {
     navigate(`/menu/${code}`)

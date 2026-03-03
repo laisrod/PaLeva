@@ -7,14 +7,14 @@
   transition: all var(--transition-base);
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e7e0d4;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 16px rgba(20, 20, 20, 0.05);
 }
 
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 24px rgba(20, 20, 20, 0.08);
   border-color: var(--color-primary);
 }
 
@@ -79,7 +79,7 @@
 .portion-select {
   width: 100%;
   padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #d8cfbf;
   border-radius: var(--border-radius-sm);
   font-size: var(--font-size-sm);
   background: var(--color-bg-primary);

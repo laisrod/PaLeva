@@ -9,9 +9,6 @@ import '../../../../css/client/pages/Menu.css'
 export default function Menu() {
   const {
     orderType,
-    setOrderType,
-    location,
-    setLocation,
     showCart,
     setShowCart,
     checkoutLoading,
@@ -34,7 +31,7 @@ export default function Menu() {
 
   if (loading) {
     return (
-      <div className="menu-container">
+      <div className="menu-container client-theme">
         <div className="loading">Carregando menu...</div>
       </div>
     )
@@ -42,12 +39,8 @@ export default function Menu() {
 
 
   return (
-    <div className="menu-container">
+    <div className="menu-container client-theme">
       <Navigation
-        orderType={orderType}
-        onOrderTypeChange={setOrderType}
-        location={location}
-        onLocationChange={setLocation}
         cartItemCount={cartItemCount}
         onCartClick={() => setShowCart(true)}
       />
