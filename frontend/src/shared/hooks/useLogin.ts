@@ -23,6 +23,11 @@ export function useLogin() {
   const { login: authLogin } = useAuth()
 
   useEffect(() => {
+    if (location.state?.error) {
+      setError(location.state.error)
+      return
+    }
+
     if (location.state?.message) {
       setSuccessMessage(location.state.message)
       const timer = setTimeout(() => setSuccessMessage(''), 5000)
@@ -33,7 +38,7 @@ export function useLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    
+
     // Validar se o tipo de usuário foi selecionado
     if (!userType) {
       setError('Por favor, selecione se você é Proprietário ou Cliente.')
