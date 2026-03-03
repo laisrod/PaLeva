@@ -15,6 +15,7 @@ export default function Login() {
     successMessage,
     loading,
     handleSubmit,
+    handleDemoAccess
   } = useLogin()
 
   const { loginWithGoogle, loading: oauthLoading } = useOAuth()
@@ -144,6 +145,28 @@ export default function Login() {
             </svg>
             <span>Entrar com Google</span>
           </button>
+
+          <div className="login-register-options">
+            <span className="login-register-options-label">Entrar sem cadastro (demo)</span>
+            <div className="login-register-options-actions">
+              <button
+                type="button"
+                className="login-register-option-btn"
+                onClick={() => handleDemoAccess('owner')}
+                disabled={loading || oauthLoading}
+              >
+                Ver seção de Proprietário
+              </button>
+              <button
+                type="button"
+                className="login-register-option-btn"
+                onClick={() => handleDemoAccess('client')}
+                disabled={loading || oauthLoading}
+              >
+                Ver seção de Cliente
+              </button>
+            </div>
+          </div>
 
           <p className="login-form-footer">
             Não tem uma conta? <Link to="/register">Cadastre-se gratuitamente</Link>

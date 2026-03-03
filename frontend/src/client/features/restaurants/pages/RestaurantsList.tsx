@@ -15,14 +15,14 @@ export default function RestaurantsList() {
   // Não renderizar nada enquanto verifica autenticação
   if (authLoading) {
     return (
-      <div style={{ maxWidth: 960, margin: '40px auto', padding: '0 16px', textAlign: 'center' }}>
+      <div className="restaurants-container client-theme" style={{ maxWidth: 960, margin: '40px auto', padding: '0 16px', textAlign: 'center' }}>
         <p>Verificando autenticação...</p>
       </div>
     )
   }
 
   return (
-    <div className="restaurants-container">
+    <div className="restaurants-container client-theme">
       <div className="restaurants-header">
         <h1 className="restaurants-title">Restaurantes</h1>
         <button

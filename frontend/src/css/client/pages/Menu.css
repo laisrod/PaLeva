@@ -1,9 +1,17 @@
 @import '../../shared/variables.css';
+@import '../../shared/ClientTheme.css';
 
 .menu-container {
   min-height: 100vh;
   background: var(--color-bg-primary);
   padding-bottom: 80px; /* Espaço para bottom navigation no mobile */
+}
+
+.menu-main {
+  background: var(--color-bg-secondary);
+  border: 1px solid #e7e0d4;
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-md);
 }
 
 .menu-content {

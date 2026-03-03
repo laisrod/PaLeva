@@ -1,4 +1,5 @@
 @import '../../shared/variables.css';
+@import '../../shared/ClientTheme.css';
 
 .restaurants-container {
   max-width: 1200px;
@@ -6,6 +7,7 @@
   padding: var(--spacing-xl) var(--spacing-md);
   background: var(--color-bg-primary);
   min-height: 100vh;
+  border-radius: var(--border-radius-lg);
 }
 
 .restaurants-header {
@@ -55,7 +57,7 @@
   padding: var(--spacing-md) var(--spacing-lg);
   background: transparent;
   color: var(--text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #d8cfbf;
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
@@ -65,7 +67,7 @@
 }
 
 .back-to-login-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(107, 90, 43, 0.08);
   border-color: var(--color-primary);
   color: var(--color-primary);
   transform: translateY(-1px);
@@ -90,18 +92,18 @@
   text-align: left;
   padding: var(--spacing-lg);
   border-radius: var(--border-radius-xl);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e7e0d4;
   background: var(--color-bg-secondary);
   cursor: pointer;
   transition: all var(--transition-base);
   text-decoration: none;
   color: inherit;
   display: block;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 16px rgba(20, 20, 20, 0.05);
 }
 
 .restaurant-card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 24px rgba(20, 20, 20, 0.08);
   border-color: var(--color-primary);
   transform: translateY(-4px);
 }
@@ -124,7 +126,7 @@
   padding: var(--spacing-2xl) var(--spacing-md);
   background: var(--color-bg-secondary);
   border-radius: var(--border-radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e5dfd3;
 }
 
 .empty-state p {
