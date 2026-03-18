@@ -27,7 +27,13 @@ services:
           exit 1
         }
       }
-      echo "✅ Migrations completed successfully!"
+      echo "Migrations completed successfully!"
+      echo "Running database seeds..."
+      bundle exec rails db:seed RAILS_ENV=production 2>&1 || {
+        echo "ERROR: Seeds failed!"
+        exit 1
+      }
+      echo "Seeds completed successfully!"
       echo "Starting Puma server..."
       exec bundle exec puma -C config/puma.rb
     envVars:
