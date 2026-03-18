@@ -5,11 +5,6 @@ import { isOwner } from '../utils/auth'
 
 export type UserType = 'owner' | 'client' | null
 
-const DEMO_CREDENTIALS = {
-  owner: { email: 'owner@example.com', password: 'testes123456' },
-  client: { email: 'client@example.com', password: 'testes123456' }
-} as const
-
 export function useLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -112,65 +107,6 @@ export function useLogin() {
     }
   }
 
-  const handleDemoAccess = async (type: Exclude<UserType, null>) => {
-    setError('')
-    setLoading(true)
-
-    try {
-      const credentials = DEMO_CREDENTIALS[type]
-      const result = await authLogin(credentials.email, credentials.password)
-
-      if (!result.success) {
-        const errorMessage = Array.isArray(result.error)
-          ? result.error.join(', ')
-          : result.error || 'Erro ao entrar no modo demo.'
-        setError(errorMessage)
-        setLoading(false)
-        return
-      }
-
-      const user = result.user
-      if (!user) {
-        setError('Erro ao obter dados do usuário demo.')
-        setLoading(false)
-        return
-      }
-
-      const userIsOwner = isOwner(user.role)
-      const establishmentCode = user.establishment?.code
-      const expectedOwner = type === 'owner'
-
-      if (userIsOwner !== expectedOwner) {
-        setError('A conta demo não corresponde ao tipo selecionado.')
-        setLoading(false)
-        return
-      }
-
-      if (userIsOwner) {
-        setLoading(false)
-        if (establishmentCode) {
-          navigate(`/establishment/${establishmentCode}`)
-        } else {
-          navigate('/establishments/new')
-        }
-        return
-      }
-
-      setLoading(false)
-      requestAnimationFrame(() => {
-        if (establishmentCode) {
-          navigate(`/menu/${establishmentCode}`, { replace: true })
-        } else {
-          navigate('/restaurants', { replace: true })
-        }
-      })
-    } catch (err) {
-      setError('Erro ao entrar no modo demo.')
-      console.error('Erro no acesso demo:', err)
-      setLoading(false)
-    }
-  }
-
   return {
     email,
     setEmail,
@@ -181,7 +117,6 @@ export function useLogin() {
     error,
     successMessage,
     loading,
-    handleSubmit,
-    handleDemoAccess
+    handleSubmit
   }
 }
