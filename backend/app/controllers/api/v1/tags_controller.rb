@@ -5,12 +5,21 @@ module Api
       before_action :set_establishment
 
       def index
-        @tags = if params[:category].present?
-                  Tag.where(category: params[:category]).order(:name)
-                else
-                  Tag.order(:name)
-                end
+        scope = Tag.all
+
+        if params[:category].present? && Tag.column_names.include?('category')
+          scope = scope.where(category: params[:category])
+        end
+
+        @tags = scope.order(:name)
         render json: @tags.as_json(only: [:id, :name, :category])
+      rescue ActiveRecord::StatementInvalid => e
+        Rails.logger.error "[TagsController#index] DB error: #{e.class} - #{e.message}"
+
+        # Fallback para bancos desatualizados/estado parcial onde a coluna category
+        # ainda não existe; evita 500 no frontend e mantém listagem funcional.
+        tags = Tag.order(:name)
+        render json: tags.as_json(only: [:id, :name]), status: :ok
       end
 
       def show
