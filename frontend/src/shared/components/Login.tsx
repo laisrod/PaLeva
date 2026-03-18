@@ -13,8 +13,7 @@ export default function Login() {
     error,
     successMessage,
     loading,
-    handleSubmit,
-    handleDemoAccess
+    handleSubmit
   } = useLogin()
 
   // TODO: Reativar quando for retomar o fluxo de OAuth Google
@@ -146,28 +145,6 @@ export default function Login() {
             <span>Entrar com Google</span>
           </button>
           */}
-
-          <div className="login-register-options">
-            <span className="login-register-options-label">Entrar sem cadastro (demo)</span>
-            <div className="login-register-options-actions">
-              <button
-                type="button"
-                className="login-register-option-btn"
-                onClick={() => handleDemoAccess('owner')}
-                disabled={loading}
-              >
-                Ver seção de Proprietário
-              </button>
-              <button
-                type="button"
-                className="login-register-option-btn"
-                onClick={() => handleDemoAccess('client')}
-                disabled={loading}
-              >
-                Ver seção de Cliente
-              </button>
-            </div>
-          </div>
 
           <p className="login-form-footer">
             Não tem uma conta? <Link to="/register">Cadastre-se gratuitamente</Link>
