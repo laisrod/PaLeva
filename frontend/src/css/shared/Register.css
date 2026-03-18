@@ -1,223 +1,356 @@
 @import './variables.css';
 
-.register-container {
+/* ========================================
+   Register Page - aligned with Login
+   ======================================== */
+
+.register-page {
+  position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-bg-primary);
-  padding: var(--spacing-lg);
+  flex-direction: column;
+  overflow: hidden;
+  background: #f8f2df;
 }
 
-.register-card {
-  background: var(--color-bg-secondary);
-  border-radius: var(--border-radius-xl);
-  padding: var(--spacing-2xl);
-  box-shadow: var(--shadow-xl);
-  width: 100%;
-  max-width: 600px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.register-bg-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(248, 242, 223, 0.96) 0%,
+      rgba(248, 242, 223, 0.9) 50%,
+      rgba(248, 242, 223, 0.96) 100%
+    ),
+    linear-gradient(
+      135deg,
+      #fffdf7 0%,
+      #faf8f3 45%,
+      #f3ecdf 100%
+    );
+  background-size: cover;
 }
 
-.register-card h1 {
-  margin: 0 0 var(--spacing-lg) 0;
-  color: var(--color-primary);
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
-  text-align: center;
-  letter-spacing: -0.5px;
+.register-bg-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 120px,
+      rgba(107, 90, 43, 0.08) 120px,
+      rgba(107, 90, 43, 0.08) 121px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 180px,
+      rgba(107, 90, 43, 0.08) 180px,
+      rgba(107, 90, 43, 0.08) 181px
+    );
 }
 
-.register-card h2 {
-  margin: 0 0 var(--spacing-xl) 0;
-  color: var(--text-primary);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-normal);
-  text-align: center;
+.register-bg-overlay::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    #6b5a2b 0%,
+    #8b7440 50%,
+    #6b5a2b 100%
+  );
 }
 
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-md);
+/* ========================================
+   Header
+   ======================================== */
+
+.register-header {
+  position: relative;
+  z-index: 10;
+  padding: var(--spacing-lg) var(--spacing-xl);
 }
 
-.form-group {
-  margin-bottom: var(--spacing-lg);
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: var(--spacing-sm);
-  color: var(--text-primary);
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-sm);
-}
-
-.form-group input {
-  width: 100%;
-  padding: var(--spacing-md);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-base);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
-  box-sizing: border-box;
-  background-color: var(--color-bg-tertiary);
-  color: var(--text-primary);
-}
-
-.form-group input::placeholder {
-  color: var(--text-muted);
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(255, 127, 63, 0.2);
-}
-
-.form-group input:disabled {
-  background-color: var(--color-bg-primary);
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.error-message {
-  background-color: rgba(220, 38, 38, 0.1);
-  color: #f87171;
-  padding: var(--spacing-md);
-  border-radius: var(--border-radius-md);
-  margin-bottom: var(--spacing-lg);
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  font-size: var(--font-size-sm);
-}
-
-.btn-primary {
-  width: 100%;
-  padding: var(--spacing-md);
-  background: var(--color-primary);
-  color: var(--color-white);
-  border: none;
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
-  transition: background-color var(--transition-base), transform var(--transition-fast);
-  margin-bottom: var(--spacing-lg);
-  margin-top: var(--spacing-sm);
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: var(--color-primary-dark);
-  transform: translateY(-1px);
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.btn-primary:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-  background: var(--color-primary);
-}
-
-.register-footer {
-  text-align: center;
-  margin-top: var(--spacing-xl);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.register-footer p {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
-}
-
-.register-footer a {
-  color: var(--color-primary);
-  text-decoration: none;
-  font-weight: var(--font-weight-medium);
-  transition: color var(--transition-base);
-}
-
-.register-footer a:hover {
-  color: var(--color-primary-light);
-  text-decoration: underline;
-}
-
-/* Seletor de Tipo de Usuário */
-.user-type-selector {
+.register-header-content {
   display: flex;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-sm);
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
 }
 
-.user-type-btn {
+.register-brand {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #6b5a2b;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 10px rgba(107, 90, 43, 0.18);
+  margin: 0;
+}
+
+.register-header-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 20px;
+  background: #6b5a2b;
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transition-base);
+}
+
+.register-header-btn:hover {
+  background: #4b3f1f;
+}
+
+/* ========================================
+   Hero + Card
+   ======================================== */
+
+.register-hero {
+  position: relative;
+  z-index: 10;
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-lg);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  justify-content: flex-start;
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-xl);
+  text-align: center;
+}
+
+.register-hero-title {
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-weight: 800;
+  color: #2f2a25;
+  line-height: 1.15;
+  margin: 0 0 var(--spacing-md) 0;
+  max-width: 700px;
+}
+
+.register-form-card {
+  width: 100%;
+  max-width: 760px;
+  background: #faf8f3;
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  border: 1px solid #e7e0d4;
+  box-shadow: 0 10px 24px rgba(20, 20, 20, 0.08);
+}
+
+.register-form-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: #2f2a25;
+  margin: 0 0 var(--spacing-md) 0;
+  text-align: left;
+}
+
+/* ========================================
+   Form
+   ======================================== */
+
+.register-form-row {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.register-form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.register-form-row .register-form-group {
+  flex: 1;
+}
+
+.register-form-group label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  color: rgba(47, 42, 37, 0.72);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.register-form-group input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d8cfbf;
   border-radius: var(--border-radius-md);
-  background-color: var(--color-bg-tertiary);
-  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), background-color var(--transition-base);
+  box-sizing: border-box;
+  background-color: #fffdf7;
+  color: #2f2a25;
+}
+
+.register-form-group input::placeholder {
+  color: rgba(47, 42, 37, 0.5);
+}
+
+.register-form-group input:focus {
+  outline: none;
+  border-color: #6b5a2b;
+  box-shadow: 0 0 0 3px rgba(107, 90, 43, 0.14);
+  background-color: #fffdf7;
+}
+
+.register-form-group input:disabled {
+  background-color: #f3ecdf;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.register-user-type-selector {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.register-user-type-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: 10px var(--spacing-md);
+  border: 2px solid #e7e0d4;
+  border-radius: var(--border-radius-md);
+  background-color: #fffdf7;
+  color: rgba(47, 42, 37, 0.72);
   cursor: pointer;
   transition: all var(--transition-base);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
 }
 
-.user-type-btn:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  background-color: rgba(255, 127, 63, 0.1);
-  color: var(--text-primary);
-  transform: translateY(-2px);
+.register-user-type-btn:hover:not(:disabled) {
+  border-color: #8b7440;
+  background-color: rgba(107, 90, 43, 0.08);
+  color: #2f2a25;
 }
 
-.user-type-btn.active {
-  border-color: var(--color-primary);
-  background-color: rgba(255, 127, 63, 0.2);
-  color: var(--color-primary);
+.register-user-type-btn.active {
+  border-color: #6b5a2b;
+  background-color: rgba(107, 90, 43, 0.14);
+  color: #6b5a2b;
   font-weight: var(--font-weight-semibold);
 }
 
-.user-type-btn:disabled {
-  opacity: 0.5;
+.register-user-type-btn:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-.user-type-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  color: currentColor;
-}
-
-.user-type-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.user-type-hint {
+.register-user-type-hint {
   margin-top: var(--spacing-xs);
-  color: var(--text-muted);
+  color: rgba(47, 42, 37, 0.5);
   font-size: var(--font-size-xs);
-  font-style: italic;
+}
+
+.register-error-msg {
+  background-color: rgba(220, 38, 38, 0.12);
+  color: #f87171;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  font-size: var(--font-size-sm);
+}
+
+.register-btn-submit {
+  width: 100%;
+  padding: 12px;
+  background: #6b5a2b;
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background-color var(--transition-base), transform var(--transition-fast), box-shadow var(--transition-base);
+  letter-spacing: 0.3px;
+}
+
+.register-btn-submit:hover:not(:disabled) {
+  background: #4b3f1f;
+  box-shadow: 0 6px 20px rgba(75, 63, 31, 0.25);
+  transform: translateY(-1px);
+}
+
+.register-btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.register-btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #6b5a2b;
+}
+
+.register-form-footer {
+  text-align: center;
+  margin-top: var(--spacing-md);
+  color: rgba(47, 42, 37, 0.72);
+  font-size: var(--font-size-sm);
+}
+
+.register-form-footer a {
+  color: #6b5a2b;
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  transition: color var(--transition-base);
+}
+
+.register-form-footer a:hover {
+  color: #4b3f1f;
+  text-decoration: underline;
 }
 
 @media (max-width: 600px) {
-  .form-row {
-    grid-template-columns: 1fr;
+  .register-header {
+    padding: var(--spacing-md);
   }
-  
-  .register-card {
+
+  .register-brand {
+    font-size: 1.5rem;
+  }
+
+  .register-hero {
+    padding: var(--spacing-lg) var(--spacing-md);
+    padding-top: var(--spacing-xl);
+  }
+
+  .register-hero-title {
+    font-size: 1.6rem;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .register-form-card {
     padding: var(--spacing-xl) var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+  }
+
+  .register-form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .register-user-type-btn {
+    padding: 12px var(--spacing-sm);
+    font-size: var(--font-size-xs);
   }
 }

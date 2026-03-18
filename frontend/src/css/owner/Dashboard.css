@@ -453,7 +453,7 @@
 .top-items-empty {
   text-align: center;
   padding: var(--spacing-xl);
-  color: rgba(255, 255, 255, 0.74);
+  color: #6b5a2b;
 }
 
 /* Mobile */
