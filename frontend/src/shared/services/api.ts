@@ -78,10 +78,12 @@ class ApiService {
 
       return { data }
     } catch (error) {
-      // Erro de rede (servidor não acessível)
+      const isNetworkError = error instanceof TypeError && error.message === 'Failed to fetch'
       return {
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        message: 'Não foi possível conectar ao servidor. Verifique se o servidor está rodando.',
+        error: isNetworkError
+          ? 'Servidor indisponível. Aguarde alguns segundos e tente novamente.'
+          : (error instanceof Error ? error.message : 'Erro desconhecido'),
+        message: 'Não foi possível conectar ao servidor.',
       }
     }
   }
@@ -187,9 +189,12 @@ class ApiService {
       return { data }
     } catch (error) {
       console.error('Network error:', error)
+      const isNetworkError = error instanceof TypeError && error.message === 'Failed to fetch'
       return {
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        message: 'Não foi possível conectar ao servidor. Verifique se o servidor está rodando.',
+        error: isNetworkError
+          ? 'Servidor indisponível. Aguarde alguns segundos e tente novamente.'
+          : (error instanceof Error ? error.message : 'Erro desconhecido'),
+        message: 'Não foi possível conectar ao servidor.',
       }
     }
   }
