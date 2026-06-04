@@ -92,23 +92,16 @@ function MenuCard({ menu, establishmentCode, isOwner, onDelete }: {
   onDelete: (menuId: number) => void
 }) {
   const {
-    showItemModal,
-    setShowItemModal,
-    selectedMenuItemId,
-    setSelectedMenuItemId,
-    selectedPortionId,
-    setSelectedPortionId,
-    menuItems,
     loadingMenuItems,
     successMessage,
     addingItem,
     handleAddToOrder,
-    handleConfirmAddToOrder
   } = useMenuCard({ menuId: menu.id, establishmentCode })
 
   return (
     <>
       <div className="menu-card">
+        <div className="menu-card-icon">📋</div>
         <h3 className="menu-card-title">{menu.name}</h3>
         {menu.description && (
           <p className="menu-card-description">{menu.description}</p>

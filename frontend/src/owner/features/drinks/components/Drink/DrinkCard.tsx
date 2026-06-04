@@ -18,56 +18,45 @@ export default function DrinkCard({ drink, establishmentCode, isOwner, onDelete,
     handleConfirmAddToOrder
   } = useDrinkCard({ drink, establishmentCode })
 
+  const placeholderImage = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' rx='60' fill='%23F5F0EA'/><text x='50%25' y='52%25' font-family='Arial' font-size='36' fill='%23A3988C' text-anchor='middle' dominant-baseline='middle'>🥤</text></svg>`
+
   return (
     <>
       <div className="dish-card">
-        {drink.photo_url && (
-          <div className="dish-card-image">
-            <img 
-              src={drink.photo_url} 
-              alt={drink.name}
-              className="dish-card-photo"
-            />
-          </div>
-        )}
-        
+        <div className="dish-card-image">
+          <img
+            src={drink.photo_url || placeholderImage}
+            alt={drink.name}
+            className="dish-card-photo"
+            onError={e => { (e.target as HTMLImageElement).src = placeholderImage }}
+          />
+        </div>
+
         <div className="dish-card-content">
           <h3 className="dish-card-title">{drink.name}</h3>
-          
-          {drink.description && (
-            <p className="dish-card-description">{drink.description}</p>
+
+          {drink.tags && drink.tags.length > 0 && (
+            <div className="dish-tags">
+              {drink.tags.map(tag => (
+                <span key={tag.id} className="dish-tag">{tag.name}</span>
+              ))}
+            </div>
           )}
 
           <div className="dish-card-info">
             {(drink.min_price !== undefined || drink.max_price !== undefined) && (
               <div className="dish-card-price">
-                {drink.min_price === drink.max_price ? (
-                  <strong>R$ {drink.min_price?.toFixed(2)}</strong>
-                ) : (
-                  <strong>R$ {drink.min_price?.toFixed(2)} - R$ {drink.max_price?.toFixed(2)}</strong>
-                )}
+                {drink.min_price === drink.max_price
+                  ? `R$ ${drink.min_price?.toFixed(2)}`
+                  : `R$ ${drink.min_price?.toFixed(2)} - R$ ${drink.max_price?.toFixed(2)}`}
               </div>
             )}
-            
             {drink.calories && (
-              <div className="dish-card-calories">
-                <strong>Calorias:</strong> {drink.calories} kcal
-              </div>
+              <div className="dish-card-calories">🔥 {drink.calories} kcal</div>
             )}
-            
             {drink.alcoholic !== undefined && (
               <div className="dish-card-calories">
-                <strong>Alcoólico:</strong> {drink.alcoholic ? 'Sim' : 'Não'}
-              </div>
-            )}
-            
-            {drink.tags && drink.tags.length > 0 && (
-              <div className="dish-tags">
-                {drink.tags.map(tag => (
-                  <span key={tag.id} className="dish-tag">
-                    {tag.name}
-                  </span>
-                ))}
+                {drink.alcoholic ? '🍺 Alcoólico' : '🧃 Não alcoólico'}
               </div>
             )}
           </div>

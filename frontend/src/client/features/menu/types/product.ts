@@ -22,4 +22,5 @@ export interface Product {
 export interface ProductCardProps {
   item: Product
   onAddToCart: (item: Product, portion?: ProductPortion) => void
+  onViewDetail?: (item: Product) => void
 }

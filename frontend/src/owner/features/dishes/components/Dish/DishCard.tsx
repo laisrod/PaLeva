@@ -18,51 +18,41 @@ export default function DishCard({ dish, establishmentCode, isOwner, onDelete, d
     handleConfirmAddToOrder
   } = useDishCard({ dish, establishmentCode })
 
+  const placeholderImage = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' rx='60' fill='%23F5F0EA'/><text x='50%25' y='52%25' font-family='Arial' font-size='36' fill='%23A3988C' text-anchor='middle' dominant-baseline='middle'>🍽</text></svg>`
+
   return (
     <>
       <div className="dish-card">
-        {dish.photo_url && (
-          <div className="dish-card-image">
-            <img 
-              src={dish.photo_url} 
-              alt={dish.name}
-              className="dish-card-photo"
-            />
-          </div>
-        )}
-        
+        <div className="dish-card-image">
+          <img
+            src={dish.photo_url || placeholderImage}
+            alt={dish.name}
+            className="dish-card-photo"
+            onError={e => { (e.target as HTMLImageElement).src = placeholderImage }}
+          />
+        </div>
+
         <div className="dish-card-content">
           <h3 className="dish-card-title">{dish.name}</h3>
-          
-          {dish.description && (
-            <p className="dish-card-description">{dish.description}</p>
+
+          {dish.tags && dish.tags.length > 0 && (
+            <div className="dish-tags">
+              {dish.tags.map(tag => (
+                <span key={tag.id} className="dish-tag">{tag.name}</span>
+              ))}
+            </div>
           )}
 
           <div className="dish-card-info">
             {(dish.min_price !== undefined || dish.max_price !== undefined) && (
               <div className="dish-card-price">
-                {dish.min_price === dish.max_price ? (
-                  <strong>R$ {dish.min_price?.toFixed(2)}</strong>
-                ) : (
-                  <strong>R$ {dish.min_price?.toFixed(2)} - R$ {dish.max_price?.toFixed(2)}</strong>
-                )}
+                {dish.min_price === dish.max_price
+                  ? `R$ ${dish.min_price?.toFixed(2)}`
+                  : `R$ ${dish.min_price?.toFixed(2)} - R$ ${dish.max_price?.toFixed(2)}`}
               </div>
             )}
-            
             {dish.calories && (
-              <div className="dish-card-calories">
-                <strong>Calorias:</strong> {dish.calories} kcal
-              </div>
-            )}
-            
-            {dish.tags && dish.tags.length > 0 && (
-              <div className="dish-tags">
-                {dish.tags.map(tag => (
-                  <span key={tag.id} className="dish-tag">
-                    {tag.name}
-                  </span>
-                ))}
-              </div>
+              <div className="dish-card-calories">🔥 {dish.calories} kcal</div>
             )}
           </div>
 

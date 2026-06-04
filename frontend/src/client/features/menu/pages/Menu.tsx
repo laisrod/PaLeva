@@ -1,12 +1,17 @@
+import { useState } from 'react'
 import Navigation from '../../../shared/components/Navigation'
 import BottomNavigation from '../../../shared/components/BottomNavigation'
 import MenuCategories from '../components/MenuCategories'
 import ProductCard from '../components/ProductCard'
+import ProductDetail from '../components/ProductDetail'
 import CartSidebar from '../../cart/components/CartSidebar'
 import { useMenuPage } from '../hooks/useMenuPage'
+import { Product } from '../types/product'
 import '../../../../css/client/pages/Menu.css'
 
 export default function Menu() {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+
   const {
     orderType,
     showCart,
@@ -66,9 +71,18 @@ export default function Menu() {
                   key={item.id}
                   item={item}
                   onAddToCart={addToCart}
+                  onViewDetail={setSelectedProduct}
                 />
               ))}
             </div>
+          )}
+
+          {selectedProduct && (
+            <ProductDetail
+              item={selectedProduct}
+              onClose={() => setSelectedProduct(null)}
+              onAddToCart={addToCart}
+            />
           )}
         </div>
 
