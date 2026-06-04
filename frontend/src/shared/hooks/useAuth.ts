@@ -89,7 +89,7 @@ function useProvideAuth(): AuthContextValue {
   useEffect(() => {
     const storedUser = getStoredUserData()
     if (storedUser) {
-      setUser(storedUser)
+      setUser(storedUser as User)
       setIsAuthenticated(true)
     }
 
@@ -142,10 +142,6 @@ function useProvideAuth(): AuthContextValue {
     if (backendUser) {
       setUser(backendUser)
       setIsAuthenticated(true)
-    } else {
-      clearAuthStorage()
-      setUser(null)
-      setIsAuthenticated(false)
     }
 
     setLoading(false)

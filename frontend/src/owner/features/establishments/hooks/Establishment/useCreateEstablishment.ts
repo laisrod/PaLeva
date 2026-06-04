@@ -4,7 +4,7 @@ import { ownerApi } from '../../../../shared/services/api'
 import { api } from '../../../../../shared/services/api'
 import { useAuth } from '../../../../../shared/hooks/useAuth'
 import { getErrorMessage } from '../../../../shared/hooks/errorHandler'
-import { CreateEstablishmentFormData, EstablishmentData, UseCreateEstablishmentOptions } from '../../types/establishment'
+import { CreateEstablishmentFormData, UseCreateEstablishmentOptions } from '../../types/establishment'
 
 export function useCreateEstablishment({ onSuccess }: UseCreateEstablishmentOptions = {}) {
   const navigate = useNavigate()
@@ -190,6 +190,7 @@ export function useCreateEstablishment({ onSuccess }: UseCreateEstablishmentOpti
     setErrors([])
 
     if (!validateForm()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       return
     }
 
