@@ -9,7 +9,7 @@
 
 .menu-main {
   background: var(--color-bg-secondary);
-  border: 1px solid #e7e0d4;
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-md);
 }

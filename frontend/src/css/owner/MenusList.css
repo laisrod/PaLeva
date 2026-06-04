@@ -1,12 +1,12 @@
 @import '../shared/variables.css';
 
 .menus-list-container {
-  --menu-primary: #6b5a2b;
-  --menu-primary-dark: #4b3f1f;
-  --menu-surface: #f8f2df;
-  --menu-surface-soft: #faf8f3;
-  --text-primary: #2f2a25;
-  --text-secondary: rgba(47, 42, 37, 0.72);
+  --menu-primary: var(--color-primary);
+  --menu-primary-dark: var(--color-primary-dark);
+  --menu-surface: var(--color-bg-primary);
+  --menu-surface-soft: var(--color-white);
+  --text-primary: var(--text-primary);
+  --text-secondary: var(--text-secondary);
   max-width: 100%;
   margin: 0;
   padding: 0;
@@ -57,8 +57,8 @@
 .menus-search-input {
   width: 100%;
   padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 48px;
-  background: #fffdf7;
-  border: 1px solid #ddd5c8;
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-300);
   border-radius: var(--border-radius-lg);
   color: var(--text-primary);
   font-size: var(--font-size-base);
@@ -72,7 +72,7 @@
 .menus-search-input:focus {
   outline: none;
   border-color: var(--menu-primary);
-  box-shadow: 0 0 0 3px rgba(107, 90, 43, 0.14);
+  box-shadow: 0 0 0 3px rgba(232, 128, 25, 0.15);
 }
 
 .menus-list-actions {
@@ -111,11 +111,11 @@
 .menus-list-btn-secondary {
   background: transparent;
   color: var(--text-secondary);
-  border-color: #ddd5c8;
+  border-color: var(--color-gray-300);
 }
 
 .menus-list-btn-secondary:hover {
-  background: rgba(107, 90, 43, 0.08);
+  background: var(--color-primary-bg);
   border-color: var(--menu-primary);
   color: var(--text-primary);
 }
@@ -128,7 +128,7 @@
 
 .menu-card {
   background: var(--menu-surface-soft);
-  border: 1px solid #e7e0d4;
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-lg);
   transition: all var(--transition-base);
@@ -204,11 +204,11 @@
 .menu-card-btn-secondary {
   background: transparent;
   color: var(--text-secondary);
-  border-color: #d8cfbf;
+  border-color: var(--color-gray-300);
 }
 
 .menu-card-btn-secondary:hover {
-  background: rgba(107, 90, 43, 0.08);
+  background: var(--color-primary-bg);
   border-color: var(--menu-primary);
   color: var(--text-primary);
 }
@@ -357,7 +357,7 @@
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-md);
-  background: #f3ecdf;
+  background: var(--color-gray-100);
   cursor: pointer;
   transition: all var(--transition-base);
 }
@@ -388,7 +388,7 @@
 
 .menu-card-modal-portion {
   padding: var(--spacing-sm) var(--spacing-md);
-  background: #f3ecdf;
+  background: var(--color-gray-100);
   border: 1px solid #e2d9c9;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
@@ -432,9 +432,9 @@
 
 .menu-card-modal-cancel,
 .menu-card-modal-close {
-  background: #f3ecdf;
+  background: var(--color-gray-100);
   color: var(--text-primary);
-  border-color: #d8cfbf;
+  border-color: var(--color-gray-300);
 }
 
 .menu-card-modal-cancel:hover,

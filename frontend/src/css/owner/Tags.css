@@ -1,17 +1,17 @@
 @import '../shared/variables.css';
 
 .tags-container {
-  --color-primary: #6b5a2b;
-  --color-primary-dark: #4b3f1f;
-  --color-bg-primary: #fffdf7;
-  --color-bg-secondary: #faf8f3;
-  --color-bg-tertiary: #f3ecdf;
-  --text-primary: #2f2a25;
-  --text-secondary: rgba(47, 42, 37, 0.72);
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-bg-primary: var(--color-white);
+  --color-bg-secondary: var(--color-white);
+  --color-bg-tertiary: var(--color-gray-100);
+  --text-primary: var(--text-primary);
+  --text-secondary: var(--text-secondary);
   max-width: 100%;
   margin: 0;
   padding: 0;
-  background: #f8f2df;
+  background: var(--color-bg-primary);
   border-radius: var(--border-radius-lg);
 }
 
@@ -67,7 +67,7 @@
 .tags-btn-secondary {
   background: transparent;
   color: var(--text-primary);
-  border-color: #d8cfbf;
+  border-color: var(--color-gray-300);
 }
 
 .tags-btn-secondary:hover {
@@ -85,7 +85,7 @@
 
 .tag-card {
   background: var(--color-bg-secondary);
-  border: 1px solid #e7e0d4;
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius-xl);
   padding: var(--spacing-lg);
   display: flex;

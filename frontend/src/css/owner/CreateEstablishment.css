@@ -3,23 +3,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f2df;
+  background: var(--color-bg-primary);
   padding: 20px;
 }
 
 .create-establishment-card {
-  background: #faf8f3;
-  border-radius: 12px;
+  background: var(--color-white);
+  border-radius: var(--border-radius-xl);
   padding: 60px 50px;
-  box-shadow: 0 6px 16px rgba(20, 20, 20, 0.05);
+  box-shadow: var(--shadow-lg);
   width: 100%;
   max-width: 900px;
-  border: 1px solid #e7e0d4;
+  border: 1px solid var(--color-gray-200);
 }
 
 .create-establishment-card h1 {
   margin: 0 0 40px 0;
-  color: #2f2a25;
+  color: var(--color-primary);
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
@@ -28,7 +28,7 @@
 
 .create-establishment-card h2 {
   margin: 0 0 40px 0;
-  color: rgba(47, 42, 37, 0.72);
+  color: var(--text-secondary);
   font-size: 1.75rem;
   font-weight: 400;
   text-align: center;
@@ -49,7 +49,7 @@
 .form-group label {
   display: block;
   margin-bottom: 10px;
-  color: #2f2a25;
+  color: var(--text-secondary);
   font-weight: 500;
   font-size: 0.95rem;
 }
@@ -57,34 +57,34 @@
 .form-group input {
   width: 100%;
   padding: 14px 16px;
-  border: 1px solid #d8cfbf;
-  border-radius: 4px;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--border-radius-md);
   font-size: 1rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   box-sizing: border-box;
-  background-color: #fffdf7;
-  color: #2f2a25;
+  background-color: var(--color-white);
+  color: var(--text-primary);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #6b5a2b;
-  box-shadow: 0 0 0 0.2rem rgba(107, 90, 43, 0.14);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(232, 128, 25, 0.15);
 }
 
 .form-group input:disabled {
-  background-color: #f3ecdf;
+  background-color: var(--color-gray-100);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .error-message {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
   padding: 20px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-md);
   margin-bottom: 24px;
-  border: 1px solid #f5c6cb;
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .error-message h3 {
@@ -105,20 +105,21 @@
 .btn-primary {
   width: 100%;
   padding: 14px;
-  background: #6b5a2b;
+  background: var(--color-primary);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius-md);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.15s ease-in-out;
   margin-top: 8px;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #4b3f1f;
+  background: var(--color-primary-dark);
   transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(232, 128, 25, 0.3);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -128,12 +129,12 @@
 .btn-primary:disabled {
   opacity: 0.65;
   cursor: not-allowed;
-  background: #6b5a2b;
 }
 
 .create-establishment-loading {
   padding: 20px;
   text-align: center;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 768px) {
@@ -146,4 +147,3 @@
     gap: 16px;
   }
 }
-

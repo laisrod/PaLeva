@@ -1,14 +1,14 @@
 @import '../shared/variables.css';
 
 .order-sidebar {
-  --text-primary: #33221c;
+  --text-primary: var(--color-primary-dark);
   --text-secondary: rgba(51, 34, 28, 0.74);
   position: fixed;
   right: 0;
   top: 0;
   width: 360px;
   height: 100vh;
-  background: #f5f5dc;
+  background: var(--color-white);
   border-left: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;

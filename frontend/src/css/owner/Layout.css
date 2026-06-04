@@ -4,21 +4,22 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #5a3005;
+  background: var(--color-bg-primary);
   position: relative;
   overflow-x: hidden;
 }
 
-/* Header Superior - Estilo Food Magic */
+/* Header Superior */
 .owner-header {
   position: fixed;
   top: 70px;
   left: 0;
   right: 0;
-  background: #5a3005;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-200);
   padding: var(--spacing-lg) var(--spacing-2xl);
   z-index: 99;
+  box-shadow: var(--shadow-sm);
 }
 
 .owner-header-content {
@@ -53,7 +54,7 @@
 
 /* Navbar Horizontal Superior */
 .owner-navbar {
-  background: #544823;
+  background: var(--color-white);
   width: 100%;
   height: auto;
   position: fixed;
@@ -65,7 +66,8 @@
   flex-direction: row;
   align-items: center;
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--color-gray-200);
+  box-shadow: var(--shadow-sm);
   overflow-x: clip;
   overflow-y: visible;
 }
@@ -104,7 +106,7 @@
 .logo-text {
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
+  color: var(--color-primary);
   writing-mode: horizontal-tb;
   text-orientation: mixed;
   transform: none;
@@ -113,7 +115,7 @@
 .owner-nav-links {
   display: flex;
   flex-direction: row;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xs);
   align-items: center;
   width: auto;
 }
@@ -131,16 +133,17 @@
   transition: all var(--transition-base);
   position: relative;
   border: none;
+  background: transparent;
 }
 
 .owner-nav-link:hover {
-  color: #f5f5dc;
-  background: #33221c;
+  color: var(--color-primary);
+  background: var(--color-primary-bg);
 }
 
 .owner-nav-link.active {
   color: var(--color-white);
-  background: #33221c;
+  background: var(--color-primary);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -151,12 +154,12 @@
 .nav-icon {
   width: 24px;
   height: 24px;
-  filter: brightness(0) invert(0.7);
+  filter: brightness(0) saturate(100%) invert(50%);
   transition: filter var(--transition-base);
 }
 
 .owner-nav-link:hover .nav-icon {
-  filter: brightness(0) invert(1);
+  filter: brightness(0) saturate(100%) invert(55%) sepia(80%) saturate(600%) hue-rotate(5deg);
 }
 
 .owner-nav-link.active .nav-icon {
@@ -180,11 +183,12 @@
 
 .owner-nav-time {
   font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
 }
 
 .owner-nav-phone {
   font-weight: var(--font-weight-semibold);
-  color: #f5f5dc;
+  color: var(--color-primary);
 }
 
 .owner-nav-actions {
@@ -219,8 +223,8 @@
 }
 
 .owner-action-btn:hover {
-  color: #f5f5dc;
-  background: #33221c;
+  color: var(--color-primary);
+  background: var(--color-primary-bg);
 }
 
 .owner-icon {
@@ -228,38 +232,39 @@
 }
 
 .owner-primary-btn {
-  background: #33221c;
+  background: var(--color-primary);
   color: var(--color-white);
-  border-color: #33221c;
+  border-color: var(--color-primary);
 }
 
 .owner-primary-btn:hover {
-  background: #221610;
-  border-color: #221610;
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
   color: var(--color-white);
 }
 
 .owner-user-btn {
-  background: #33221c;
-  color: var(--color-white);
-  border-color: #33221c;
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+  border-color: var(--color-primary-bg);
 }
 
 .owner-user-btn:hover {
-  background: #221610;
-  border-color: #221610;
+  background: var(--color-primary);
   color: var(--color-white);
+  border-color: var(--color-primary);
 }
 
 .owner-logout-btn {
   background: var(--color-white);
   color: var(--text-primary);
-  border-color: var(--color-gray-300);
+  border: 1px solid var(--color-gray-300);
 }
 
 .owner-logout-btn:hover {
-  background: var(--color-gray-50);
+  background: var(--color-gray-100);
   border-color: var(--color-gray-400);
+  color: var(--text-primary);
 }
 
 .owner-main-content {
@@ -271,19 +276,19 @@
   max-width: 100%;
   width: 100%;
   margin-left: 0;
-  background: #5a3005;
+  background: var(--color-bg-primary);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* Quando há OrderSidebar, adiciona padding à direita */
+/* Quando há OrderSidebar */
 .layout:has(.order-sidebar) .owner-main-content {
-  padding-right: 380px; /* Espaço para OrderSidebar (360px + 20px) */
+  padding-right: 380px;
 }
 
 .layout:has(.order-sidebar) .owner-header {
-  right: 360px; /* Espaço para OrderSidebar */
+  right: 360px;
 }
 
 /* Mobile e tablets pequenos */
@@ -369,10 +374,10 @@
     height: 40px;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid var(--color-gray-300);
     border-radius: var(--border-radius-md);
-    background: #33221c;
-    color: #f5f5dc;
+    background: var(--color-gray-100);
+    color: var(--text-primary);
     font-size: 1.2rem;
     line-height: 1;
     padding: 0;
@@ -385,12 +390,12 @@
     right: 0;
     flex-direction: column;
     gap: var(--spacing-xs);
-    background: #544823;
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
     border-radius: var(--border-radius-md);
     padding: var(--spacing-xs);
     z-index: 130;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+    box-shadow: var(--shadow-lg);
   }
 
   .owner-nav-actions.mobile-open {
@@ -418,7 +423,6 @@
     padding-top: var(--spacing-md);
   }
 
-  /* No mobile, neutraliza o deslocamento lateral da versão com sidebar */
   .layout:has(.order-sidebar) .owner-main-content {
     padding-right: var(--spacing-md);
   }
@@ -427,5 +431,3 @@
     right: 0;
   }
 }
-
-/* Tablet */
