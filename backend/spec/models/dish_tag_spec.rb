@@ -31,7 +31,7 @@ RSpec.describe DishTag, type: :model do
       establishment_id: establishment.id
     )
 
-    tag = Tag.create!(name: 'Vegano')
+    tag = Tag.create!(name: 'Vegano', category: 'dish')
     
     dish_tag = DishTag.new(
       dish: dish,
@@ -43,7 +43,7 @@ RSpec.describe DishTag, type: :model do
 
   describe 'validações' do
     it 'não é válido sem um prato' do
-      tag = Tag.create!(name: 'Vegano')
+      tag = Tag.create!(name: 'Vegano', category: 'dish')
       dish_tag = DishTag.new(tag: tag)
       
       expect(dish_tag).not_to be_valid
@@ -110,7 +110,7 @@ RSpec.describe DishTag, type: :model do
         establishment_id: establishment.id
       )
 
-      tag = Tag.create!(name: 'Vegano')
+      tag = Tag.create!(name: 'Vegano', category: 'dish')
       
       DishTag.create!(dish: dish, tag: tag)
       duplicate_dish_tag = DishTag.new(dish: dish, tag: tag)

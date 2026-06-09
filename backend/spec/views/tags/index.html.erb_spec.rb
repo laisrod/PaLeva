@@ -26,7 +26,7 @@ RSpec.describe "tags/index", type: :view do
     )
     
     assign(:tags, [
-      Tag.create!(name: "Vegano")
+      Tag.create!(name: "Vegano", category: "dish")
     ])
 
     render

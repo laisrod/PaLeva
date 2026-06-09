@@ -11,6 +11,9 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -49,8 +52,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
   end
 
   create_table "dish_tags", force: :cascade do |t|
-    t.integer "dish_id", null: false
-    t.integer "tag_id", null: false
+    t.bigint "dish_id", null: false
+    t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["dish_id"], name: "index_dish_tags_on_dish_id"
@@ -62,7 +65,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
     t.text "description"
     t.integer "calories"
     t.string "photo"
-    t.integer "establishment_id", null: false
+    t.bigint "establishment_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "status", default: true, null: false
@@ -70,8 +73,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
   end
 
   create_table "drink_tags", force: :cascade do |t|
-    t.integer "drink_id", null: false
-    t.integer "tag_id", null: false
+    t.bigint "drink_id", null: false
+    t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["drink_id"], name: "index_drink_tags_on_drink_id"
@@ -83,7 +86,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
     t.text "description"
     t.boolean "alcoholic"
     t.integer "calories"
-    t.integer "establishment_id", null: false
+    t.bigint "establishment_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "status", default: true, null: false
@@ -91,7 +94,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
   end
 
   create_table "employee_invitations", force: :cascade do |t|
-    t.integer "establishment_id", null: false
+    t.bigint "establishment_id", null: false
     t.string "email"
     t.string "cpf"
     t.boolean "role", default: false
@@ -118,8 +121,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
   end
 
   create_table "menu_item_portions", force: :cascade do |t|
-    t.integer "menu_item_id", null: false
-    t.integer "portion_id", null: false
+    t.bigint "menu_item_id", null: false
+    t.bigint "portion_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["menu_item_id", "portion_id"], name: "index_menu_item_portions_on_menu_item_id_and_portion_id", unique: true
@@ -128,9 +131,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
   end
 
   create_table "menu_items", force: :cascade do |t|
-    t.integer "menu_id", null: false
-    t.integer "drink_id"
-    t.integer "dish_id"
+    t.bigint "menu_id", null: false
+    t.bigint "drink_id"
+    t.bigint "dish_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["dish_id"], name: "index_menu_items_on_dish_id"
@@ -142,7 +145,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
     t.string "name", null: false
     t.text "description"
     t.boolean "active", default: true
-    t.integer "establishment_id", null: false
+    t.bigint "establishment_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "price", precision: 10, scale: 2
@@ -151,12 +154,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
 
   create_table "order_menu_items", force: :cascade do |t|
     t.integer "quantity", default: 1, null: false
-    t.integer "order_id"
-    t.integer "menu_item_id"
-    t.integer "portion_id"
+    t.bigint "order_id"
+    t.bigint "menu_item_id"
+    t.bigint "portion_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "menu_id"
+    t.bigint "menu_id"
     t.index ["menu_id"], name: "index_order_menu_items_on_menu_id"
     t.index ["menu_item_id"], name: "index_order_menu_items_on_menu_item_id"
     t.index ["order_id"], name: "index_order_menu_items_on_order_id"
@@ -164,7 +167,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.integer "establishment_id", null: false
+    t.bigint "establishment_id", null: false
     t.string "status", default: "draft"
     t.decimal "total_price", precision: 10, scale: 2
     t.string "customer_name"
@@ -175,7 +178,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
     t.datetime "updated_at", null: false
     t.string "customer_phone"
     t.string "cancellation_reason"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["establishment_id"], name: "index_orders_on_establishment_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
@@ -183,8 +186,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
   create_table "portions", force: :cascade do |t|
     t.string "description"
     t.decimal "price"
-    t.integer "drink_id"
-    t.integer "dish_id"
+    t.bigint "drink_id"
+    t.bigint "dish_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
@@ -195,31 +198,31 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
 
   create_table "price_histories", force: :cascade do |t|
     t.decimal "price", precision: 10, scale: 2
-    t.integer "portion_id"
+    t.bigint "portion_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["portion_id"], name: "index_price_histories_on_portion_id"
   end
 
   create_table "ratings", force: :cascade do |t|
-    t.integer "dish_id"
-    t.integer "drink_id"
-    t.integer "user_id", null: false
+    t.bigint "dish_id"
+    t.bigint "drink_id"
+    t.bigint "user_id", null: false
     t.integer "rating", null: false
     t.text "comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["dish_id", "user_id"], name: "index_ratings_on_dish_id_and_user_id", unique: true, where: "dish_id IS NOT NULL /*application='TakeAway'*/"
+    t.index ["dish_id", "user_id"], name: "index_ratings_on_dish_id_and_user_id", unique: true, where: "(dish_id IS NOT NULL)"
     t.index ["dish_id"], name: "index_ratings_on_dish_id"
-    t.index ["drink_id", "user_id"], name: "index_ratings_on_drink_id_and_user_id", unique: true, where: "drink_id IS NOT NULL /*application='TakeAway'*/"
+    t.index ["drink_id", "user_id"], name: "index_ratings_on_drink_id_and_user_id", unique: true, where: "(drink_id IS NOT NULL)"
     t.index ["drink_id"], name: "index_ratings_on_drink_id"
     t.index ["rating"], name: "index_ratings_on_rating"
     t.index ["user_id"], name: "index_ratings_on_user_id"
   end
 
   create_table "reviews", force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "order_id", null: false
+    t.bigint "user_id", null: false
     t.integer "rating", null: false
     t.text "comment"
     t.datetime "created_at", null: false
@@ -260,7 +263,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_131000) do
     t.string "closing_hour"
     t.string "week_day"
     t.boolean "open", default: true
-    t.integer "establishment_id", null: false
+    t.bigint "establishment_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["establishment_id"], name: "index_working_hours_on_establishment_id"

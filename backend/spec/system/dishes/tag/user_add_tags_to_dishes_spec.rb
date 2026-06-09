@@ -28,8 +28,8 @@ describe 'Usuário adiciona características aos pratos' do
       description: 'Feijoada completa',
       establishment: establishment
     )
-    Tag.create!(name: 'Vegano')
-    Tag.create!(name: 'Sem Glúten')
+    Tag.create!(name: 'Vegano', category: 'dish')
+    Tag.create!(name: 'Sem Glúten', category: 'dish')
     
     # Act
     login_as user
