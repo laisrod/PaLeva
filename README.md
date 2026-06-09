@@ -1,122 +1,74 @@
-# PaLeva 🍽️
+# PaLeva
 
-A comprehensive restaurant management system built with Ruby on Rails and React.
+Sistema completo de gestão de restaurantes com interfaces separadas para proprietários e clientes.
 
-## 📋 About
+## Sobre
 
-PaLeva is a full-stack application for managing restaurants, menus, orders, and customer interactions. The system provides separate interfaces for restaurant owners and customers, enabling complete control over the business operations.
+PaLeva é uma aplicação fullstack para gerenciar restaurantes, cardápios, pedidos e avaliações. Proprietários têm acesso a um painel de controle completo, enquanto clientes podem navegar pelo cardápio e realizar pedidos em tempo real.
 
-## 📈 Metrics and Impact
+## Funcionalidades
 
-### Measured metrics (current repository state)
-- **17 domain entities** managed in the backend (`ApplicationRecord` models).
-- **87 API v1 routes** available for app features and integrations.
-- **Backend test suite:** 130 RSpec examples total, with 44 currently passing.
-- **Critical OAuth request tests:** 17 examples, with 12 currently passing.
-- **Frontend test suite:** 36 tests total, with 30 currently passing.
+### Para proprietários
+- Dashboard com visão geral de pedidos e métricas
+- Gerenciamento de pratos, bebidas e sobremesas
+- Gerenciamento de cardápios e itens
+- Controle de pedidos com atualização de status em tempo real
+- Configuração do estabelecimento e horários de funcionamento
+- Tags e categorias personalizadas
+- Avaliações e reviews dos clientes
 
-### Estimated impact metrics
-- **Setup time reduction: ~80% (estimated)** when using the current scripted/containerized setup compared to a fully manual setup.
-- **High coverage of critical authentication scenarios (estimated)** based on dedicated OAuth success/failure request specs and frontend callback flow tests.
+### Para clientes
+- Listagem de restaurantes disponíveis
+- Navegação pelo cardápio com categorias e filtros
+- Realização de pedidos
+- Histórico de pedidos
+- Notificações em tempo real do status do pedido
 
-## 🚀 Features
-
-### For Restaurant Owners
-- **Dashboard** - Overview of orders, statistics, and business metrics
-- **Menu Management** - Create and manage dishes, drinks, and menus
-- **Order Management** - Real-time order tracking and status updates
-- **Establishment Management** - Configure restaurant details and working hours
-- **Tags & Categories** - Organize items with custom tags
-- **Ratings & Reviews** - View and manage customer feedback
-
-### For Customers
-- **Restaurant Discovery** - Browse available restaurants
-- **Menu Browsing** - View menus with categories and filters
-- **Order Placement** - Place orders for delivery or pickup
-- **Order History** - Track past orders
-- **Real-time Updates** - Receive live order status notifications
-
-## 🛠️ Tech Stack
+## Stack
 
 ### Backend
-- **Ruby 3.3.4**
-- **Rails 7.2.2.1**
-- **SQLite3** (development)
-- **Action Cable** (WebSockets for real-time features)
-- **Devise** (authentication)
-- **Vite** (asset pipeline)
+- Ruby 3.3.4
+- Rails 7.2
+- SQLite3 (desenvolvimento) / PostgreSQL (produção)
+- Action Cable (WebSockets para tempo real)
+- Devise (autenticação)
+- RSpec (testes)
 
 ### Frontend
-- **React 18**
-- **TypeScript**
-- **Vite**
-- **React Router DOM**
-- **Bootstrap 5**
-- **WebSocket** (real-time notifications)
+- React 19
+- TypeScript
+- Vite 7
+- React Router DOM 7
+- Tailwind CSS v4
+- Vitest (testes)
 
-## 📦 Project Structure
+## Estrutura do projeto
 
 ```
 PaLeva/
-├── backend/          # Rails API
+├── backend/
 │   ├── app/
-│   │   ├── controllers/  # API controllers
-│   │   ├── models/       # ActiveRecord models
-│   │   ├── channels/     # Action Cable channels
-│   │   └── views/        # Rails views (legacy)
-│   ├── config/       # Rails configuration
-│   ├── db/           # Database migrations and seeds
-│   └── Dockerfile     # Backend container definition
+│   │   ├── controllers/api/v1/   # Controllers da API
+│   │   ├── models/               # Modelos ActiveRecord
+│   │   ├── services/             # Service objects
+│   │   ├── channels/             # Action Cable
+│   │   └── serializers/          # Serializers de resposta
+│   ├── spec/                     # Testes RSpec
+│   └── db/                       # Migrations e seeds
 │
-├── frontend/         # React application
-│   ├── src/
-│   │   ├── client/       # Customer-facing features
-│   │   ├── owner/        # Owner-facing features
-│   │   ├── shared/       # Shared components and utilities
-│   │   └── components/   # Global components
-│   └── Dockerfile     # Frontend container definition
-│
-└── docker-compose.yml # Docker orchestration
+└── frontend/
+    └── src/
+        ├── client/               # Area do cliente
+        ├── owner/                # Area do proprietario
+        │   └── features/         # Organizacao por dominio
+        └── shared/               # Codigo compartilhado
 ```
 
-## 🚀 Quick Start
+## Como rodar
 
-### Prerequisites
+### Sem Docker
 
-- **Docker** and **Docker Compose** installed
-- Git
-
-### Using Docker (Recommended)
-
-1. **Clone the repository**
-   ```bash
-   git clone git@github.com:laisrod/PaLeva.git
-   cd PaLeva
-   ```
-
-2. **Start the application**
-   ```bash
-   docker-compose up
-   ```
-
-3. **Run database migrations** (in a new terminal)
-   ```bash
-   docker-compose exec backend bin/rails db:migrate
-   ```
-
-4. **Seed the database** (optional)
-   ```bash
-   docker-compose exec backend bin/rails db:seed
-   ```
-
-5. **Access the application**
-   - Frontend: http://localhost:5176
-   - Backend API: http://localhost:3000
-
-### Without Docker
-
-#### Backend Setup
-
+**Backend**
 ```bash
 cd backend
 bundle install
@@ -124,166 +76,102 @@ bin/rails db:create db:migrate db:seed
 bin/rails server
 ```
 
-#### Frontend Setup
-
+**Frontend**
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-## 🔐 Default Credentials
+Acesse o frontend em `http://localhost:5176` e o backend em `http://localhost:3000`.
 
-After running `rails db:seed`:
+### Com Docker
 
-### Owner Account
-- **Email:** owner@example.com
-- **Password:** testes123456
-
-### Customer Account
-- **Email:** client@example.com
-- **Password:** testes123456
-
-## 📡 API Endpoints
-
-### Authentication
-- `POST /api/v1/sign_in` - User login
-- `DELETE /api/v1/sign_out` - User logout
-- `GET /api/v1/is_signed_in` - Check authentication status
-- `POST /api/v1/users` - User registration
-
-### Establishments
-- `GET /api/v1/establishments/:code` - Get establishment details
-- `POST /api/v1/establishments` - Create establishment
-- `PUT /api/v1/establishments/:code` - Update establishment
-
-### Dishes & Drinks
-- `GET /api/v1/establishments/:code/dishes` - List dishes
-- `POST /api/v1/establishments/:code/dishes` - Create dish
-- `GET /api/v1/establishments/:code/drinks` - List drinks
-- `POST /api/v1/establishments/:code/drinks` - Create drink
-
-### Menus
-- `GET /api/v1/establishments/:code/menus` - List menus
-- `POST /api/v1/establishments/:code/menus` - Create menu
-
-### Orders
-- `GET /api/v1/establishments/:code/orders` - List orders
-- `POST /api/v1/establishments/:code/orders` - Create order
-- `PATCH /api/v1/orders/:code/confirm` - Confirm order
-- `PATCH /api/v1/orders/:code/prepare_order` - Mark as preparing
-- `PATCH /api/v1/orders/:code/ready_order` - Mark as ready
-- `PATCH /api/v1/orders/:code/deliver` - Mark as delivered
-
-### Working Hours
-- `GET /api/v1/establishments/:code/working_hours` - Get working hours
-- `PUT /api/v1/establishments/:code/working_hours` - Update working hours
-
-## 🐳 Docker Commands
-
-### Start services
 ```bash
 docker-compose up
-```
-
-### Start in background
-```bash
-docker-compose up -d
-```
-
-### Stop services
-```bash
-docker-compose down
-```
-
-### View logs
-```bash
-docker-compose logs -f
-```
-
-### Execute commands in containers
-```bash
-# Rails console
-docker-compose exec backend bin/rails console
-
-# Run migrations
 docker-compose exec backend bin/rails db:migrate
-
-# Install frontend dependencies
-docker-compose exec frontend npm install
 ```
 
-### Rebuild containers
-```bash
-docker-compose build --no-cache
-docker-compose up
-```
+## Credenciais de teste
 
-## 🧪 Testing
+Apos rodar `rails db:seed`:
 
-### Backend (RSpec)
+| Perfil | Email | Senha |
+|---|---|---|
+| Proprietario | owner@example.com | testes123456 |
+| Cliente | client@example.com | testes123456 |
+
+## API — principais endpoints
+
+### Autenticacao
+- `POST /api/v1/sign_in` — login
+- `DELETE /api/v1/sign_out` — logout
+- `GET /api/v1/is_signed_in` — verifica sessao
+- `POST /api/v1/users` — cadastro
+
+### Estabelecimentos
+- `GET /api/v1/establishments/:code` — detalhes
+- `POST /api/v1/establishments` — criar
+- `PATCH /api/v1/establishments/:code` — atualizar
+
+### Pratos e Bebidas
+- `GET /api/v1/establishments/:code/dishes` — listar pratos
+- `POST /api/v1/establishments/:code/dishes` — criar prato
+- `GET /api/v1/establishments/:code/drinks` — listar bebidas
+- `POST /api/v1/establishments/:code/drinks` — criar bebida
+- `GET/POST /api/v1/establishments/:code/dishes/:id/portions` — porcoes
+
+### Cardapios
+- `GET /api/v1/establishments/:code/menus` — listar
+- `POST /api/v1/establishments/:code/menus` — criar
+- `GET/POST /api/v1/establishments/:code/menus/:id/menu_items` — itens do cardapio
+
+### Pedidos
+- `GET /api/v1/establishments/:code/orders` — listar
+- `POST /api/v1/establishments/:code/orders` — criar
+- `POST /api/v1/establishments/:code/orders/:code/items` — adicionar item
+- `DELETE /api/v1/establishments/:code/orders/:code/items/:id` — remover item
+- `PATCH /api/v1/establishments/:code/orders/:code/confirm` — confirmar
+- `PATCH /api/v1/establishments/:code/orders/:code/prepare_order` — preparando
+- `PATCH /api/v1/establishments/:code/orders/:code/ready_order` — pronto
+- `PATCH /api/v1/establishments/:code/orders/:code/deliver` — entregue
+- `PATCH /api/v1/establishments/:code/orders/:code/cancelled` — cancelar
+- `GET /api/v1/orders/history` — historico
+
+### Tags e horarios
+- `GET/POST /api/v1/establishments/:code/tags` — tags
+- `GET /api/v1/establishments/:code/working_hours` — horarios
+- `PATCH /api/v1/establishments/:code/working_hours/:id` — atualizar horario
+
+### Avaliacoes
+- `GET /api/v1/establishments/:code/ratings` — avaliacoes do estabelecimento
+
+## Testes
+
+**Backend (RSpec)**
 ```bash
 cd backend
 bundle exec rspec
 ```
+159 exemplos, 0 falhas.
 
-### Frontend (Vitest)
+**Frontend (Vitest)**
 ```bash
 cd frontend
 npm test
 ```
 
-## 📝 Environment Variables
+## Variaveis de ambiente
 
 ### Backend
-- `RAILS_ENV` - Rails environment (development/production)
-- `RAILS_MASTER_KEY` - Rails master key for encrypted credentials
+- `RAILS_ENV` — ambiente Rails
+- `RAILS_MASTER_KEY` — chave mestra para credenciais
 
 ### Frontend
-- `VITE_API_URL` - API base URL (default: `/api/v1`)
-- `VITE_DOCKER` - Set to `true` when running in Docker
+- `VITE_API_URL` — URL base da API (padrao: `/api/v1`)
 
-## 🔧 Development
+## Autora
 
-### Code Style
+Lais Rodrigues — [GitHub](https://github.com/laisrod)
 
-- **Backend:** Follow Ruby style guide and use RuboCop
-- **Frontend:** Use ESLint and Prettier configurations
-
-### Git Workflow
-
-- Create feature branches from `main`
-- Use conventional commit messages
-- Open pull requests for review
-
-## 📚 Documentation
-
-- [Docker Setup](DOCKER.md) - Detailed Docker configuration guide
-- [Backend README](backend/README.md) - Backend-specific documentation
-- [Frontend README](frontend/README.md) - Frontend-specific documentation
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is part of an educational program.
-
-## 👥 Authors
-
-- **Lais Rodrigues** - [GitHub](https://github.com/laisrod)
-
-## 🙏 Acknowledgments
-
-- Built as part of the IT Academy program
-- Uses modern web development best practices
-- Inspired by real-world restaurant management needs
-
----
-
-**Note:** This is a development project. For production use, additional security measures, database migration to PostgreSQL/MySQL, and proper deployment configuration are recommended.
+Projeto desenvolvido como parte do programa IT Academy.

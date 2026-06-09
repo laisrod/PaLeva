@@ -1,94 +1,104 @@
-# PaLeva Frontend
+# PaLeva — Frontend
 
-Frontend React para o sistema PaLeva de gerenciamento de restaurantes.
+Interface React para o sistema PaLeva de gestao de restaurantes.
 
-## Tecnologias
+## Stack
 
-- React 18
-- TypeScript
-- Vite
-- React Router DOM
-- CSS Modules
+- React 19
+- TypeScript 5.7
+- Vite 7
+- React Router DOM 7
+- Tailwind CSS v4 (via `@tailwindcss/vite`)
+- Vitest (testes)
 
-## Como Rodar
+## Como rodar
 
 ```bash
 npm install
 npm run dev
 ```
 
-Acesse `http://localhost:5176`
+Disponivel em `http://localhost:5176`.
 
 ## Scripts
 
-- `npm run dev` - Inicia o servidor de desenvolvimento
-- `npm run build` - Gera build de produção
-- `npm run preview` - Visualiza build de produção
-- `npm run lint` - Executa o linter
+| Comando | Descricao |
+|---|---|
+| `npm run dev` | Servidor de desenvolvimento |
+| `npm run build` | Build de producao |
+| `npm run preview` | Visualiza o build |
+| `npm test` | Roda os testes |
+| `npm run lint` | Executa o linter |
 
 ## Estrutura
 
 ```
 src/
-├── assets/           # Ícones SVG (restaurant, dish, drink, orders, menu, clock, user, logout)
-├── client/           # Área do cliente
-│   ├── components/   # BottomNavigation, CartSidebar, MenuCategories, ProductCard
-│   ├── hooks/        # useCart, useMenu, useRestaurants
-│   └── pages/        # Menu, RestaurantsList
-├── components/       # AppRoutes, ProtectedRoute
+├── assets/               # Icones SVG (restaurant, dish, drink, orders, menu, clock, user, logout)
+├── components/           # AppRoutes, ProtectedRoute
 ├── css/
-│   ├── client/       # Estilos da área do cliente
-│   ├── owner/        # Estilos da área do proprietário
-│   └── shared/       # Variáveis CSS e estilos compartilhados
-├── owner/            # Área do proprietário
-│   ├── components/   # Componentes organizados por domínio
-│   │   ├── Dashboard/
-│   │   ├── Dish/
-│   │   ├── DishPortion/
-│   │   ├── Drink/
-│   │   ├── DrinkPortion/
-│   │   ├── Establishment/
-│   │   ├── Layout/
-│   │   ├── Menu/
-│   │   ├── Orders/
-│   │   ├── Tags/
-│   │   └── WorkingHours/
-│   ├── hooks/        # Hooks customizados por domínio
-│   ├── services/     # Serviços de API
-│   └── types/        # Tipos TypeScript
-└── shared/           # Código compartilhado
-    ├── hooks/        # useAuth
-    ├── pages/        # Login, Register
-    ├── services/     # API compartilhada
-    └── utils/        # Utilitários (auth)
+│   ├── shared/           # variables.css, index.css (design tokens e Tailwind)
+│   ├── owner/            # Estilos da area do proprietario
+│   └── client/           # Estilos da area do cliente
+├── owner/
+│   ├── features/         # Organizacao por dominio
+│   │   ├── dashboard/
+│   │   ├── dishes/       # Pratos e sobremesas
+│   │   ├── drinks/
+│   │   ├── establishments/
+│   │   ├── menus/
+│   │   ├── orders/
+│   │   ├── ratings/
+│   │   ├── tags/
+│   │   └── working-hours/
+│   └── shared/
+│       ├── components/Layout/
+│       └── hooks/
+├── client/
+│   └── features/
+│       ├── cart/
+│       ├── menu/
+│       ├── orders/
+│       └── restaurants/
+└── shared/
+    ├── hooks/             # useAuth, useApiData, useInfiniteScroll
+    └── services/          # api.ts (cliente HTTP centralizado)
 ```
 
 ## Tema
 
-O sistema usa variáveis CSS para theming (ver `src/css/shared/variables.css`):
+Paleta earthy definida em `src/css/shared/variables.css`:
 
 ```css
---color-primary: #FF7F3F;     /* Laranja */
---color-bg-primary: #252836;   /* Fundo escuro */
---color-bg-secondary: #1F1D2B; /* Cards */
---text-primary: #FFFFFF;       /* Texto principal */
+--color-primary: #E8850A;
+--color-bg-primary: #F5F4F2;
+--text-primary: #331A00;
+--text-secondary: #766554;
 ```
 
-## Rotas Principais
+## Rotas
 
-### Públicas
-- `/login` - Login
-- `/register` - Cadastro
+### Publicas
+- `/login`
+- `/register`
+- `/restaurants`
+- `/menu/:code`
 
-### Proprietário
-- `/establishment/:code` - Dashboard
-- `/establishment/:code/dishes` - Pratos
-- `/establishment/:code/drinks` - Bebidas
-- `/establishment/:code/menus` - Cardápios
-- `/establishment/:code/orders` - Pedidos
-- `/establishment/:code/tags` - Características
-- `/establishment/:code/working-hours` - Horários
+### Proprietario
+- `/establishment/:code` — dashboard
+- `/establishment/:code/dishes` — pratos
+- `/establishment/:code/drinks` — bebidas
+- `/establishment/:code/desserts` — sobremesas
+- `/establishment/:code/menus` — cardapios
+- `/establishment/:code/orders` — pedidos
+- `/establishment/:code/tags` — caracteristicas
+- `/establishment/:code/working-hours` — horarios
+- `/establishment/:code/ratings` — avaliacoes
+- `/establishment/:code/edit` — editar estabelecimento
 
 ### Cliente
-- `/restaurants` - Lista de restaurantes
-- `/menu/:code` - Menu do restaurante
+- `/orders/history` — historico de pedidos
+
+## Variaveis de ambiente
+
+- `VITE_API_URL` — URL base da API (padrao: `/api/v1`)
