@@ -33,8 +33,8 @@ RSpec.describe 'Usuário gerencia características dos pratos' do
       price: 30.00,
       dish_id: dish.id
     )
-    Tag.create!(name: 'Vegano')
-    Tag.create!(name: 'Sem Glúten')
+    Tag.create!(name: 'Vegano', category: 'dish')
+    Tag.create!(name: 'Sem Glúten', category: 'dish')
 
     # Act
     login_as user
