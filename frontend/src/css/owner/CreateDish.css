@@ -6,22 +6,22 @@
   --color-bg-primary: var(--color-white);
   --color-bg-secondary: var(--color-white);
   --color-bg-tertiary: var(--color-gray-100);
-  --text-primary: var(--text-primary);
-  --text-secondary: var(--text-secondary);
+  --text-primary: #1a1a1a;
+  --text-secondary: #555555;
   padding: 20px;
   max-width: 900px;
   margin: 0 auto;
-  background: var(--color-bg-primary);
+  background: var(--color-gray-50);
   border-radius: var(--border-radius-lg);
 }
 
 .create-dish-card {
-  background: var(--color-bg-secondary);
+  background: var(--color-white);
   border-radius: var(--border-radius-lg);
   padding: 40px;
   box-shadow: 0 6px 16px rgba(20, 20, 20, 0.05);
   border: 1px solid var(--color-gray-200);
-  color: var(--text-primary);
+  color: #1a1a1a;
 }
 
 .dish-header {
@@ -35,13 +35,13 @@
 
 .dish-header h1 {
   margin: 0;
-  color: var(--text-primary);
+  color: #1a1a1a;
   font-size: 1.75rem;
   font-weight: 600;
 }
 
 .create-dish-container .btn-back {
-  color: var(--text-secondary);
+  color: #555555;
   text-decoration: none;
   font-size: 0.95rem;
   transition: color 0.15s ease-in-out;
@@ -58,7 +58,7 @@
 .create-dish-card .form-group label {
   display: block;
   margin-bottom: 10px;
-  color: var(--text-primary);
+  color: #1a1a1a;
   font-weight: 500;
   font-size: 0.95rem;
 }
@@ -97,8 +97,8 @@
   font-size: 1rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   box-sizing: border-box;
-  background: var(--color-bg-tertiary);
-  color: var(--text-primary);
+  background: var(--color-white);
+  color: #1a1a1a;
   font-family: inherit;
 }
 
@@ -110,16 +110,16 @@
 .create-dish-card .form-group input[type="file"] {
   width: 100%;
   padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius-md);
   font-size: 0.95rem;
-  background: var(--color-bg-tertiary);
-  color: var(--text-primary);
+  background: var(--color-white);
+  color: #1a1a1a;
 }
 
 .create-dish-card .file-name {
   margin-top: 8px;
-  color: var(--text-secondary);
+  color: #555555;
   font-size: 0.9rem;
 }
 
@@ -132,7 +132,7 @@
 
 .create-dish-card .form-group input:disabled,
 .create-dish-card .form-group textarea:disabled {
-  background: var(--color-bg-primary);
+  background: var(--color-gray-50);
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -163,17 +163,17 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
   font-weight: normal;
-  color: var(--text-primary);
-  background: var(--color-bg-tertiary);
+  color: #1a1a1a;
+  background: var(--color-white);
 }
 
 .create-dish-card .tag-checkbox:hover {
-  background: var(--color-bg-primary);
+  background: var(--color-gray-50);
   border-color: var(--color-primary);
 }
 
@@ -197,18 +197,18 @@
 .create-dish-card .new-tag-section input {
   flex: 1;
   padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius-md);
   font-size: 0.95rem;
-  background: var(--color-bg-tertiary);
-  color: var(--text-primary);
+  background: var(--color-white);
+  color: #1a1a1a;
 }
 
 .create-dish-card .btn-add-tag {
   padding: 10px 20px;
-  background: var(--color-bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-white);
+  color: #1a1a1a;
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius-md);
   font-size: 0.95rem;
   font-weight: 600;
@@ -217,7 +217,7 @@
 }
 
 .create-dish-card .btn-add-tag:hover:not(:disabled) {
-  background: var(--color-bg-primary);
+  background: var(--color-gray-50);
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
@@ -240,7 +240,7 @@
   margin: 0 0 12px 0;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #1a1a1a;
 }
 
 .create-dish-card .error-message ul {
@@ -258,13 +258,13 @@
   justify-content: flex-end;
   margin-top: 32px;
   padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--color-gray-200);
 }
 
 .create-dish-card .btn-primary {
   padding: 12px 24px;
   background: var(--color-primary);
-  color: var(--color-white);
+  color: #1a1a1a;
   border: 1px solid var(--color-primary);
   border-radius: var(--border-radius-md);
   font-size: 1rem;
@@ -290,9 +290,9 @@
 
 .create-dish-card .btn-secondary {
   padding: 12px 24px;
-  background: var(--color-bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-white);
+  color: #1a1a1a;
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius-md);
   font-size: 1rem;
   font-weight: 600;
@@ -304,7 +304,7 @@
 }
 
 .create-dish-card .btn-secondary:hover {
-  background: var(--color-bg-primary);
+  background: var(--color-gray-50);
   border-color: var(--color-primary);
   color: var(--color-primary);
   transform: translateY(-1px);
@@ -315,10 +315,10 @@
 }
 
 .create-dish-card .portions-list {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius-md);
   padding: 16px;
-  background: var(--color-bg-tertiary);
+  background: var(--color-white);
 }
 
 .create-dish-card .portion-item {
@@ -326,10 +326,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px;
-  background: var(--color-bg-secondary);
+  background: var(--color-white);
   border-radius: var(--border-radius-md);
   margin-bottom: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-gray-200);
 }
 
 .create-dish-card .portion-item:last-child {
@@ -345,7 +345,7 @@
 
 .create-dish-card .portion-description {
   font-weight: 500;
-  color: var(--text-primary);
+  color: #1a1a1a;
 }
 
 .create-dish-card .portion-price {
@@ -381,12 +381,12 @@
   padding: 24px;
   border: 1px dashed rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius-md);
-  background: var(--color-bg-primary);
+  background: var(--color-gray-50);
 }
 
 .create-dish-card .portions-empty p {
   margin: 0 0 16px 0;
-  color: var(--text-secondary);
+  color: #555555;
 }
 
 .create-dish-card .btn-add-portion {
@@ -425,7 +425,7 @@
 
 .create-dish-card .current-photo p {
   margin: 0 0 8px 0;
-  color: var(--text-secondary);
+  color: #555555;
   font-size: 0.9rem;
 }
 

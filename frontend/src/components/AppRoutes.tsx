@@ -10,6 +10,8 @@ import CreateEstablishment from '../owner/features/establishments/components/Est
 import EditEstablishment from '../owner/features/establishments/components/Establishment/EditEstablishment'
 import Dashboard from '../owner/features/dashboard/components/Dashboard/Dashboard'
 import Dishes from '../owner/features/dishes/components/Dish/Dishes'
+import Desserts from '../owner/features/dishes/components/Dish/Desserts'
+import CreateDessert from '../owner/features/dishes/components/Dish/CreateDessert'
 import Drinks from '../owner/features/drinks/components/Drink/Drinks'
 import MenusList from '../owner/features/menus/components/Menu/MenusList'
 import CreateMenu from '../owner/features/menus/components/Menu/CreateMenu'
@@ -49,6 +51,8 @@ export default function AppRoutes() {
       <Route path="/menu/:code" element={<Menu />} />
       <Route path="/establishment/:code" element={<Dashboard />} />
       <Route path="/establishment/:code/dishes" element={<Dishes />} />
+      <Route path="/establishment/:code/desserts" element={<Desserts />} />
+      <Route path="/establishment/:code/desserts/new" element={<CreateDessert />} />
       <Route path="/establishment/:code/dishes/new" element={<CreateDish />} />
       <Route path="/establishment/:code/dishes/:id/edit" element={<EditDish />} />
       <Route path="/establishment/:code/dishes/:id/portions" element={<DishPortions />} />

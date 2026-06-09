@@ -38,7 +38,7 @@ export default function Layout({ children }: LayoutProps) {
               <div className="owner-nav-links">
                 <Link
                   to={`/establishment/${establishmentCode}`}
-                  className={`owner-nav-link ${isActive(`/establishment/${establishmentCode}`) && !isActive('/menus') && !isActive('/dishes') && !isActive('/drinks') && !isActive('/orders') ? 'active' : ''}`}
+                  className={`owner-nav-link ${isActive(`/establishment/${establishmentCode}`) && !isActive('/menus') && !isActive('/dishes') && !isActive('/drinks') && !isActive('/orders') && !isActive('/desserts') && !isActive('/tags') && !isActive('/working-hours') && !isActive('/ratings') ? 'active' : ''}`}
                   title="Dashboard"
                 >
                   <img src={RestaurantIcon} alt="Dashboard" className="nav-icon" />
@@ -63,6 +63,17 @@ export default function Layout({ children }: LayoutProps) {
                   title="Bebidas"
                 >
                   <img src={DrinkIcon} alt="Bebidas" className="nav-icon" />
+                </Link>
+                <Link
+                  to={`/establishment/${establishmentCode}/desserts`}
+                  className={`owner-nav-link ${isActive('/desserts') ? 'active' : ''}`}
+                  title="Sobremesas"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="nav-icon">
+                    <path d="M12 2C9 2 6 4 6 7C6 9 7 10.5 8.5 11.5L7 22H17L15.5 11.5C17 10.5 18 9 18 7C18 4 15 2 12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M9 22H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M10 7C10 7 11 9 12 9C13 9 14 7 14 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
                 </Link>
                 <Link
                   to={`/establishment/${establishmentCode}/orders`}
