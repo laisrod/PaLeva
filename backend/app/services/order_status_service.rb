@@ -5,23 +5,31 @@ class OrderStatusService
   end
 
   def progress!
-    return failure('Não é possível alterar o status deste pedido.') unless @order.can_progress?
+    @order.with_lock do
+      return failure('Não é possível alterar o status deste pedido.') unless @order.can_progress?
 
-    new_status = @order.next_status
-    if @order.update(status: new_status)
-      @order.update_total_price
-      success(status_message(new_status), new_status)
-    else
-      failure(@order.errors.full_messages.join(', '))
+      new_status = @order.next_status
+      if @order.update(status: new_status)
+        @order.update_total_price
+        success(status_message(new_status), new_status)
+      else
+        failure(@order.errors.full_messages.join(', '))
+      end
     end
+  rescue ActiveRecord::LockWaitTimeout
+    failure('Pedido está sendo modificado. Tente novamente em instantes.')
   end
 
   def cancel!(reason = nil)
-    if @order.update(status: 'cancelled', cancellation_reason: reason)
-      success('Pedido cancelado com sucesso!')
-    else
-      failure(@order.errors.full_messages.join(', '))
+    @order.with_lock do
+      if @order.update(status: 'cancelled', cancellation_reason: reason)
+        success('Pedido cancelado com sucesso!')
+      else
+        failure(@order.errors.full_messages.join(', '))
+      end
     end
+  rescue ActiveRecord::LockWaitTimeout
+    failure('Pedido está sendo modificado. Tente novamente em instantes.')
   end
 
   private

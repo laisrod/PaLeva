@@ -135,41 +135,52 @@ module Api
       end
 
       def ready_order
-        if @order.status == 'preparing' && @order.update(status: 'ready')
-          @order.update_total_price
-          render json: @order, status: :ok
-        else
-          render json: { error: 'Não foi possível atualizar o status' }, status: :unprocessable_entity
+        @order.with_lock do
+          if @order.status == 'preparing' && @order.update(status: 'ready')
+            @order.update_total_price
+            render json: @order, status: :ok
+          else
+            render json: { error: 'Não foi possível atualizar o status' }, status: :unprocessable_entity
+          end
         end
+      rescue ActiveRecord::LockWaitTimeout
+        render json: { error: 'Pedido está sendo modificado. Tente novamente em instantes.' }, status: :conflict
       end
 
       def confirm
-        unless @order.status == 'draft'
-          render json: { error: 'Apenas pedidos em rascunho podem ser confirmados' }, status: :unprocessable_entity
-          return
-        end
+        @order.with_lock do
+          unless @order.status == 'draft'
+            render json: { error: 'Apenas pedidos em rascunho podem ser confirmados' }, status: :unprocessable_entity
+            return
+          end
 
-        # Verificar se tem email ou telefone antes de tentar atualizar
-        if @order.customer_email.blank? && @order.customer_phone.blank?
-          render json: { error: 'É necessário informar um telefone ou email para confirmar o pedido' }, status: :unprocessable_entity
-          return
-        end
+          if @order.customer_email.blank? && @order.customer_phone.blank?
+            render json: { error: 'É necessário informar um telefone ou email para confirmar o pedido' }, status: :unprocessable_entity
+            return
+          end
 
-        if @order.update(status: 'pending')
-          @order.update_total_price
-          render json: @order, status: :ok
-        else
-          error_message = @order.errors.full_messages.join(', ')
-          render json: { error: error_message.presence || 'Erro ao confirmar pedido' }, status: :unprocessable_entity
+          if @order.update(status: 'pending')
+            @order.update_total_price
+            render json: @order, status: :ok
+          else
+            error_message = @order.errors.full_messages.join(', ')
+            render json: { error: error_message.presence || 'Erro ao confirmar pedido' }, status: :unprocessable_entity
+          end
         end
+      rescue ActiveRecord::LockWaitTimeout
+        render json: { error: 'Pedido está sendo modificado. Tente novamente em instantes.' }, status: :conflict
       end
 
       def deliver
-        if @order.status == 'ready' && @order.update(status: 'delivered')
-          render json: @order, status: :ok
-        else
-          render json: { error: 'Apenas pedidos prontos podem ser marcados como entregues' }, status: :unprocessable_entity
+        @order.with_lock do
+          if @order.status == 'ready' && @order.update(status: 'delivered')
+            render json: @order, status: :ok
+          else
+            render json: { error: 'Apenas pedidos prontos podem ser marcados como entregues' }, status: :unprocessable_entity
+          end
         end
+      rescue ActiveRecord::LockWaitTimeout
+        render json: { error: 'Pedido está sendo modificado. Tente novamente em instantes.' }, status: :conflict
       end
 
       def cancel

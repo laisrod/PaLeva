@@ -9,6 +9,7 @@ module Api
       skip_before_action :verify_authenticity_token
 
       def create
+        @order.with_lock do
         begin
           Rails.logger.info "[OrderItemsController] Create called with params: #{params.inspect}"
           Rails.logger.info "[OrderItemsController] Order code: #{params[:order_code]}, Establishment code: #{params[:establishment_code]}"
@@ -171,21 +172,28 @@ module Api
             details: Rails.env.development? ? e.backtrace.first(5) : nil
           }, status: :internal_server_error
         end
+        end
+      rescue ActiveRecord::LockWaitTimeout
+        render json: { error: 'Pedido está sendo modificado. Tente novamente em instantes.' }, status: :conflict
       end
 
       def destroy
-        item = @order.order_menu_items.find(params[:id])
-        item.destroy!
-        @order.reload
-        render json: {
-          message: 'Item removido do pedido',
-          order: {
-            id: @order.id,
-            code: @order.code,
-            status: @order.status,
-            total_price: @order.total_price.to_f
-          }
-        }, status: :ok
+        @order.with_lock do
+          item = @order.order_menu_items.find(params[:id])
+          item.destroy!
+          @order.reload
+          render json: {
+            message: 'Item removido do pedido',
+            order: {
+              id: @order.id,
+              code: @order.code,
+              status: @order.status,
+              total_price: @order.total_price.to_f
+            }
+          }, status: :ok
+        end
+      rescue ActiveRecord::LockWaitTimeout
+        render json: { error: 'Pedido está sendo modificado. Tente novamente em instantes.' }, status: :conflict
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Item não encontrado' }, status: :not_found
       end
