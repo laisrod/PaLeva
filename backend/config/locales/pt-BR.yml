@@ -94,7 +94,7 @@ pt-BR:
   time:
     formats:
       default: "%d/%m/%Y %H:%M"
-      short: "%d/%m/%Y %H:%M"      # ← esse é o que está faltando!
+      short: "%d/%m/%Y %H:%M"     
       long: "%d de %B de %Y, %H:%M"
       datetime:
         formats:
