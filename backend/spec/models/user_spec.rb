@@ -69,13 +69,13 @@ RSpec.describe User, type: :model do
           expect(user.provider).to eq('google_oauth2')
           expect(user.uid).to eq(user_info['sub'])
           expect(user.role).to be true
-          expect(user.password).not_to be_nil
+          expect(user.encrypted_password).not_to be_nil
         end
 
         it 'gera uma senha aleatória' do
           user = User.from_google_oauth(user_info)
-          expect(user.password).not_to be_nil
-          expect(user.password.length).to be > 0
+          expect(user.encrypted_password).not_to be_nil
+          expect(user.encrypted_password.length).to be > 0
         end
 
         it 'define role como true por padrão' do
@@ -90,7 +90,8 @@ RSpec.describe User, type: :model do
             email: user_info['email'],
             name: 'Nome Antigo',
             last_name: 'Sobrenome Antigo',
-            password: 'senha123456',
+            cpf: '483.556.180-50',
+            password: 'senha12345678',
             provider: 'google_oauth2',
             uid: user_info['sub'],
             role: true
@@ -145,7 +146,8 @@ RSpec.describe User, type: :model do
           email: 'old@example.com',
           name: 'Nome Antigo',
           last_name: 'Sobrenome Antigo',
-          password: 'senha123456',
+          cpf: '529.982.247-25',
+          password: 'senha12345678',
           role: true
         )
       end
@@ -168,8 +170,8 @@ RSpec.describe User, type: :model do
         expect(user.last_name).to eq(user_info['family_name'])
       end
 
-      it 'mantém o nome original se given_name não estiver presente' do
-        user_info_without_given = user_info.merge('given_name' => nil)
+      it 'mantém o nome original se given_name e name não estiverem presentes' do
+        user_info_without_given = user_info.except('given_name', 'name')
         original_name = user.name
 
         user.update_google_oauth_data(user_info_without_given)
@@ -178,8 +180,8 @@ RSpec.describe User, type: :model do
         expect(user.name).to eq(original_name)
       end
 
-      it 'mantém o sobrenome original se family_name não estiver presente' do
-        user_info_without_family = user_info.merge('family_name' => nil)
+      it 'mantém o sobrenome original se family_name e name não estiverem presentes' do
+        user_info_without_family = user_info.except('family_name', 'name')
         original_last_name = user.last_name
 
         user.update_google_oauth_data(user_info_without_family)
@@ -206,7 +208,7 @@ RSpec.describe User, type: :model do
         user = User.new(
           name: 'Usuário',
           email: 'oauth@example.com',
-          password: 'senha123456',
+          password: 'senha12345678',
           last_name: 'Sobrenome',
           provider: 'google_oauth2',
           uid: 'google-id-123',
@@ -219,7 +221,7 @@ RSpec.describe User, type: :model do
         user = User.new(
           name: 'Usuário',
           email: 'user@example.com',
-          password: 'senha123456',
+          password: 'senha12345678',
           last_name: 'Sobrenome',
           cpf: '123.456.789-00' # CPF inválido
         )
