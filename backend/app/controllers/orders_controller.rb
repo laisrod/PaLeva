@@ -31,20 +31,25 @@ class OrdersController < ApplicationController
 
   def save_item
     @order = current_order
-    result = OrderItemService.add_item(@order, order_menu_item_params)
+    service = OrderItemService.new(@order)
+    result = service.add_item(
+      portion_id: order_menu_item_params[:portion_id],
+      menu_item_id: order_menu_item_params[:menu_item_id],
+      quantity: order_menu_item_params[:quantity]
+    )
 
     if result[:success]
       redirect_to establishment_order_path(@order.establishment, @order), notice: 'Item adicionado com sucesso'
     else
       @menu_item = MenuItem.find(order_menu_item_params[:menu_item_id])
       @establishment = @order.establishment
-      flash.now[:alert] = result[:error]
+      flash.now[:alert] = result[:message]
       render :add_item, status: :unprocessable_entity
     end
   end
 
   def remove_item
-    result = OrderItemService.remove_item(@order, params[:item_id])
+    result = OrderItemService.new(@order).remove_item(params[:item_id])
     redirect_to establishment_order_path(@establishment, @order)
   end
 
