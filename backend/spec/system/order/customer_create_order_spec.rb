@@ -101,7 +101,9 @@ RSpec.describe 'Cliente cria um pedido', type: :system do
       fill_in 'CPF:', with: '260.405.490-68'
       click_button 'Atualizar'
     end
-    
+
+    click_button 'Enviar para Cozinha'
+
     expect(page).to have_content 'É necessário informar um telefone ou email'
   end
 
