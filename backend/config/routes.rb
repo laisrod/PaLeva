@@ -109,6 +109,9 @@ Rails.application.routes.draw do
       # Reviews e Ratings
       resources :reviews, only: [:show]
       resources :ratings, only: [:show]
+
+      # Sidekiq stats
+      get '/sidekiq/stats', to: 'sidekiq_stats#index'
     end
   end
 end
