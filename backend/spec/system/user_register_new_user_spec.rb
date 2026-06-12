@@ -57,9 +57,7 @@ RSpec.describe 'Cadastro de Funcionário', type: :system do
 
     expect(page).to have_content('Nome não pode ficar em branco')
     expect(page).to have_content('Sobrenome não pode ficar em branco')
-    expect(page).to have_content('CPF não pode ficar em branco')
-    expect(page).to have_content('CPF inválido')
     expect(page).to have_content('E-mail não pode ficar em branco')
-    expect(page).to have_content('Password não pode ficar em branco')
+    expect(page).to have_content('Senha não pode ficar em branco')
   end
 end

@@ -7,7 +7,7 @@ RSpec.describe 'Visualização de Pedido', type: :system do
     proprietario = User.create!(
       name: 'João',
       last_name: 'Silva',
-      cpf: '747.356.180-50',
+      cpf: '403.316.830-32',
       email: 'joao@example.com',
       password: 'password123456',
       role: true
@@ -85,7 +85,7 @@ RSpec.describe 'Visualização de Pedido', type: :system do
     proprietario = User.create!(
       name: 'João',
       last_name: 'Silva',
-      cpf: '747.356.180-50',
+      cpf: '403.316.830-32',
       email: 'joao@example.com',
       password: 'password123456',
       role: true

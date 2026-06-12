@@ -111,7 +111,7 @@ describe 'Registro de Estabelecimento pelo Usuário' do
       password: '123456789012',
       name: 'Maria',
       last_name: 'Silva',
-      cpf: '171.853.820-04',
+      cpf: '343.837.760-86',
       role: true
     )
 

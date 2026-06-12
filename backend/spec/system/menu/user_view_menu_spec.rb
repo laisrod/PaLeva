@@ -5,7 +5,7 @@ describe 'Visualização de Menu' do
     owner = User.create!(
       name: 'João',
       last_name: 'Silva',
-      cpf: '048.556.180-50',
+      cpf: '483.556.180-50',
       email: 'joao@example.com',
       password: 'password123456',
       role: true

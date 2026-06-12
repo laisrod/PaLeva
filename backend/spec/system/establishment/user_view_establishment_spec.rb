@@ -7,7 +7,7 @@ describe 'Visualização de Estabelecimento' do
     within('#new_user') do
       fill_in 'user_name', with: 'João'
       fill_in 'user_last_name', with: 'Silva'
-      fill_in 'user_cpf', with: '048.556.180-50'
+      fill_in 'user_cpf', with: '483.556.180-50'
       fill_in 'user_email', with: 'joao@example.com'
       fill_in 'user_password', with: 'password123456'
       fill_in 'user_password_confirmation', with: 'password123456'
@@ -24,7 +24,7 @@ describe 'Visualização de Estabelecimento' do
     owner = User.create!(
       name: 'João',
       last_name: 'Silva',
-      cpf: '048.556.180-50',
+      cpf: '483.556.180-50',
       email: 'joao@example.com',
       password: 'password123456',
       role: true

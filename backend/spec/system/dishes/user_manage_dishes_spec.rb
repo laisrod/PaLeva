@@ -83,7 +83,7 @@ describe 'Gerenciamento de Pratos' do
         email: 'outro@example.com',
         password: 'password1230',
         last_name: 'Last Name',
-        cpf: '855.556.180-50',
+        cpf: '529.982.247-25',
         role: true
       )
     )
