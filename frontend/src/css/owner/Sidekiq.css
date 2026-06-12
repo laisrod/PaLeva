@@ -1,0 +1,232 @@
+.sq-page {
+  background: #0d0d1a;
+  min-height: calc(100vh - 120px);
+  padding: 28px 32px;
+  color: #e2e8f0;
+}
+
+.sq-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.sq-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.sq-header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.sq-btn {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #2d2d44;
+  background: #1a1a2e;
+  color: #94a3b8;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.sq-btn:hover {
+  border-color: #4b5563;
+  color: #e2e8f0;
+}
+
+.sq-refreshing {
+  font-size: 0.78rem;
+  color: #4b5563;
+}
+
+/* Stats row */
+.sq-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.sq-stat-card {
+  background: #13132a;
+  border: 1px solid #1e1e38;
+  border-radius: 12px;
+  padding: 20px 22px;
+}
+
+.sq-stat-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0 0 8px;
+  letter-spacing: 0.03em;
+}
+
+.sq-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0;
+  line-height: 1;
+}
+
+.sq-stat-value.danger { color: #f87171; }
+.sq-stat-value.warning { color: #fbbf24; }
+
+/* Section card */
+.sq-section {
+  background: #13132a;
+  border: 1px solid #1e1e38;
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+
+.sq-section-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sq-empty {
+  color: #4b5563;
+  font-size: 0.85rem;
+}
+
+/* Queue rows */
+.sq-queue-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.sq-queue-row:last-child { margin-bottom: 0; }
+
+.sq-queue-name {
+  width: 90px;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  flex-shrink: 0;
+}
+
+.sq-queue-track {
+  flex: 1;
+  background: #1e1e38;
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.sq-queue-bar {
+  height: 8px;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+  min-width: 4px;
+}
+
+.sq-queue-count {
+  width: 72px;
+  text-align: right;
+  font-size: 0.82rem;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+/* Job rows */
+.sq-job-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #0d0d1a;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #1e1e38;
+}
+
+.sq-job-row:last-child { margin-bottom: 0; }
+
+.sq-job-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.sq-job-icon.retry  { background: #78350f; color: #fcd34d; }
+.sq-job-icon.dead   { background: #1f2937; color: #9ca3af; }
+.sq-job-icon.sched  { background: #1e3a5f; color: #93c5fd; }
+
+.sq-job-info { flex: 1; min-width: 0; }
+
+.sq-job-class {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0 0 3px;
+}
+
+.sq-job-error {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sq-badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.sq-badge-retry  { background: #78350f; color: #fcd34d; }
+.sq-badge-sched  { background: #1e3a5f; color: #93c5fd; }
+
+.sq-reprocess-btn {
+  padding: 5px 14px;
+  border: 1px solid #374151;
+  background: transparent;
+  color: #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.sq-reprocess-btn:hover {
+  border-color: #6b7280;
+  color: #f1f5f9;
+}
+
+@media (max-width: 768px) {
+  .sq-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .sq-page { padding: 16px; }
+}
