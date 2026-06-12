@@ -5,6 +5,7 @@ module Api
       include ApiEstablishmentScoped
 
       before_action :authenticate_api_user!
+      skip_before_action :authenticate_api_user!, only: [:show]
       before_action :set_order, only: [:show, :update, :destroy, :prepare_order, :cancel, :ready_order, :confirm, :deliver]
       skip_before_action :verify_authenticity_token
 
