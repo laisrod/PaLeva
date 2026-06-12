@@ -11,6 +11,7 @@ class Order < ApplicationRecord
   
   before_save :reset_timestamps
   before_save :update_total_price, unless: :destroyed?
+  after_update_commit :notify_status_change, if: :saved_change_to_status?
 
   validate :validate_contact_info, on: :update, if: :should_validate_contact_info?
   validate :validate_cpf, if: -> { customer_cpf.present? }
@@ -91,5 +92,9 @@ class Order < ApplicationRecord
     if customer_cpf.present? && !CPF.valid?(customer_cpf)
       errors.add(:customer_cpf, "inválido")
     end
+  end
+
+  def notify_status_change
+    SendOrderStatusJob.perform_later(id)
   end
 end

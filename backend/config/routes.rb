@@ -1,4 +1,9 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
+  # Sidekiq Web UI — acessível em /sidekiq
+  mount Sidekiq::Web => '/sidekiq'
+
   devise_for :users
   
   # Health check endpoint (não requer autenticação)

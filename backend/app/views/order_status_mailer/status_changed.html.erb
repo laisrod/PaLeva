@@ -1,0 +1,35 @@
+<h2>Atualização do seu pedido em <%= @establishment.name %></h2>
+
+<p>Olá, <%= @order.customer_name %>!</p>
+
+<p>
+  Seu pedido <strong>#<%= @order.id %></strong> teve seu status atualizado para:
+  <strong><%= @status_label %></strong>.
+</p>
+
+<table style="border-collapse: collapse; width: 100%;">
+  <thead>
+    <tr>
+      <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Produto</th>
+      <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Qtd</th>
+      <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @order.order_menu_items.each do |item| %>
+      <tr>
+        <td style="border: 1px solid #ddd; padding: 8px;"><%= item.menu_item.dish&.name || item.menu_item.drink&.name %></td>
+        <td style="border: 1px solid #ddd; padding: 8px; text-align: right;"><%= item.quantity %></td>
+        <td style="border: 1px solid #ddd; padding: 8px; text-align: right;"><%= number_to_currency(item.portion.price * item.quantity, locale: :'pt-BR') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: right;"><strong>Total</strong></td>
+      <td style="border: 1px solid #ddd; padding: 8px; text-align: right;"><strong><%= number_to_currency(@order.total_price, locale: :'pt-BR') %></strong></td>
+    </tr>
+  </tfoot>
+</table>
+
+<p>Obrigado por escolher o <%= @establishment.name %>!</p>
