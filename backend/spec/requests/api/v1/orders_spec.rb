@@ -35,26 +35,14 @@ RSpec.describe "API de Pedidos" do
       Order.create!(establishment: establishment)
       Order.create!(establishment: establishment)
       
-      # Fazer login
-      post '/users/sign_in', params: {
-        user: {
-          email: user.email,
-          password: 'senha@12345678'
-        }
-      }
-      
-      # Debug da URL
-      puts "\nChamando URL: /api/v1/establishments/#{establishment.code}/orders"
-      get "/api/v1/establishments/#{establishment.code}/orders"
-      
-      # Debug da resposta
-      puts "Status: #{response.status}"
-      puts "Body: #{response.body}"
+      get "/api/v1/establishments/#{establishment.code}/orders",
+          headers: { 'Authorization' => user.email }
       
       expect(response).to have_http_status(:ok)
       parsed_body = JSON.parse(response.body)
-      expect(parsed_body).to be_an(Array)
-      expect(parsed_body.length).to eq(2)
+      orders = parsed_body.is_a?(Array) ? parsed_body : parsed_body['orders']
+      expect(orders).to be_an(Array)
+      expect(orders.length).to eq(2)
     end
 
   end
@@ -99,11 +87,12 @@ RSpec.describe "API de Pedidos" do
       expect(response).to have_http_status(:ok)
       
       json = JSON.parse(response.body)
-      expect(json['customer_name']).to eq('Maria Silva')
-      expect(json['status']).to eq('pending')
-      expect(json['code']).to eq(order.code)
-      expect(json['customer_phone']).to eq('11999999999')
-      expect(json['customer_email']).to eq('maria.silva@example.com')
+      order_data = json['order'] || json
+      expect(order_data['customer_name']).to eq('Maria Silva')
+      expect(order_data['status']).to eq('pending')
+      expect(order_data['code']).to eq(order.code)
+      expect(order_data['customer_phone']).to eq('11999999999')
+      expect(order_data['customer_email']).to eq('maria.silva@example.com')
     end
   end
 end

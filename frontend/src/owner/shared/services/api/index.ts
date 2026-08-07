@@ -1,4 +1,5 @@
 import { EstablishmentsApi } from '../../../features/establishments/services/establishments'
+import { SidekiqApi } from '../../../features/sidekiq/services/sidekiq'
 import { MenusApi } from '../../../features/menus/services/menus'
 import { TagsApi } from '../../../features/tags/services/tags'
 import { DishesApi } from '../../../features/dishes/services/dishes'
@@ -22,6 +23,7 @@ class OwnerApiService extends BaseApiService {
   portions: PortionsApi
   orderItems: OrderItemsApi
   dashboard: DashboardApi
+  sidekiq: SidekiqApi
 
   constructor() {
     super()
@@ -35,6 +37,7 @@ class OwnerApiService extends BaseApiService {
     this.portions = new PortionsApi()
     this.orderItems = new OrderItemsApi()
     this.dashboard = new DashboardApi()
+    this.sidekiq = new SidekiqApi()
   }
 
   getEstablishment(code: string) {
@@ -291,6 +294,10 @@ class OwnerApiService extends BaseApiService {
 
   getDashboardStats(establishmentCode: string, period: 'day' | 'month' | 'year' = 'day') {
     return this.dashboard.getStats(establishmentCode, period)
+  }
+
+  getSidekiqStats() {
+    return this.sidekiq.getStats()
   }
 
   getRatings(establishmentCode: string) {

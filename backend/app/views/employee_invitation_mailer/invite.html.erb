@@ -1,0 +1,21 @@
+<h2>Você foi convidado para trabalhar em <%= @establishment.name %>!</h2>
+
+<p>Olá,</p>
+
+<p>
+  Você recebeu um convite para se juntar à equipe de
+  <strong><%= @establishment.name %></strong>.
+</p>
+
+<p>Para aceitar o convite, crie sua conta no sistema usando o e-mail e CPF abaixo:</p>
+
+<ul>
+  <li><strong>E-mail:</strong> <%= @invitation.email %></li>
+  <li><strong>CPF:</strong> <%= @invitation.cpf %></li>
+</ul>
+
+<p>
+  <%= link_to 'Criar minha conta', new_user_registration_url %>
+</p>
+
+<p>Se você não esperava este convite, pode ignorar este e-mail.</p>

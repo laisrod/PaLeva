@@ -34,6 +34,7 @@ import Orders from '../owner/features/orders/components/Orders/Orders'
 import EditWorkingHours from '../owner/features/working-hours/components/WorkingHours/EditWorkingHours'
 import TestCreateOrder from '../owner/features/orders/components/Orders/TestCreateOrder'
 import Ratings from '../owner/features/ratings/pages/Ratings'
+import SidekiqDashboard from '../owner/features/sidekiq/components/SidekiqDashboard/SidekiqDashboard'
 
 export default function AppRoutes() {
   return (
@@ -73,6 +74,7 @@ export default function AppRoutes() {
       <Route path="/establishment/:code/tags" element={<Tags />} />
       <Route path="/establishment/:code/working-hours" element={<EditWorkingHours />} />
       <Route path="/establishment/:code/ratings" element={<Ratings />} />
+      <Route path="/establishment/:code/jobs" element={<SidekiqDashboard />} />
       <Route path="/establishment/:code/test-order" element={<TestCreateOrder />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -14,6 +14,8 @@ class EmployeeInvitation < ApplicationRecord
     validates :cpf, uniqueness: { scope: :establishment_id,
                                 message: "já possui um convite para este estabelecimento" }
     
+    after_create_commit :send_invitation_email
+
     before_validation :format_cpf
     before_validation :set_default_role
     
@@ -47,5 +49,9 @@ class EmployeeInvitation < ApplicationRecord
     
     def set_default_role
       self.role = false if role.nil?
+    end
+
+    def send_invitation_email
+      SendEmployeeInvitationJob.perform_later(id)
     end
 end
