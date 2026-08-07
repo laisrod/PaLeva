@@ -24,9 +24,12 @@ RSpec.describe JsonWebToken do
       expect { described_class.decode(token) }.to raise_error(JsonWebToken::DecodeError)
     end
 
-    it 'raises DecodeError for a tampered token' do
+    it 'raises DecodeError for a tampered payload' do
       token = described_class.encode(user_id: 1)
-      tampered = token[0..-2] + (token[-1] == 'a' ? 'b' : 'a')
+      header, payload, signature = token.split(".")
+      forged_payload = Base64.urlsafe_encode64({ user_id: 999 }.to_json, padding: false)
+
+      tampered = [ header, forged_payload, signature ].join(".")
 
       expect { described_class.decode(tampered) }.to raise_error(JsonWebToken::DecodeError)
     end
