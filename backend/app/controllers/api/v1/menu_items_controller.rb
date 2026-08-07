@@ -1,9 +1,13 @@
 module Api
   module V1
     class MenuItemsController < ApplicationController
+      include AuthenticableApi
+      include EstablishmentOwnable
       skip_before_action :verify_authenticity_token
+      skip_before_action :authenticate_api_user!, only: [:index]
       before_action :set_establishment
       before_action :set_menu
+      before_action :authorize_establishment_owner!, only: [:create, :update, :destroy]
 
       def index
         @menu_items = @menu.menu_items.includes(:dish, :drink, :portions)

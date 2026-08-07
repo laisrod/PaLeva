@@ -2,7 +2,7 @@ module Api
   module V1
     class EstablishmentsController < ApplicationController
       skip_before_action :verify_authenticity_token
-      before_action :authenticate_api_user_for_create!, only: [:create]
+      before_action :authenticate_api_user_for_create!, only: [:create, :update]
       
       def index
         @establishments = Establishment.all
@@ -76,6 +76,12 @@ module Api
 
       def update
         @establishment = Establishment.find_by!(code: params[:code])
+
+        unless @establishment.user_id == current_api_user&.id
+          render json: { error: 'Não autorizado' }, status: :forbidden
+          return
+        end
+
         if @establishment.update(establishment_params)
           render json: {
             establishment: @establishment,
@@ -195,16 +201,21 @@ module Api
       private
 
       def authenticate_api_user_for_create!
-        email = request.headers['Authorization']&.split&.last
-        @current_api_user = email ? User.find_by(email: email) : nil
-        
-        unless @current_api_user
-          render json: { error: 'Não autorizado' }, status: :unauthorized
-        end
+        render json: { error: 'Não autorizado' }, status: :unauthorized unless current_api_user
       end
 
       def current_api_user
-        @current_api_user
+        return @current_api_user if defined?(@current_api_user)
+
+        token = request.headers['Authorization']&.split&.last
+        @current_api_user = token.present? ? user_from_token(token) : nil
+      end
+
+      def user_from_token(token)
+        payload = JsonWebToken.decode(token)
+        User.find_by(id: payload[:user_id])
+      rescue JsonWebToken::DecodeError
+        nil
       end
 
       def establishment_params

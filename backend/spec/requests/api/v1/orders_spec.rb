@@ -35,26 +35,17 @@ RSpec.describe "API de Pedidos" do
       Order.create!(establishment: establishment)
       Order.create!(establishment: establishment)
       
-      # Fazer login
-      post '/users/sign_in', params: {
-        user: {
-          email: user.email,
-          password: 'senha@12345678'
-        }
-      }
-      
-      # Debug da URL
-      puts "\nChamando URL: /api/v1/establishments/#{establishment.code}/orders"
-      get "/api/v1/establishments/#{establishment.code}/orders"
-      
-      # Debug da resposta
-      puts "Status: #{response.status}"
-      puts "Body: #{response.body}"
-      
+      # Fazer login via API para obter um token JWT válido
+      post '/api/v1/sign_in', params: { user: { email: user.email, password: 'senha@12345678' } }
+      token = JSON.parse(response.body)['token']
+
+      get "/api/v1/establishments/#{establishment.code}/orders",
+          headers: { 'Authorization' => "Bearer #{token}" }
+
       expect(response).to have_http_status(:ok)
-      parsed_body = JSON.parse(response.body)
-      expect(parsed_body).to be_an(Array)
-      expect(parsed_body.length).to eq(2)
+      orders = JSON.parse(response.body)['orders']
+      expect(orders).to be_an(Array)
+      expect(orders.length).to eq(2)
     end
 
   end
@@ -92,13 +83,18 @@ RSpec.describe "API de Pedidos" do
         establishment: establishment
       )
 
+      # Fazer login via API para obter um token JWT válido
+      post '/api/v1/sign_in', params: { user: { email: user.email, password: 'senha@12345678' } }
+      token = JSON.parse(response.body)['token']
+
       # Fazer a requisição
-      get "/api/v1/establishments/#{establishment.code}/orders/#{order.code}"
+      get "/api/v1/establishments/#{establishment.code}/orders/#{order.code}",
+          headers: { 'Authorization' => "Bearer #{token}" }
 
       # Verificar resposta
       expect(response).to have_http_status(:ok)
-      
-      json = JSON.parse(response.body)
+
+      json = JSON.parse(response.body)['order']
       expect(json['customer_name']).to eq('Maria Silva')
       expect(json['status']).to eq('pending')
       expect(json['code']).to eq(order.code)
