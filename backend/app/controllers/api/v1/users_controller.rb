@@ -25,9 +25,9 @@ module Api
             user_params_hash['role'] = ActiveModel::Type::Boolean.new.cast(role_value)
           end
         else
-          # Define role como true (owner) por padrão se não foi enviado
-          user_params_hash['role'] = true
-          Rails.logger.info "[UsersController] Role não foi enviado, definindo como true (owner) por padrão"
+          # Define role como false (client) por padrão se não foi enviado
+          user_params_hash['role'] = false
+          Rails.logger.info "[UsersController] Role não foi enviado, definindo como false (client) por padrão"
         end
         
         Rails.logger.info "[UsersController] Role final antes de criar usuário: #{user_params_hash['role'].inspect} (#{user_params_hash['role'].class})"
