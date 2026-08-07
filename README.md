@@ -1,38 +1,45 @@
 # PaLeva
 
-Sistema completo de gestão de restaurantes com interfaces separadas para proprietários e clientes.
+Full restaurant management system with separate interfaces for owners and customers.
 
-## Sobre
+## About
 
-PaLeva é uma aplicação fullstack para gerenciar restaurantes, cardápios, pedidos e avaliações. Proprietários têm acesso a um painel de controle completo, enquanto clientes podem navegar pelo cardápio e realizar pedidos em tempo real.
+PaLeva is a full-stack application for managing restaurants, menus, orders and reviews. Owners get access to a complete control panel, while customers can browse the menu and place orders in real time.
 
-## Funcionalidades
+## Features
 
-### Para proprietários
-- Dashboard com visão geral de pedidos e métricas
-- Gerenciamento de pratos, bebidas e sobremesas
-- Gerenciamento de cardápios e itens
-- Controle de pedidos com atualização de status em tempo real
-- Configuração do estabelecimento e horários de funcionamento
-- Tags e categorias personalizadas
-- Avaliações e reviews dos clientes
+### For owners
+- Dashboard with an overview of orders and metrics
+- Management of dishes, drinks and desserts
+- Menu and menu item management
+- Order control with real-time status updates
+- Establishment settings and working hours
+- Custom tags and categories
+- Customer ratings and reviews
+- Background job monitoring via a Sidekiq dashboard (queue stats)
 
-### Para clientes
-- Listagem de restaurantes disponíveis
-- Navegação pelo cardápio com categorias e filtros
-- Realização de pedidos
-- Histórico de pedidos
-- Notificações em tempo real do status do pedido
+### For customers
+- Listing of available restaurants
+- Menu browsing with categories and filters
+- Placing orders
+- Order history
+- Real-time order status notifications
+- Google OAuth login
 
 ## Stack
 
 ### Backend
 - Ruby 3.3.4
 - Rails 7.2
-- SQLite3 (desenvolvimento) / PostgreSQL (produção)
-- Action Cable (WebSockets para tempo real)
-- Devise (autenticação)
-- RSpec (testes)
+- SQLite3 (development) / PostgreSQL (production)
+- Action Cable (WebSockets for real-time updates)
+- Devise (authentication) + JWT
+- Sidekiq + Redis (background jobs)
+- Active Model Serializers (JSON API responses)
+- Active Storage Validations (file uploads)
+- `cpf_cnpj` (Brazilian document validation)
+- RSpec, Capybara, Selenium (tests)
+- Brakeman (security static analysis), RuboCop (linting)
 
 ### Frontend
 - React 19
@@ -40,33 +47,40 @@ PaLeva é uma aplicação fullstack para gerenciar restaurantes, cardápios, ped
 - Vite 7
 - React Router DOM 7
 - Tailwind CSS v4
-- Vitest (testes)
+- Recharts (charts/dashboards)
+- Vitest, Testing Library (tests)
+- ESLint
 
-## Estrutura do projeto
+### Infrastructure
+- Docker & Docker Compose (separate services for backend and frontend)
+- Vercel (deployment)
+- GitHub Actions (CI)
+
+## Project structure
 
 ```
 PaLeva/
 ├── backend/
 │   ├── app/
-│   │   ├── controllers/api/v1/   # Controllers da API
-│   │   ├── models/               # Modelos ActiveRecord
+│   │   ├── controllers/api/v1/   # API controllers
+│   │   ├── models/               # ActiveRecord models
 │   │   ├── services/             # Service objects
 │   │   ├── channels/             # Action Cable
-│   │   └── serializers/          # Serializers de resposta
-│   ├── spec/                     # Testes RSpec
-│   └── db/                       # Migrations e seeds
+│   │   └── serializers/          # Response serializers
+│   ├── spec/                     # RSpec tests
+│   └── db/                       # Migrations and seeds
 │
 └── frontend/
     └── src/
-        ├── client/               # Area do cliente
-        ├── owner/                # Area do proprietario
-        │   └── features/         # Organizacao por dominio
-        └── shared/               # Codigo compartilhado
+        ├── client/               # Customer area
+        ├── owner/                # Owner area
+        │   └── features/         # Organized by domain
+        └── shared/               # Shared code
 ```
 
-## Como rodar
+## Running the project
 
-### Sem Docker
+### Without Docker
 
 **Backend**
 ```bash
@@ -83,77 +97,90 @@ npm install
 npm run dev
 ```
 
-Acesse o frontend em `http://localhost:5176` e o backend em `http://localhost:3000`.
+Access the frontend at `http://localhost:5176` and the backend at `http://localhost:3000`.
 
-### Com Docker
+### With Docker
 
 ```bash
 docker-compose up
 docker-compose exec backend bin/rails db:migrate
 ```
 
-## Credenciais de teste
+## Test credentials
 
-Apos rodar `rails db:seed`:
+After running `rails db:seed`:
 
-| Perfil | Email | Senha |
+| Role | Email | Password |
 |---|---|---|
-| Proprietario | owner@example.com | testes123456 |
-| Cliente | client@example.com | testes123456 |
+| Owner | owner@example.com | testes123456 |
+| Customer | client@example.com | testes123456 |
 
-## API — principais endpoints
+## API — main endpoints
 
-### Autenticacao
+### Authentication
 - `POST /api/v1/sign_in` — login
 - `DELETE /api/v1/sign_out` — logout
-- `GET /api/v1/is_signed_in` — verifica sessao
-- `POST /api/v1/users` — cadastro
+- `GET /api/v1/is_signed_in` — check session
+- `POST /api/v1/users` — sign up
+- `GET /api/v1/login/google` — start Google OAuth
+- `GET|POST /api/v1/login/:provider/callback` — OAuth callback
 
-### Estabelecimentos
-- `GET /api/v1/establishments/:code` — detalhes
-- `POST /api/v1/establishments` — criar
-- `PATCH /api/v1/establishments/:code` — atualizar
+### Establishments
+- `GET /api/v1/establishments/:code` — details
+- `POST /api/v1/establishments` — create
+- `PATCH /api/v1/establishments/:code` — update
+- `GET /api/v1/establishments/:code/menu` — public menu (all dishes and drinks)
+- `GET /api/v1/establishments/:code/dashboard/stats` — dashboard stats
 
-### Pratos e Bebidas
-- `GET /api/v1/establishments/:code/dishes` — listar pratos
-- `POST /api/v1/establishments/:code/dishes` — criar prato
-- `GET /api/v1/establishments/:code/drinks` — listar bebidas
-- `POST /api/v1/establishments/:code/drinks` — criar bebida
-- `GET/POST /api/v1/establishments/:code/dishes/:id/portions` — porcoes
+### Dishes and drinks
+- `GET /api/v1/establishments/:code/dishes` — list dishes
+- `POST /api/v1/establishments/:code/dishes` — create dish
+- `GET /api/v1/establishments/:code/drinks` — list drinks
+- `POST /api/v1/establishments/:code/drinks` — create drink
+- `GET/POST /api/v1/establishments/:code/dishes/:id/portions` — portions
+- `GET/POST /api/v1/establishments/:code/dishes/:id/ratings` — dish ratings
+- `GET/POST /api/v1/establishments/:code/drinks/:id/ratings` — drink ratings
 
-### Cardapios
-- `GET /api/v1/establishments/:code/menus` — listar
-- `POST /api/v1/establishments/:code/menus` — criar
-- `GET/POST /api/v1/establishments/:code/menus/:id/menu_items` — itens do cardapio
+### Menus
+- `GET /api/v1/establishments/:code/menus` — list
+- `POST /api/v1/establishments/:code/menus` — create
+- `GET/POST /api/v1/establishments/:code/menus/:id/menu_items` — menu items
 
-### Pedidos
-- `GET /api/v1/establishments/:code/orders` — listar
-- `POST /api/v1/establishments/:code/orders` — criar
-- `POST /api/v1/establishments/:code/orders/:code/items` — adicionar item
-- `DELETE /api/v1/establishments/:code/orders/:code/items/:id` — remover item
-- `PATCH /api/v1/establishments/:code/orders/:code/confirm` — confirmar
-- `PATCH /api/v1/establishments/:code/orders/:code/prepare_order` — preparando
-- `PATCH /api/v1/establishments/:code/orders/:code/ready_order` — pronto
-- `PATCH /api/v1/establishments/:code/orders/:code/deliver` — entregue
-- `PATCH /api/v1/establishments/:code/orders/:code/cancelled` — cancelar
-- `GET /api/v1/orders/history` — historico
+### Orders
+- `GET /api/v1/establishments/:code/orders` — list
+- `POST /api/v1/establishments/:code/orders` — create
+- `POST /api/v1/establishments/:code/orders/:code/items` — add item
+- `DELETE /api/v1/establishments/:code/orders/:code/items/:id` — remove item
+- `PATCH /api/v1/establishments/:code/orders/:code/confirm` — confirm
+- `PATCH /api/v1/establishments/:code/orders/:code/prepare_order` — preparing
+- `PATCH /api/v1/establishments/:code/orders/:code/ready_order` — ready
+- `PATCH /api/v1/establishments/:code/orders/:code/deliver` — delivered
+- `PATCH /api/v1/establishments/:code/orders/:code/cancelled` — cancel
+- `GET/POST /api/v1/establishments/:code/orders/:code/reviews` — order reviews
+- `GET /api/v1/orders/history` — customer order history
 
-### Tags e horarios
+### Tags and working hours
 - `GET/POST /api/v1/establishments/:code/tags` — tags
-- `GET /api/v1/establishments/:code/working_hours` — horarios
-- `PATCH /api/v1/establishments/:code/working_hours/:id` — atualizar horario
+- `GET /api/v1/establishments/:code/working_hours` — working hours
+- `PATCH /api/v1/establishments/:code/working_hours/:id` — update working hours
 
-### Avaliacoes
-- `GET /api/v1/establishments/:code/ratings` — avaliacoes do estabelecimento
+### Ratings and reviews
+- `GET /api/v1/establishments/:code/ratings` — establishment ratings
+- `GET /api/v1/ratings/:id` — rating details
+- `GET /api/v1/reviews/:id` — review details
 
-## Testes
+### Background jobs
+- `GET /api/v1/sidekiq/stats` — Sidekiq queue stats (used by the owner dashboard)
+- `/sidekiq` — Sidekiq Web UI (mounted engine)
+
+## Tests
 
 **Backend (RSpec)**
 ```bash
 cd backend
 bundle exec rspec
 ```
-159 exemplos, 0 falhas.
+173 examples, 0 failures.
 
 **Frontend (Vitest)**
 ```bash
@@ -161,17 +188,17 @@ cd frontend
 npm test
 ```
 
-## Variaveis de ambiente
+## Environment variables
 
 ### Backend
-- `RAILS_ENV` — ambiente Rails
-- `RAILS_MASTER_KEY` — chave mestra para credenciais
+- `RAILS_ENV` — Rails environment
+- `RAILS_MASTER_KEY` — master key for credentials
 
 ### Frontend
-- `VITE_API_URL` — URL base da API (padrao: `/api/v1`)
+- `VITE_API_URL` — API base URL (default: `/api/v1`)
 
-## Autora
+## Author
 
 Lais Rodrigues — [GitHub](https://github.com/laisrod)
 
-Projeto desenvolvido como parte do programa IT Academy.
+Project developed as part of the IT Academy program.
