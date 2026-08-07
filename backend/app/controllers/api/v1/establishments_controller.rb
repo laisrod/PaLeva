@@ -2,7 +2,7 @@ module Api
   module V1
     class EstablishmentsController < ApplicationController
       skip_before_action :verify_authenticity_token
-      before_action :authenticate_api_user_for_create!, only: [:create]
+      before_action :authenticate_api_user_for_create!, only: [:create, :update]
       
       def index
         @establishments = Establishment.all
@@ -76,6 +76,12 @@ module Api
 
       def update
         @establishment = Establishment.find_by!(code: params[:code])
+
+        unless @establishment.user_id == current_api_user&.id
+          render json: { error: 'Não autorizado' }, status: :forbidden
+          return
+        end
+
         if @establishment.update(establishment_params)
           render json: {
             establishment: @establishment,
