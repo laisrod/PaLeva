@@ -17,7 +17,8 @@ module Api
           Rails.logger.info "[SessionsController] Senha válida, formatando dados do usuário"
           user_data = format_user_data(user)
           Rails.logger.info "[SessionsController] Dados formatados com sucesso"
-          render json: { token: user.email, user: user_data }, status: :ok
+          token = JsonWebToken.encode(user_id: user.id)
+          render json: { token: token, user: user_data }, status: :ok
         else
           Rails.logger.warn "[SessionsController] Email ou senha inválidos"
           render json: { error: 'Email ou senha inválidos' }, status: :unauthorized
@@ -38,9 +39,8 @@ module Api
       end
 
       def is_signed_in?
-        email = request.headers['Authorization']&.split&.last
-        user = email ? User.find_by(email: email) : nil
-        
+        user = current_api_user
+
         if user
           render json: { 
             signed_in: true, 
@@ -59,15 +59,23 @@ module Api
       private
 
       def authenticate_api_user!
-        email = request.headers['Authorization']&.split&.last
-        @current_user = User.find_by(email: email)
-        return if @current_user
+        return if current_api_user
 
         render json: { error: 'Unauthorized' }, status: :unauthorized
       end
 
       def current_api_user
-        @current_user
+        return @current_user if defined?(@current_user)
+
+        token = request.headers['Authorization']&.split&.last
+        @current_user = token.present? ? user_from_token(token) : nil
+      end
+
+      def user_from_token(token)
+        payload = JsonWebToken.decode(token)
+        User.find_by(id: payload[:user_id])
+      rescue JsonWebToken::DecodeError
+        nil
       end
 
       def skip_session

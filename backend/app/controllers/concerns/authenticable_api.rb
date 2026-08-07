@@ -30,37 +30,16 @@ module AuthenticableApi
   def extract_token_from_header
     auth_header = request.headers['Authorization']
     return nil unless auth_header
-    
-    # Suporta tanto "Bearer token" quanto apenas "token" (compatibilidade)
+
+    # Suporta tanto "Bearer token" quanto apenas "token"
     auth_header.split(' ').last
   end
 
   def find_user_from_token(token)
-    # Tentar JWT primeiro (OAuth)
-    user = find_user_from_jwt(token)
-    return user if user
-
-    # Fallback: email como token (sistema atual)
-    user = User.find_by(email: token)
-    return user if user
-
+    payload = JsonWebToken.decode(token)
+    User.find_by(id: payload[:user_id])
+  rescue JsonWebToken::DecodeError
     nil
-  end
-
-  def find_user_from_jwt(token)
-    begin
-      payload = JWT.decode(
-        token,
-        ENV['JWT_SECRET'] || Rails.application.secrets.secret_key_base,
-        true,
-        { algorithm: 'HS256' }
-      ).first
-
-      User.find_by(id: payload['user_id'], email: payload['email'])
-    rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::VerificationError => e
-      Rails.logger.warn "[AuthenticableApi] Erro ao decodificar JWT: #{e.message}"
-      nil
-    end
   end
 end
 

@@ -78,7 +78,6 @@ RSpec.describe 'API::V1::OmniauthCallbacks', type: :request do
       allow(ENV).to receive(:[]).with('GOOGLE_CLIENT_ID').and_return('test-client-id')
       allow(ENV).to receive(:[]).with('GOOGLE_CLIENT_SECRET').and_return('test-client-secret')
       allow(ENV).to receive(:[]).with('FRONTEND_URL').and_return(frontend_url)
-      allow(ENV).to receive(:[]).with('JWT_SECRET').and_return('test-jwt-secret')
     end
 
     context 'quando o código de autorização é válido' do
@@ -132,7 +131,7 @@ RSpec.describe 'API::V1::OmniauthCallbacks', type: :request do
           token = CGI.unescape(token_match[1])
           
           # Verificar se o token pode ser decodificado
-          decoded_token = JWT.decode(token, ENV['JWT_SECRET'], true, { algorithm: 'HS256' }).first
+          decoded_token = JsonWebToken.decode(token)
           expect(decoded_token['user_id']).to eq(user.id)
           expect(decoded_token['email']).to eq(user.email)
         end
