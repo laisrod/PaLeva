@@ -1,10 +1,14 @@
 module Api
   module V1
     class PortionsController < ApplicationController
+      include AuthenticableApi
+      include EstablishmentOwnable
       skip_before_action :verify_authenticity_token
+      skip_before_action :authenticate_api_user!, only: [:index, :show]
       before_action :set_establishment
       before_action :set_dish
       before_action :set_portion, only: [:show, :update, :destroy]
+      before_action :authorize_establishment_owner!, only: [:create, :update, :destroy]
 
       def index
         @portions = @dish.portions.order(created_at: :desc)

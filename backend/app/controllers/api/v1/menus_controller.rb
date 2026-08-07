@@ -2,7 +2,11 @@ module Api
   module V1
     class MenusController < ApplicationController
       include ApiEstablishmentScoped
+      include AuthenticableApi
+      include EstablishmentOwnable
       skip_before_action :verify_authenticity_token
+      skip_before_action :authenticate_api_user!, only: [:index, :show]
+      before_action :authorize_establishment_owner!, only: [:create, :update, :destroy]
 
       def index
         unless @establishment

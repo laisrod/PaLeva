@@ -1,8 +1,12 @@
 module Api
   module V1
     class WorkingHoursController < ApplicationController
+      include AuthenticableApi
+      include EstablishmentOwnable
       skip_before_action :verify_authenticity_token
+      skip_before_action :authenticate_api_user!, only: [:index]
       before_action :set_establishment
+      before_action :authorize_establishment_owner!, only: [:update]
 
       def index
         @working_hours = @establishment.working_hours.order(:id)
